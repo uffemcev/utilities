@@ -22,7 +22,7 @@ param
 
 if ($all)
 {
-	.\utilities.ps1 -store -office -spotx -dpi -directx -vcredist -chrome -discord -steam -qbit -zip -gdrive -adguard -blender -signal -codec -nvidia
+	$PSCommandPath -store -office -spotx -dpi -directx -vcredist -chrome -discord -steam -qbit -zip -gdrive -adguard -blender -signal -codec -nvidia
 }
 
 if ($store)
