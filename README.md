@@ -10,7 +10,7 @@
 <details>
 <summary>Список</summary>
 
-* store - MS store обновление всех приложений, полезно на свежеустановленной системе для инициализации winget
+* store - Обновление приложений в MS store, полезно на свежеустановленной системе для инициализации winget
 * office - Office, Word, Excel 365 mondo volume license
 * spotx - Spotify мод
 * dpi - GoodbyeDPI, по умолчанию активируется режим 5
