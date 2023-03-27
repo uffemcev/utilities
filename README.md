@@ -19,7 +19,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubu
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -all}
 ```
-* Больше вариантов запуска скрипта представлено в комментариях к скрипту
+* Больше вариантов запуска представлено в комментариях к скрипту
 
 ## Компоненты
 <details>
