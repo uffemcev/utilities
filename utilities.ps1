@@ -26,7 +26,7 @@
 #>
 function manual
 {
-	$Number = Read-Host "github.com/uffemcev/utilities `n1 install everything `n0 select manually`n"
+	$Number = Read-Host "`ngithub.com/uffemcev/utilities `n`n1 install everything `n0 select manually`n"
 	if ($Number -eq 0) {choose}
 	if ($Number -eq 1) {$all = $True; run}
 }
