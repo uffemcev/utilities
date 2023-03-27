@@ -6,6 +6,20 @@
 * Работоспособность проверена на Windows 11 22H2
 * Необходим winget, обычно встроен в Windows 10/11
 
+## Запуск
+* Интерактивный выбор компонентов для установки:
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); manual}
+```
+* Автоматическая установка указанных компонентов:
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -store -office -chrome}
+```
+* Автоматическая установка всех компонентов::
+```powershell
+Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -all}
+```
+
 ## Компоненты
 <details>
 <summary>Список</summary>
