@@ -6,7 +6,7 @@
 	
 	Для работы встроенного функционала winget на свежей системе необходимо обновить его в ms store вручную или через параметр -store
 	
-	Ручной выбор компонентов для установки:
+	Интерактивный выбор компонентов для установки:
 	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); manual}"
 	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{. .\utilities.ps1; manual}"
 	Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); manual}
