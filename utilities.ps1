@@ -1,27 +1,31 @@
 <#
-	Запуск скрипта с интерактивным выбором автоматической/ручной установки:
+	Скрипт понимает только нолики и единички:
+	0 - нет
+	1 - да
+	
+	Ручной выбор компонентов для установки:
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; manual} | iex"
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{ . .\utilities.ps1; manual}"
 	&{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; manual} | iex
 	&{ . .\utilities.ps1; manual}
 	
-	Автоматическая установка выбранных компонентов:
-	& { . .\utilities1.ps1; auto -store -office -chrome }
+	Автоматическая установка указанных компонентов:
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -store -office -chrome} | iex"
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{ . .\utilities.ps1; auto -store -office -chrome}"
+	&{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -store -office -chrome} | iex
+	&{ . .\utilities.ps1; auto -store -office -chrome}
 	
 	Автоматическая установка всех компонентов:
-	& { . .\utilities1.ps1; auto -all }
-	
-
-	Download.ps1 -Branch O365ProPlusRetail -Channel SemiAnnual -Components Excel, OneDrive, Outlook, PowerPoint, Teams, Word
-	.EXAMPLE
-	Download.ps1 -Branch O365ProPlusRetail -Channel BetaChannel -Components Excel, Word
-	.NOTES
-	Run as admin
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -all} | iex"
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{ . .\utilities.ps1; auto -all}"
+	&{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -all} | iex
+	&{ . .\utilities.ps1; auto -all}
 #>
 function manual
 {
-	$Number = Read-Host "Please enter a number"
+	$Number = Read-Host "1 install everything `n0 select manually`n"
 	if ($Number -eq 0) {choose}
-	if ($Number -eq 1) {$all = $True}
-	run
+	if ($Number -eq 1) {$all = $True; run}
 }
 
 function auto
@@ -79,7 +83,7 @@ function run
 {
 	if ($all)
 	{
-		option -store -office -spotx -dpi -directx -vcredist -chrome -discord -steam -qbit -zip -gdrive -adguard -blender -signal -codec -nvidia
+		auto -store -office -spotx -dpi -directx -vcredist -chrome -discord -steam -qbit -zip -gdrive -adguard -blender -signal -codec -nvidia
 	}
 
 	if ($store)
