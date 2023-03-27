@@ -9,3 +9,11 @@
 Автоматически устанавливаются последнии версии
 
 Имеются параметры для ручной и авто установки
+
+
+## Ссылки
+
+* [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
+* [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
+* [SpotX](https://github.com/amd64fox/SpotX)
+* [Office](https://github.com/farag2/Office)
