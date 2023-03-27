@@ -1,25 +1,28 @@
 <#
-	Скрипт понимает только нолики и единички:
+	Скрипт понимает только нолики, единички и enter:
+	enter - ввод / пропуск
 	0 - нет
 	1 - да
 	
+	Для работы встроенного функционала winget на свежей системе необходимо обновить его в ms store вручную или через параметр -store
+	
 	Ручной выбор компонентов для установки:
-	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; manual} | iex"
-	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{ . .\utilities.ps1; manual}"
-	&{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; manual} | iex
-	&{ . .\utilities.ps1; manual}
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); manual}"
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{. .\utilities.ps1; manual}"
+	&{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); manual}
+	&{. .\utilities.ps1; manual}
 	
 	Автоматическая установка указанных компонентов:
-	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -store -office -chrome} | iex"
-	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{ . .\utilities.ps1; auto -store -office -chrome}"
-	&{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -store -office -chrome} | iex
-	&{ . .\utilities.ps1; auto -store -office -chrome}
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -store -office -chrome}"
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{. .\utilities.ps1; auto -store -office -chrome}"
+	&{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -store -office -chrome}
+	&{. .\utilities.ps1; auto -store -office -chrome}
 	
 	Автоматическая установка всех компонентов:
-	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -all} | iex"
-	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{ . .\utilities.ps1; auto -all}"
-	&{irm https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1; auto -all} | iex
-	&{ . .\utilities.ps1; auto -all}
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -all}"
+	powershell -command "Set-ExecutionPolicy Bypass -Scope Process -Force; &{. .\utilities.ps1; auto -all}"
+	&{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -all}
+	&{. .\utilities.ps1; auto -all}
 #>
 function manual
 {
@@ -101,7 +104,7 @@ function run
 		iex '.\Install.ps1'
 		& ([ScriptBlock]::Create((irm https://massgrave.dev/get))) /KMS-Office /KMS-ActAndRenewalTask /S
 		popd
-		ri -Recurse '.\Office'
+		ri -Recurse -Force '.\Office'
 	}
 
 	if ($spotx)
@@ -114,7 +117,7 @@ function run
 	{
 		iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 		Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
-		Remove-Item '.\goodbyedpi.zip'
+		ri -Force '.\goodbyedpi.zip'
 		dir -Path $Env:Programfiles -Recurse -ErrorAction SilentlyContinue -Force | where {$_ -in '0_russia_update_blacklist_file.cmd','service_install_russia_blacklist.cmd'} | %{ '`n' |& $_.FullName }
 	}
 
