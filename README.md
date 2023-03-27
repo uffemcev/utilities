@@ -15,7 +15,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubu
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -store -office -chrome}
 ```
-* Автоматическая установка всех компонентов::
+* Автоматическая установка всех компонентов:
 ```powershell
 Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -all}
 ```
