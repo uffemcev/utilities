@@ -185,4 +185,5 @@ function run
 	{
 		winget install --id=TechPowerUp.NVCleanstall --accept-package-agreements --accept-source-agreements --exact --interactive
 	}
+	exit
 }
