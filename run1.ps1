@@ -4,9 +4,6 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	Start-Process powershell "-NoExit -NoProfile -ExecutionPolicy Bypass -Command `"$path`"" -Verb RunAs
 	
 }
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)){exit; stop-process -Id $PID}
-
-
 
 cd $env:USERPROFILE
 
