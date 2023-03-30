@@ -1,6 +1,7 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	write-host $MyInvocation.Line
+	write-host $MyInvocation.MyCommand
 }
 
 cd $env:USERPROFILE
