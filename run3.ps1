@@ -23,7 +23,7 @@ function install([Array]$option)
 		ri -Recurse -Force '.\Office'
 	}
 
-	if ($option[0] -eq 'select') {if ((Read-Host 'enter') -eq 1) {[array]$name += 'spotx'}} elseif ($option -eq 'spox')
+	if ($option[0] -eq 'select') {if ((Read-Host 'enter') -eq 1) {[array]$name += 'spotx'}} elseif ($option -eq 'spotx')
 	{
 		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		iex "& { $((iwr -useb 'https://raw.githubusercontent.com/amd64fox/SpotX/main/Install.ps1').Content) } -premium -new_theme -podcasts_on -block_update_on -cache_on"
