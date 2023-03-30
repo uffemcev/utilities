@@ -1,8 +1,6 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	$path = $MyInvocation.line
-	write-host $path
-	Start-Process powershell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command '$path'"
+	Start-Process powershell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `"$MyInvocation.line`""
 }
 
 cd $env:USERPROFILE
