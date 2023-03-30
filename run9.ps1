@@ -2,8 +2,11 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 {
 	$path = $MyInvocation.line
 	Start-Process powershell "-NoExit -NoProfile -ExecutionPolicy Bypass -Command `"$path`"" -Verb RunAs
-	stop-process -Id $PID
+	$yes = 1
 }
+if ($yes -eq 1) {exit}
+
+
 
 cd $env:USERPROFILE
 
