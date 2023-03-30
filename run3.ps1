@@ -3,6 +3,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
     
 }
 
+cd $env:USERPROFILE
 function install([Array]$option)
 {
 	if ($option[0] -eq 'all')
