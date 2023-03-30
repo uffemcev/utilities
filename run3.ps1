@@ -1,3 +1,26 @@
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{ 
+  echo "* Respawning PowerShell child process with elevated privileges"
+  $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+  $pinfo.FileName = "powershell"
+  $pinfo.Arguments = "& '" + $myinvocation.mycommand.definition + "'"
+  $pinfo.Verb = "RunAs"
+  $pinfo.RedirectStandardError = $false
+  $pinfo.RedirectStandardOutput = $false
+  $pinfo.UseShellExecute = $true
+  $p = New-Object System.Diagnostics.Process
+  $p.StartInfo = $pinfo
+  $p.Start() | Out-Null
+  $p.WaitForExit()
+  echo "* Child process finished"
+  type "C:/jenkins/transcript.txt"
+  Remove-Item "C:/jenkins/transcript.txt"
+  Exit $p.ExitCode
+} Else {
+  echo "Child process starting with admin privileges"
+  Start-Transcript -Path "C:/jenkins/transcript.txt"
+}
+
 
 cd $env:USERPROFILE
 
