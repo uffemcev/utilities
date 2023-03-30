@@ -1,11 +1,10 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$path = $MyInvocation.line
-	$yes = 1
 	Start-Process powershell "-NoExit -NoProfile -ExecutionPolicy Bypass -Command `"$path`"" -Verb RunAs
 	
 }
-if ($yes) {exit; stop-process -Id $PID}
+exit; stop-process -Id $PID
 
 
 
