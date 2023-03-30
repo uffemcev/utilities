@@ -1,6 +1,8 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-Start-Process -FilePath '$MyInvocation.MyCommand'
+	$path = $MyInvocation.MyCommand
+	write-host $path
+	#Start-Process -FilePath '$MyInvocation.MyCommand'
 }
 
 cd $env:USERPROFILE
