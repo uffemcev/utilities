@@ -1,7 +1,6 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	$yes = $MyInvocation.Line
-	Start-Process -FilePath '$yes'
+	Start-Process $$
 }
 
 cd $env:USERPROFILE
