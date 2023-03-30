@@ -1,4 +1,3 @@
-powershell -Command 'Start-Process powershell -ArgumentList "-Command (Get-Process postgres | Select-Object Path | Select-Object -Index 0).Path | Out-File -encoding ASCII $env:TEMP\camp-postgres.tmp" -Verb RunAs'
 
 cd $env:USERPROFILE
 
