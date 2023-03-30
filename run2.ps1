@@ -1,7 +1,6 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	$path = (Get-History | select -last 1 | select -expand commandline)
-	Start-Process $path
+	Start-Process $MyInvocation.Line
 }
 
 cd $env:USERPROFILE
