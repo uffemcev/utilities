@@ -3,7 +3,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$path = $MyInvocation.line
 	Start-Process powershell "-NoExit -NoProfile -ExecutionPolicy Bypass -Command `"$path`"" -Verb RunAs
 }
-if ($path) {exit; stop-process -Id $PID}
+#if ($path) {exit; stop-process -Id $PID}
 
 
 
