@@ -1,6 +1,6 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass"
+	Start-Process PowerShell -Verb RunAs "-NoProfile -ExecutionPolicy Bypass -Command `" & '$PSCommandPath';`"";
 	Exit  
 }
 
