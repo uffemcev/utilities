@@ -1,6 +1,6 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	$path = $$
+	$path = $$ -Verb RunAs
 	write-host $path
 	#Start-Process -FilePath '$MyInvocation.MyCommand'
 }
