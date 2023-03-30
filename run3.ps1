@@ -1,7 +1,7 @@
-#if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
-#{
-#Start-Process powershell
-#}
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
+{
+Start-Process $MyInvocation.MyCommand
+}
 
 cd $env:USERPROFILE
 
