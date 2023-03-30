@@ -14,7 +14,6 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
   $p.WaitForExit()
   echo "* Child process finished"
   type "C:/jenkins/transcript.txt"
-  Remove-Item "C:/jenkins/transcript.txt"
   Exit $p.ExitCode
 } Else {
   echo "Child process starting with admin privileges"
