@@ -41,8 +41,8 @@ function install([Array]$a)
 {
 	if ($a[0] -eq 'all')
 	{
-		#ADD YOUR APP TO THE END OF AN ARRAY
-		#ДОБАВЬ СВОЕ ПРИЛОЖЕНИЕ В КОНЕЦ МАССИВА
+		#ADD NEW APP TO THE END OF THIS ARRAY
+		#ДОБАВЬ НОВОЕ ПРИЛОЖЕНИЕ В КОНЕЦ МАССИВА
 		$a = 'store', 'office', 'spotx', 'dpi', 'directx', 'vcredist', 'chrome', 'discord', 'steam', 'qbit', 'zip', 'gdrive', 'adguard', 'blender', 'signal', 'codec', 'nvidia'
 	}
 
@@ -149,8 +149,8 @@ function install([Array]$a)
 	#{
 	#	CODE
 	#}
-	#DO NOT FORGET ABOUT 1ST COMMENT
-	#НЕ ЗАБУДЬ ПРО ПЕРВЫЙ КОММЕНТАРИЙ
+	#DON'T FORGET TO ADD NEW APP TO AN ARRAY AT THE TOP OF THE SCRIPT
+	#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В МАССИВ В НАЧАЛЕ СКРИПТА
 	
 	if ($a[0] -eq 'select') {$a[0] = $null; install $a} else
 	{
