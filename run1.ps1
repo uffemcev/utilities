@@ -1,5 +1,3 @@
-cd $env:USERPROFILE
-
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$host.ui.RawUI.WindowTitle = 'NotAdmin'
@@ -7,6 +5,8 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $path`"" -Verb RunAs
 	taskkill /fi "WINDOWTITLE eq NotAdmin"
 }
+
+cd $env:USERPROFILE
 
 function install([Array]$option)
 {
