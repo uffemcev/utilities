@@ -5,18 +5,18 @@
 
 ## Запуск
 Интерактивный выбор компонентов для установки:
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); manual}
+```
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1)))"
 ```
 Автоматическая установка указанных компонентов:
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -store -office -chrome}
+```
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) store office chrome"
 ```
 Автоматическая установка всех компонентов:
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; &{iex (iwr https://raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1); auto -all}
 ```
-Больше вариантов запуска представлено в комментариях к скрипту.
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) all"
+```
+Рекомендую ознакомиться с комментариями в скрипте.
 
 ## Компоненты
 <details>
