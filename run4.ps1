@@ -1,6 +1,6 @@
-$PID
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
+	$host.ui.RawUI.WindowTitle = 'NotAdmin'
 	$path = $MyInvocation.line
 	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $path`"" -Verb RunAs
 }
