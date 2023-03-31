@@ -1,3 +1,4 @@
+write-host $PID
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	New-Item -ItemType File -Path $profile -Force
