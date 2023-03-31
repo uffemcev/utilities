@@ -57,13 +57,11 @@ function install([Array]$a)
 	{
 		iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -OutFile '.\Office.zip'
 		Expand-Archive '.\Office.zip' '.\'
-		ri -Force '.\Office.zip'
 		pushd '.\Office'
 		iex '.\Download.ps1 -Branch O365ProPlusRetail -Channel Current -Components Word, Excel, PowerPoint'
 		iex '.\Install.ps1'
 		& ([ScriptBlock]::Create((irm https://massgrave.dev/get))) /KMS-Office /KMS-ActAndRenewalTask /S
 		popd
-		ri -Recurse -Force '.\Office'
 	}
 
 	if ($a[0] -eq 'select') {if ((Read-Host 'SpotX spotify modification') -eq 1) {$a += 'spotx'}} elseif ($a -eq 'spotx')
@@ -76,7 +74,6 @@ function install([Array]$a)
 	{
 		iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 		Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
-		ri -Force '.\goodbyedpi.zip'
 		dir -Path $Env:Programfiles -Recurse -ErrorAction SilentlyContinue -Force | where {$_ -in '0_russia_update_blacklist_file.cmd','service_install_russia_blacklist.cmd'} | %{ '`n' |& $_.FullName }
 	}
 
