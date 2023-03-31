@@ -6,8 +6,8 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	taskkill /fi "WINDOWTITLE eq NotAdmin"
 } else {$host.ui.RawUI.WindowTitle = 'Admin'}
 
-ri -Recurse -Force $env:USERPROFILE\utilities
-cd (ni -Force -Path $env:USERPROFILE\utilities -ItemType Directory)
+ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
+cd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
 cls
 
 function install([Array]$a)
@@ -128,7 +128,7 @@ function install([Array]$a)
 	if ($a[0] -eq 'select') {$a[0] = $null; install $a} else
 	{
 		cd $env:USERPROFILE
-		ri -Recurse -Force $env:USERPROFILE\utilities
+		ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
 		cls
 		write-host "`nInstallation complete"
 		start-sleep -seconds 5
