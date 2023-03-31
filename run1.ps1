@@ -6,7 +6,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	taskkill /fi "WINDOWTITLE eq NotAdmin"
 }
 
-cd $env:USERPROFILE
+
 
 function install([Array]$option)
 {
