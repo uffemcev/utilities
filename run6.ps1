@@ -3,7 +3,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$host.ui.RawUI.WindowTitle = 'NotAdmin'
 	$path = $MyInvocation.line
 	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $path`"" -Verb RunAs
-	taskkill /fi "WINDOWTITLE eq NotAdmin"
+	taskkill /f /fi "WINDOWTITLE eq NotAdmin"
 }
 
 cd $env:USERPROFILE
