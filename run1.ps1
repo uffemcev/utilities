@@ -122,3 +122,4 @@ function install([Array]$option)
 if (!$args) {
 write-host 'hehe'
 } else {install $args}
+$PID
