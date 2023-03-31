@@ -1,3 +1,4 @@
+$PID
 New-Item -ItemType File -Path $profile -Force
 Set-Content $profile ('write-host ' + $PID)
 #Set-Content $profile ('stop-process -Id ' + $PID + "`n" + 'ri -force $profile')
