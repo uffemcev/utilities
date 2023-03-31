@@ -10,6 +10,8 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $path`"" -Verb RunAs
 }
 
+$PID
+
 function install([Array]$option)
 {
 	if ($option[0] -eq 'all')
