@@ -1,15 +1,13 @@
+New-Item -ItemType File -Path $profile -Force
+Set-Content $profile ('write-host ' + $PID)
+#Set-Content $profile ('stop-process -Id ' + $PID + "`n" + 'ri -force $profile')
+
+
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$path = $MyInvocation.line
 	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $path`"" -Verb RunAs
 }
-
-
-	New-Item -ItemType File -Path $profile -Force
-	Set-Content $profile ('write-host ' + $PID)
-	#Set-Content $profile ('stop-process -Id ' + $PID + "`n" + 'ri -force $profile')
-
-cd $env:USERPROFILE
 
 function install([Array]$option)
 {
