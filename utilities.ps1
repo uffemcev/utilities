@@ -41,10 +41,12 @@ function install([Array]$a)
 {
 	if ($a[0] -eq 'all')
 	{
-		#ADD NEW APP TO THE END OF THIS ARRAY
-		#ДОБАВЬ НОВОЕ ПРИЛОЖЕНИЕ В КОНЕЦ МАССИВА
+		#DON'T FORGET TO ADD A NEW APP TO THE END OF THIS ARRAY
+		#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В КОНЕЦ ЭТОГО МАССИВА
 		$a = 'store', 'office', 'spotx', 'dpi', 'directx', 'vcredist', 'chrome', 'discord', 'steam', 'qbit', 'zip', 'gdrive', 'adguard', 'blender', 'signal', 'codec', 'nvidia'
 	}
+
+	if ($a[0] -eq 'exit') {$a = '$null'}
 
 	if ($a[0] -eq 'select') {if ((Read-Host 'Update store apps') -eq 1) {$a += 'store'}} elseif ($a -eq 'store')
 	{
@@ -149,8 +151,8 @@ function install([Array]$a)
 	#{
 	#	CODE
 	#}
-	#DON'T FORGET TO ADD NEW APP TO AN ARRAY AT THE TOP OF THE SCRIPT
-	#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В МАССИВ В НАЧАЛЕ СКРИПТА
+	#DON'T FORGET TO ADD A NEW APP TO AN ARRAY AT THE TOP OF THE SCRIPT
+	#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В МАССИВ В ВЕРХНЕЙ ЧАСТИ СКРИПТА
 	
 	if ($a[0] -eq 'select') {$a[0] = $null; install $a} else
 	{
@@ -159,12 +161,14 @@ function install([Array]$a)
 		cls
 		write-host "`nInstallation complete"
 		start-sleep -seconds 5
-		exit 
+		taskkill /fi "WINDOWTITLE eq Admin"
+		taskkill /fi "WINDOWTITLE eq NotAdmin"
 	}
 }
 
 if (!$args) {
-$o = Read-Host "`ngithub.com/uffemcev/utilities `n`n1 install everything `n0 select manually`n"
+$o = Read-Host "`ngithub.com/uffemcev/utilities `n`n0 Select manually `n1 Install everything `n2 Exit`n"
 if ($o -eq 0) {install select}
 if ($o -eq 1) {install all}
+if ($o -eq 2) {install exit}
 } else {install $args}
