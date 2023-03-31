@@ -117,7 +117,5 @@ function install([Array]$option)
 }
 
 if (!$args) {
-$choose = Read-Host "`ngithub.com/uffemcev/utilities `n`n1 install everything `n0 select manually`n"
-if ($choose -eq 0) {install select}
-if ($choose -eq 1) {install all}
+write-host 'hehe'
 } else {install $args}
