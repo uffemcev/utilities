@@ -1,16 +1,10 @@
-$PID
-New-Item -ItemType File -Path $profile -Force
-Set-Content $profile ('write-host ' + $PID)
-#Set-Content $profile ('stop-process -Id ' + $PID + "`n" + 'ri -force $profile')
-
-
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$path = $MyInvocation.line
 	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $path`"" -Verb RunAs
 }
 
-$PID
+cd $env:USERPROFILE
 
 function install([Array]$option)
 {
@@ -120,6 +114,7 @@ function install([Array]$option)
 }
 
 if (!$args) {
-write-host 'hehe'
+$choose = Read-Host "`ngithub.com/uffemcev/utilities `n`n1 install everything `n0 select manually`n"
+if ($choose -eq 0) {install select}
+if ($choose -eq 1) {install all}
 } else {install $args}
-$PID
