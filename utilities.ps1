@@ -153,9 +153,9 @@ function install([Array]$a)
 	
 	if ($a[0] -eq 'select') {$a[0] = $null; install $a} else
 	{
+		cls
 		cd $env:USERPROFILE
 		ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
-		cls
 		write-host "`nInstallation complete"
 		start-sleep -seconds 5
 		taskkill /fi "WINDOWTITLE eq Admin"
