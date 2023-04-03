@@ -151,7 +151,7 @@ function install([Array]$a)
 	#DON'T FORGET TO ADD A NEW APP TO AN ARRAY AT THE TOP OF THE SCRIPT
 	#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В МАССИВ В ВЕРХНЕЙ ЧАСТИ СКРИПТА
 	
-	if ($a[0] -eq 'select') {$a[0] = $null; install $a} else
+	if ($a[0] -eq 'select') {$a[0] = $null; cls; install $a} else
 	{
 		cd $env:USERPROFILE
 		ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
@@ -168,4 +168,4 @@ $o = Read-Host "`ngithub.com/uffemcev/utilities `n`n0 Select manually `n1 Instal
 if ($o -eq 0) {cls; write-host "`nSelect manually`n"; install select}
 if ($o -eq 1) {cls; write-host "`nInstall everything`n"; install all}
 if ($o -eq 2) {cls; install exit}
-} else {cls; install $args}
+} else {cls; write-host "`nAuto installation`n"; install $args}
