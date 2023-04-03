@@ -24,7 +24,8 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 
 | Компонент | Описание |
 | :-- | :-- |
-| store | Обновление приложений в MS store, инициализирует winget на свежей системе
+| winget | Установка / обновление winget, необходимо для работы скрипта
+| store | Обновление приложений в MS store
 | office | Office, Word, Excel 365 mondo volume license |
 | spotx | Spotify мод |
 | dpi | GoodbyeDPI, по умолчанию активируется режим 5 |
@@ -45,6 +46,7 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 </details>
 
 ## Ссылки
+* [Winget installer](https://github.com/asheroto/winget-installer)
 * [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
 * [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
 * [SpotX](https://github.com/amd64fox/SpotX)
