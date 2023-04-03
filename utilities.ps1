@@ -43,11 +43,16 @@ function install([Array]$a)
 	{
 		#DON'T FORGET TO ADD A NEW APP TO THE END OF THIS ARRAY
 		#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В КОНЕЦ ЭТОГО МАССИВА
-		$a = 'store', 'office', 'spotx', 'dpi', 'directx', 'vcredist', 'chrome', 'discord', 'steam', 'qbit', 'zip', 'gdrive', 'adguard', 'blender', 'signal', 'codec', 'nvidia'
+		$a = 'winget', 'store', 'office', 'spotx', 'dpi', 'directx', 'vcredist', 'chrome', 'discord', 'steam', 'qbit', 'zip', 'gdrive', 'adguard', 'blender', 'signal', 'codec', 'nvidia'
 	}
 
 	if ($a[0] -eq 'exit') {$a = '$null'}
 
+	if ($a[0] -eq 'select') {if ((Read-Host 'Winget') -eq 1) {$a += 'winget'}} elseif ($a -eq 'winget')
+	{
+		& ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
+	}
+	
 	if ($a[0] -eq 'select') {if ((Read-Host 'Update store apps') -eq 1) {$a += 'store'}} elseif ($a -eq 'store')
 	{
 		Get-CimInstance -Namespace 'root\cimv2\mdm\dmmap' -ClassName 'MDM_EnterpriseModernAppManagement_AppManagement01' | Invoke-CimMethod -MethodName UpdateScanMethod
