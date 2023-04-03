@@ -156,7 +156,7 @@ function install([Array]$a)
 	{
 		cd $env:USERPROFILE
 		ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
-		cls
+		#cls
 		write-host "`nInstallation complete"
 		start-sleep -seconds 5
 		taskkill /fi "WINDOWTITLE eq Admin"
