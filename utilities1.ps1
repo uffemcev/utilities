@@ -28,6 +28,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	taskkill /fi "WINDOWTITLE eq NotAdmin"
 } else {$host.ui.RawUI.WindowTitle = 'Admin'}
 
+$ProgressPreference = 'SilentlyContinue'
 ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
 cd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
 cls
