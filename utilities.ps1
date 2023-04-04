@@ -49,7 +49,7 @@ function install([Array]$a)
 	{
 		#DON'T FORGET TO ADD A NEW APP TO THE END OF THIS ARRAY
 		#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В КОНЕЦ ЭТОГО МАССИВА
-		$a = 'winget', 'store', 'office', 'spotx', 'dpi', 'directx', 'vcredist', 'chrome', 'discord', 'steam', 'qbit', 'zip', 'gdrive', 'adguard', 'blender', 'signal', 'codec', 'nvidia'
+		$a = 'store', 'office', 'spotx', 'dpi', 'directx', 'vcredist', 'chrome', 'discord', 'steam', 'qbit', 'zip', 'gdrive', 'adguard', 'blender', 'signal', 'codec', 'nvidia'
 	}
 
 	if ($a[0] -eq 'exit') {$a = '$null'}
