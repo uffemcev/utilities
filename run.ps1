@@ -30,9 +30,10 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	$o = $MyInvocation.line
-	cd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
+	pushd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
 	& ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+	popd
 	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
 	taskkill /fi "WINDOWTITLE eq initialization"
 } else
@@ -160,6 +161,7 @@ function install([Array]$a)
 	{
 		cd $env:USERPROFILE
 		ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
+		cls
 		write-host "`nInstallation complete"
 		start-sleep -seconds 5
 		taskkill /fi "WINDOWTITLE eq uffemcev utilities"
