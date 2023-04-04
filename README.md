@@ -24,7 +24,6 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 
 | Компонент | Описание |
 | :-- | :-- |
-| winget | Установка / обновление winget, необходимо для работы скрипта
 | store | Обновление приложений в MS store
 | office | Office, Word, Excel 365 mondo volume license |
 | spotx | Spotify мод |
