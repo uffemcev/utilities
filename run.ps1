@@ -24,7 +24,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	$o = $MyInvocation.line
-	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
+	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
 	taskkill /fi "WINDOWTITLE eq initialization"
 } elseif (![System.Environment]::GetEnvironmentVariable("Path", "User"))
 {
@@ -34,7 +34,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	& ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
-	Start-Process powershell "-NoExit -ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
+	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
 	taskkill /fi "WINDOWTITLE eq initialization"
 } else
 {
