@@ -3,7 +3,7 @@
 
 	Скрипт создаёт рабочий каталог Users\Имя Пользователя\uffemcev_utilities, который удалется после завершения работы скрипта
 	
-	Для работы скрипта необходим winget, установить или обновить его можно через соотвествующий параметр
+	Для работы скрипта необходим winget, при необходимости установится автоматически
 
 	Команды для управления скриптом одинаковы для CMD и PowerShell
 	
@@ -22,16 +22,26 @@
 
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	$host.ui.RawUI.WindowTitle = 'NotAdmin'
+	$host.ui.RawUI.WindowTitle = 'initialization'
 	$o = $MyInvocation.line
 	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
-	taskkill /fi "WINDOWTITLE eq NotAdmin"
-} else {$host.ui.RawUI.WindowTitle = 'Admin'}
-
-$ProgressPreference = 'SilentlyContinue'
-ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
-cd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
-cls
+	taskkill /fi "WINDOWTITLE eq initialization"
+} elseif (![System.Environment]::GetEnvironmentVariable("Path", "User"))
+{
+	$host.ui.RawUI.WindowTitle = 'initialization'
+	$o = $MyInvocation.line
+	pushd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
+	& ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
+	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+	popd
+	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
+	taskkill /fi "WINDOWTITLE eq initialization"
+} else
+{
+	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
+	cd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
+	cls
+}
 
 function install([Array]$a)
 {
@@ -43,11 +53,6 @@ function install([Array]$a)
 	}
 
 	if ($a[0] -eq 'exit') {$a = '$null'}
-
-	if ($a[0] -eq 'select') {if ((Read-Host 'Winget') -eq 1) {$a += 'winget'}} elseif ($a -eq 'winget')
-	{
-		& ([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
-	}
 	
 	if ($a[0] -eq 'select') {if ((Read-Host 'Update store apps') -eq 1) {$a += 'store'}} elseif ($a -eq 'store')
 	{
@@ -159,8 +164,7 @@ function install([Array]$a)
 		cls
 		write-host "`nInstallation complete"
 		start-sleep -seconds 5
-		taskkill /fi "WINDOWTITLE eq Admin"
-		taskkill /fi "WINDOWTITLE eq NotAdmin"
+		taskkill /fi "WINDOWTITLE eq uffemcev utilities"
 	}
 }
 
