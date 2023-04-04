@@ -168,7 +168,8 @@ function install([Array]$a)
 	}
 }
 
-if (!$args) {
+if (!$args)
+{
 	$o = Read-Host "`ngithub.com/uffemcev/utilities `n`n0 Select manually `n1 Install everything `n2 Exit`n"
 	if ($o -eq 0) {cls; write-host "`nEnter - next, 1 - confirm`n"; install select}
 	if ($o -eq 1) {cls; install all}
