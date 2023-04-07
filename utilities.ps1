@@ -43,8 +43,15 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	cls
 }
 
-function install([Array]$a)
+function press([string]$description, [string]$name)
 {
+	Write-Host -NoNewline "$description"
+	$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	if ($button.VirtualKeyCode -eq 49) {write-host ' [YES]'; $Global:a += "$name"} else {write-host ' [NO]'}
+}
+
+function install([array]$Global:a)
+{	
 	if ($a[0] -eq 'all')
 	{
 		#DON'T FORGET TO ADD A NEW APP TO THE END OF THIS ARRAY
@@ -54,12 +61,12 @@ function install([Array]$a)
 
 	if ($a[0] -eq 'exit') {$a = '$null'}
 	
-	if ($a[0] -eq 'select') {if ((Read-Host 'Update store apps') -eq 1) {$a += 'store'}} elseif ($a -eq 'store')
+	if ($a[0] -eq 'select') {press 'Update store apps' 'store'} elseif ($a -eq 'store')
 	{
 		Get-CimInstance -Namespace 'root\cimv2\mdm\dmmap' -ClassName 'MDM_EnterpriseModernAppManagement_AppManagement01' | Invoke-CimMethod -MethodName UpdateScanMethod
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Office, Word, Excel 365 mondo volume license') -eq 1) {$a += 'office'}} elseif ($a -eq 'office')
+	if ($a[0] -eq 'select') {press 'Office, Word, Excel 365 mondo volume license' 'office'} elseif ($a -eq 'office')
 	{
 		iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -OutFile '.\Office.zip'
 		Expand-Archive '.\Office.zip' '.\'
@@ -71,92 +78,92 @@ function install([Array]$a)
 		popd
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'SpotX spotify modification') -eq 1) {$a += 'spotx'}} elseif ($a -eq 'spotx')
+	if ($a[0] -eq 'select') {press 'SpotX spotify modification' 'spotx'} elseif ($a -eq 'spotx')
 	{
 		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 		iex "& { $((iwr -useb 'https://raw.githubusercontent.com/amd64fox/SpotX/main/Install.ps1').Content) } -premium -new_theme -podcasts_on -block_update_on -cache_on"
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'GoodbyeDPI with -5 option') -eq 1) {$a += 'dpi'}} elseif ($a -eq 'dpi')
+	if ($a[0] -eq 'select') {press 'GoodbyeDPI with -5 option' 'dpi'} elseif ($a -eq 'dpi')
 	{
 		iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 		Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
 		dir -Path $Env:Programfiles -Recurse -ErrorAction SilentlyContinue -Force | where {$_ -in '0_russia_update_blacklist_file.cmd','service_install_russia_blacklist.cmd'} | %{ '`n' |& $_.FullName }
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'DirectX') -eq 1) {$a += 'directx'}} elseif ($a -eq 'directx')
+	if ($a[0] -eq 'select') {press 'DirectX' 'directx'} elseif ($a -eq 'directx')
 	{
 		winget install --id=Microsoft.DirectX --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Microsoft Visual C++ 2015-2022') -eq 1) {$a += 'vcredist'}} elseif ($a -eq 'vcredist')
+	if ($a[0] -eq 'select') {press 'Microsoft Visual C++ 2015-2022' 'vcredist'} elseif ($a -eq 'vcredist')
 	{
 		winget install --id=Microsoft.VCRedist.2015+.x64 --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Google Chrome') -eq 1) {$a += 'chrome'}} elseif ($a -eq 'chrome')
+	if ($a[0] -eq 'select') {press 'Google Chrome' 'chrome'} elseif ($a -eq 'chrome')
 	{
 		winget install --id=Google.Chrome --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Discord') -eq 1) {$a += 'discord'}} elseif ($a -eq 'discord')
+	if ($a[0] -eq 'select') {press 'Discord' 'discord'} elseif ($a -eq 'discord')
 	{
 		winget install --id=Discord.Discord --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Steam') -eq 1) {$a += 'steam'}} elseif ($a -eq 'steam')
+	if ($a[0] -eq 'select') {press 'Steam' 'steam'} elseif ($a -eq 'steam')
 	{
 		winget install --id=Valve.Steam --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'qBittorrent') -eq 1) {$a += 'qbit'}} elseif ($a -eq 'qbit')
+	if ($a[0] -eq 'select') {press 'qBittorrent' 'qbit'} elseif ($a -eq 'qbit')
 	{
 		winget install --id=qBittorrent.qBittorrent --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host '7-Zip') -eq 1) {$a += 'zip'}} elseif ($a -eq 'zip')
+	if ($a[0] -eq 'select') {press '7-Zip' 'zip'} elseif ($a -eq 'zip')
 	{
 		winget install --id=7zip.7zip --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Google Drive') -eq 1) {$a += 'gdrive'}} elseif ($a -eq 'gdrive')
+	if ($a[0] -eq 'select') {press 'Google Drive' 'gdrive'} elseif ($a -eq 'gdrive')
 	{
 		winget install --id=Google.Drive --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Adguard') -eq 1) {$a += 'adguard'}} elseif ($a -eq 'adguard')
+	if ($a[0] -eq 'select') {press 'Adguard' 'adguard'} elseif ($a -eq 'adguard')
 	{
 		winget install --id=AdGuard.AdGuard --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'Blender') -eq 1) {$a += 'blender'}} elseif ($a -eq 'blender')
+	if ($a[0] -eq 'select') {press 'Blender' 'blender'} elseif ($a -eq 'blender')
 	{
 		winget install --id=BlenderFoundation.Blender --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'SignalRGB') -eq 1) {$a += 'signal'}} elseif ($a -eq 'signal')
+	if ($a[0] -eq 'select') {press 'SignalRGB' 'signal'} elseif ($a -eq 'signal')
 	{
 		winget install --id=WhirlwindFX.SignalRgb --accept-package-agreements --accept-source-agreements --exact --silent
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'K-Lite Codec Pack Full manual install') -eq 1) {$a += 'codec'}} elseif ($a -eq 'codec')
+	if ($a[0] -eq 'select') {press 'K-Lite Codec Pack Full manual install' 'codec'} elseif ($a -eq 'codec')
 	{
 		winget install --id=CodecGuide.K-LiteCodecPack.Full --accept-package-agreements --accept-source-agreements --exact --interactive
 	}
 
-	if ($a[0] -eq 'select') {if ((Read-Host 'NVCleanstall manual install') -eq 1) {$a += 'nvidia'}} elseif ($a -eq 'nvidia')
+	if ($a[0] -eq 'select') {press 'NVCleanstall manual install' 'nvidia'} elseif ($a -eq 'nvidia')
 	{
 		winget install --id=TechPowerUp.NVCleanstall --accept-package-agreements --accept-source-agreements --exact --interactive
 	}
 
-	#ADD NEW APP
-	#ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ
-	#if ($a[0] -eq 'select') {if ((Read-Host 'DESCRIPTION') -eq 1) {$a += 'APP'}} elseif ($a -eq 'APP')
-	#{
-	#	CODE
-	#}
-	#DON'T FORGET TO ADD A NEW APP TO AN ARRAY AT THE TOP OF THE SCRIPT
-	#НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В МАССИВ В ВЕРХНЕЙ ЧАСТИ СКРИПТА
+	<# ADD NEW APP
+	ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ
+	if ($a[0] -eq 'select') {press 'DESCRIPTION' 'APP'} elseif ($a -eq 'APP')
+	{
+		CODE
+	}
+	DON'T FORGET TO ADD A NEW APP TO AN ARRAY AT THE TOP OF THE SCRIPT
+	НЕ ЗАБУДЬ ДОБАВИТЬ НОВОЕ ПРИЛОЖЕНИЕ В МАССИВ В ВЕРХНЕЙ ЧАСТИ СКРИПТА #>
 	
 	if ($a[0] -eq 'select') {$a[0] = $null; cls; install $a} else
 	{
@@ -171,8 +178,9 @@ function install([Array]$a)
 
 if (!$args)
 {
-	$o = Read-Host "`ngithub.com/uffemcev/utilities `n`n0 Select manually `n1 Install everything `n2 Exit`n"
-	if ($o -eq 0) {cls; write-host "`nEnter - next, 1 - confirm`n"; install select}
-	if ($o -eq 1) {cls; install all}
-	if ($o -eq 2) {cls; install exit}
+	Write-Host "`ngithub.com/uffemcev/utilities `n`n[1] Select manually `n[2] Install everything `n[3] Exit"
+	$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+	if ($button.VirtualKeyCode -eq 49) {cls; write-host "`ngithub.com/uffemcev/utilities `n`n[1] YES `n[2] NO`n"; install select}
+	if ($button.VirtualKeyCode -eq 50) {cls; install all}
+	if ($button.VirtualKeyCode -eq 51) {cls; install exit}
 } else {cls; install $args}
