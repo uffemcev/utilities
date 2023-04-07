@@ -45,7 +45,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 
 function press([string]$description, [string]$name)
 {
-	Write-Host -NoNewline "$description"
+	Write-Host -NoNewline "`n$description"
 	$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 	if ($button.VirtualKeyCode -eq 49) {write-host ' [YES]'; $Global:a += "$name"} else {write-host ' [NO]'}
 }
@@ -180,7 +180,7 @@ if (!$args)
 {
 	Write-Host "`ngithub.com/uffemcev/utilities `n`n[1] Select manually `n[2] Install everything `n[3] Exit"
 	$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-	if ($button.VirtualKeyCode -eq 49) {cls; write-host "`ngithub.com/uffemcev/utilities `n`n[1] YES `n[2] NO`n"; install select}
+	if ($button.VirtualKeyCode -eq 49) {cls; write-host "`ngithub.com/uffemcev/utilities `n`n[1] YES `n[2] NO"; install select}
 	if ($button.VirtualKeyCode -eq 50) {cls; install all}
 	if ($button.VirtualKeyCode -eq 51) {cls; install exit}
 } else {cls; install $args}
