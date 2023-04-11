@@ -26,7 +26,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$o = $MyInvocation.line
 	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
 	taskkill /fi "WINDOWTITLE eq initialization"
-} elseif (![System.Environment]::GetEnvironmentVariable("Path", "User"))
+} elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	$o = $MyInvocation.line
