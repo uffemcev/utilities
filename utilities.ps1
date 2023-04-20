@@ -214,7 +214,7 @@ function install([array]$apps)
 		{
 			Write-Host -NoNewline $app.Description
 			$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-			if ($button.VirtualKeyCode -eq 49) {write-host ' [YES]'; [array]$apps += $app.Name} else {write-host ' [NO]'}
+			if ($button.Character -eq '1') {write-host ' [YES]'; [array]$apps += $app.Name} else {write-host ' [NO]'}
 		}
 	}
 	elseif ($apps[0] -eq 'all')
@@ -240,7 +240,7 @@ if (!$args)
 {
 	Write-Host "`ngithub.com/uffemcev/utilities `n`n[1] Select manually `n[2] Install everything `n[3] Exit"
 	$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-	if ($button.VirtualKeyCode -eq 49) {install}
-	if ($button.VirtualKeyCode -eq 50) {install all}
-	if ($button.VirtualKeyCode -eq 51) {install exit}
+	if ($button.Character -eq '1') {install}
+	if ($button.Character -eq '2') {install all}
+	if ($button.Character -eq '3') {install exit}
 } else {install $args}
