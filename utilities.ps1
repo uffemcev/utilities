@@ -204,30 +204,46 @@ $data = @(
 	#>
 )
 
-function install([array]$apps)
+function install([System.Collections.ArrayList]$apps = @())
 {	
-	if (!$apps)
+	if ($apps -contains "all") {$apps = $data.Name; $button = "C"} elseif ($apps) {$button = "C"}
+	
+	while ($button -ne "c")
 	{
 		cls
-		write-host "`ngithub.com/uffemcev/utilities `n`n[1] YES `n[2] NO`n"
-		foreach ($app in $data)
+		write-host "`ngithub.com/uffemcev/utilities`n"
+
+		for ($i = 0; $i -lt $data.count; $i++)
 		{
-			Write-Host -NoNewline $app.Description
-			$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-			if ($button.Character -eq '1') {write-host ' [YES]'; [array]$apps += $app.Name} else {write-host ' [NO]'}
+			$number = "[" + ($i+1) + "]"
+			
+			if ($data[$i].Name -in $apps)
+			{
+				write-host -NoNewLine -BackgroundColor Green $number
+				write-host "" $data[$i].Description
+			} else
+			{
+				write-host -NoNewLine $number
+				write-host "" $data[$i].Description
+			}
 		}
-	}
-	elseif ($apps[0] -eq 'all')
-	{
-		$apps = $data.name
-	}	
-	elseif ($apps[0] -eq 'exit')
-	{
-		$apps = $null
+	
+		write-host "`n[C] Confirm [R] Reset [A] All"
+		$button = read-host "`nENTER"
+	
+		for ($i = 0; $i -lt $data.count; $i++)
+		{
+			switch ($button)
+			{
+				($i+1) {if ($data[$i].Name -in $apps) {$apps.Remove($data[$i].Name)} else {$apps.Add($data[$i].Name)}}
+				"R" {$apps = @()}
+				"A" {$apps = $data.Name}
+			}
+		}
 	}
 	
 	foreach ($app in $apps) {cls; & ($data | Where Name -eq $app).Code}
-	
+
 	cd $env:USERPROFILE
 	ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
 	cls
@@ -236,11 +252,4 @@ function install([array]$apps)
 	taskkill /fi "WINDOWTITLE eq uffemcev utilities"
 }
 
-if (!$args)
-{
-	Write-Host "`ngithub.com/uffemcev/utilities `n`n[1] Select manually `n[2] Install everything `n[3] Exit"
-	$button = $host.ui.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-	if ($button.Character -eq '1') {install}
-	if ($button.Character -eq '2') {install all}
-	if ($button.Character -eq '3') {install exit}
-} else {install $args}
+if (!$args) {install} else {install $args}
