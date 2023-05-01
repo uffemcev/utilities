@@ -99,8 +99,10 @@ $data = @(
 		{
 			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 			Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
-			dir -Path $Env:Programfiles -Recurse -ErrorAction SilentlyContinue -Force | where {$_ -in '0_russia_update_blacklist_file.cmd'} | %{ (gc $_.FullName).replace('https://antizapret.prostovpn.org/domains-export.txt', 'https://raw.githubusercontent.com/realsiao/Russia-Blacklist/main/list.txt') | sc $_.FullName }
-			dir -Path $Env:Programfiles -Recurse -ErrorAction SilentlyContinue -Force | where {$_ -in '0_russia_update_blacklist_file.cmd','service_install_russia_blacklist.cmd'} | %{ '`n' |& $_.FullName }
+			dir -Path $Env:Programfiles -Recurse -ErrorAction SilentlyContinue -Force | where {$_ -in '0_russia_update_blacklist_file.cmd','service_install_russia_blacklist.cmd'} | %{
+				(gc $_.FullName).replace('https://antizapret.prostovpn.org/domains-export.txt', 'https://raw.githubusercontent.com/realsiao/Russia-Blacklist/main/list.txt') | sc $_.FullName
+				'`n' |& $_.FullName
+			}
 		}
 	}
 	@{
