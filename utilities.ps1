@@ -45,6 +45,21 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 
 $data = @(
 	@{
+		Description = "Cloudflare DNS-over-HTTPS"
+		Name = "dns"
+		Code =
+		{
+			Get-NetAdapter -Physical | ForEach-Object {
+				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses "1.1.1.1","1.0.0.1"
+				$s1 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh\1.1.1.1'
+				$s2 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh\1.0.0.1'
+				New-Item -Path $s2 -Force  | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+				New-Item -Path $s1 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+			}
+			Clear-DnsClientCache
+		}
+	}
+	@{
 		Description = "Update store apps"
 		Name = "store"
 		Code =
