@@ -50,11 +50,12 @@ $data = @(
 		Code =
 		{
 			Get-NetAdapter -Physical | ForEach-Object {
-				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses "1.1.1.1","1.0.0.1"
-				$s1 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh\1.1.1.1'
-				$s2 = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings\Doh\1.0.0.1'
-				New-Item -Path $s2 -Force  | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
-				New-Item -Path $s1 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses ("1.1.1.1","1.0.0.1","2606:4700:4700::1111","2606:4700:4700::1001")
+				$path = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings'
+				New-Item -Path $path\Doh\1.1.1.1 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+				New-Item -Path $path\Doh\1.0.0.1 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+				New-Item -Path $path\Doh6\2606:4700:4700::1111 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+				New-Item -Path $path\Doh6\2606:4700:4700::1001 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
 			}
 			Clear-DnsClientCache
 		}
