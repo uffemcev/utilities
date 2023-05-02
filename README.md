@@ -1,26 +1,8 @@
 ## Описание
 Написанный на коленке скрипт .ps1 для автоматической установки компонентов и программ. Имеются параметры для интерактивной и автоматической установки. По возможности устанавливаются последние версии программ в тихом режиме. Работоспособность скрипта проверена на Windows 11 22H2. Для полноценной работы необходим winget, который обычно встроен в Windows 10/11.
 
-Принимаются замечания, предложения и вопросы!
-
-## Запуск
-Интерактивный выбор компонентов для установки:
-```
-powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1)))"
-```
-Автоматическая установка указанных компонентов:
-```
-powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) store office chrome"
-```
-Автоматическая установка всех компонентов:
-```
-powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) all"
-```
-Рекомендую ознакомиться с комментариями в скрипте.
-
-## Компоненты
 <details>
-<summary>Список</summary>
+<summary>Компоненты</summary>
 
 | Компонент | Описание |
 | :-- | :-- |
@@ -28,7 +10,7 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 | store | Обновление приложений в MS store |
 | office | Office, Word, Excel 365 mondo volume license |
 | spotx | Spotify мод |
-| dpi | GoodbyeDPI, по умолчанию активируется режим 5 |
+| dpi | GoodbyeDPI, режим 5 + обновление blacklist |
 | directx | DirectX |
 | vcredist | Microsoft Visual C++ 2015-2022 |
 | chrome | Google Chrome |
@@ -44,6 +26,21 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 | nvidia | NVCleanstall, ручная установка |
 
 </details>
+
+## Запуск
+Интерактивный выбор компонентов для установки:
+```
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1)))"
+```
+Автоматическая установка указанных компонентов:
+```
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) store office chrome"
+```
+Автоматическая установка всех компонентов:
+```
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) all"
+```
+Рекомендую ознакомиться с комментариями в скрипте.
 
 ## Ссылки
 * [Winget installer](https://github.com/asheroto/winget-installer)
