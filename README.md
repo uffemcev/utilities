@@ -24,7 +24,8 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 
 | Компонент | Описание |
 | :-- | :-- |
-| store | Обновление приложений в MS store
+| dns | Cloudflare DNS-over-HTTPS |
+| store | Обновление приложений в MS store |
 | office | Office, Word, Excel 365 mondo volume license |
 | spotx | Spotify мод |
 | dpi | GoodbyeDPI, по умолчанию активируется режим 5 |
@@ -38,7 +39,7 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 | gdrive | Google Drive |
 | adguard | AdGuard |
 | blender | Blender |
-| signal | Signal RGB |
+| open | OpenRGB + [uffemcev rgb](https://github.com/uffemcev/rgb) |
 | codec | K-Lite Codec Pack Full, ручная установка |
 | nvidia | NVCleanstall, ручная установка |
 
