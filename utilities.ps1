@@ -186,15 +186,6 @@ $data = @(
 		}
 	}
 	@{
-		Description = "SignalRGB"
-		Name = "signal"
-		Code =
-		{
-			winget install --id=WhirlwindFX.SignalRgb --accept-package-agreements --accept-source-agreements --exact --silent
-			& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))
-		}
-	}
-	@{
 		Description = "OpenRGB"
 		Name = "open"
 		Code =
