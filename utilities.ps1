@@ -191,6 +191,7 @@ $data = @(
 		Code =
 		{
 			winget install --id=WhirlwindFX.SignalRgb --accept-package-agreements --accept-source-agreements --exact --silent
+			start-process powershell "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))"
 		}
 	}
 	@{
@@ -200,6 +201,7 @@ $data = @(
 		{
 			iwr 'https://github.com/uffemcev/OpenRGB/releases/download/0.81/OpenRGB.zip' -OutFile '.\OpenRGB.zip'
 			Expand-Archive '.\OpenRGB.zip' $env:APPDATA
+			start-process powershell "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))"
 		}
 	}
 	@{
