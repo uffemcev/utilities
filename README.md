@@ -22,7 +22,7 @@
 | gdrive | Google Drive |
 | adguard | AdGuard |
 | blender | Blender |
-| open | OpenRGB + [uffemcev rgb](https://github.com/uffemcev/rgb) |
+| open | OpenRGB + uffemcev rgb |
 | codec | K-Lite Codec Pack Full, ручная установка |
 | nvidia | NVCleanstall, ручная установка |
 
@@ -40,6 +40,7 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 Рекомендую ознакомиться с комментариями в скрипте.
 
 ## Ссылки
+* [Uffemcev rgb](https://github.com/uffemcev/rgb)
 * [Winget installer](https://github.com/asheroto/winget-installer)
 * [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
 * [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
