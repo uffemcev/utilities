@@ -6,6 +6,7 @@
 
 | Компонент | Описание |
 | :-- | :-- |
+| all | Установить всё |
 | dns | Cloudflare DNS-over-HTTPS |
 | store | Обновление приложений в MS store |
 | office | Office, Word, Excel 365 mondo volume license |
@@ -35,10 +36,6 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 Автоматическая установка указанных компонентов:
 ```
 powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) store office chrome"
-```
-Автоматическая установка всех компонентов:
-```
-powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) all"
 ```
 Рекомендую ознакомиться с комментариями в скрипте.
 
