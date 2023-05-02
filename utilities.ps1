@@ -1,7 +1,7 @@
 <#
 	Запускать скрипт можно из любого места любым способом, необходимы права администратора
 
-	Скрипт создаёт рабочий каталог Users\Имя Пользователя\uffemcev_utilities, который удаляется после завершения работы скрипта
+	Скрипт создаёт рабочий каталог "Users\Имя Пользователя\uffemcev utilities", который удаляется после завершения работы скрипта
 	
 	Для работы скрипта необходим winget, при необходимости установится автоматически
 
@@ -30,7 +30,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	$o = $MyInvocation.line
-	pushd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
+	pushd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	& ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
@@ -39,7 +39,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 } else
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
-	cd (ni -Force -Path $env:USERPROFILE\uffemcev_utilities -ItemType Directory)
+	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	cls
 }
 
@@ -266,7 +266,7 @@ function install([System.Collections.ArrayList]$apps = @())
 	foreach ($app in $apps) {cls; & ($data | Where Name -eq $app).Code}
 
 	cd $env:USERPROFILE
-	ri -Recurse -Force $env:USERPROFILE\uffemcev_utilities
+	ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 	cls
 	write-host "`nInstallation complete"
 	start-sleep -seconds 5
