@@ -40,6 +40,7 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 Рекомендую ознакомиться с комментариями в скрипте.
 
 ## Ссылки
+* [Alt blacklist](https://github.com/realsiao/Russia-Blacklist/)
 * [Uffemcev rgb](https://github.com/uffemcev/rgb)
 * [Winget installer](https://github.com/asheroto/winget-installer)
 * [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
