@@ -74,7 +74,7 @@ $data = @(
 		Code =
 		{
 			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -OutFile '.\Office.zip'
-			Expand-Archive '.\Office.zip' '.\'
+			Expand-Archive -ErrorAction SilentlyContinue -Force '.\Office.zip' '.\'
 			pushd '.\Office'
 			(gc '.\Default.xml').replace('Display Level="Full"', 'Display Level="None"') | sc '.\Default.xml'
 			iex '.\Download.ps1 -Branch O365ProPlusRetail -Channel Current -Components Word, Excel, PowerPoint'
@@ -98,7 +98,7 @@ $data = @(
 		Code =
 		{
 			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
-			Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
+			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
 			if ((iwr -Uri https://antizapret.prostovpn.org -UseBasicParsing -DisableKeepAlive -Method head).StatusCode -eq 200) {'`n' |& "$dir\0_russia_update_blacklist_file.cmd"}
 			'`n' |& "$dir\service_install_russia_blacklist.cmd"
@@ -190,7 +190,7 @@ $data = @(
 		Code =
 		{
 			iwr 'https://github.com/uffemcev/OpenRGB/releases/download/0.81/OpenRGB.zip' -OutFile '.\OpenRGB.zip'
-			Expand-Archive '.\OpenRGB.zip' $env:APPDATA
+			Expand-Archive -ErrorAction SilentlyContinue -Force '.\OpenRGB.zip' $env:APPDATA
 			& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))
 		}
 	}
