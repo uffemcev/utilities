@@ -100,6 +100,7 @@ $data = @(
 			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 			Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
+			if ((iwr -Uri https://antizapret.prostovpn.org -UseBasicParsing -DisableKeepAlive -Method head).StatusCode -eq 200) {'`n' |& "$dir\0_russia_update_blacklist_file.cmd"}
 			'`n' |& "$dir\service_install_russia_blacklist.cmd"
 		}
 	}
