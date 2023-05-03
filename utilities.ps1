@@ -226,9 +226,9 @@ $data = @(
 
 function install([System.Collections.ArrayList]$apps = @())
 {	
-	if ($apps -contains "all") {$apps = $data.Name; $button = "C"} elseif ($apps) {$button = "C"}
+	if ($apps -contains "all") {$apps = $data.Name; $button = "install"} elseif ($apps) {$button = "install"}
 	
-	while ($button -ne "c")
+	while ($button -ne "install")
 	{
 		cls
 		write-host "`ngithub.com/uffemcev/utilities`n"
@@ -247,10 +247,10 @@ function install([System.Collections.ArrayList]$apps = @())
 				write-host "" $data[$i].Description
 			}
 		}
-	
-		write-host "`n[C] Confirm [R] Reset [A] All"
-		$button = read-host "`nENTER"
-	
+		
+		if ($apps) {$number = "Confirm"} else {$number = "Exit"}
+		$button = read-host "`n[ENTER] $number [R] Reset [A] All"
+		
 		for ($i = 0; $i -lt $data.count; $i++)
 		{
 			switch ($button)
@@ -258,6 +258,7 @@ function install([System.Collections.ArrayList]$apps = @())
 				($i+1) {if ($data[$i].Name -in $apps) {$apps.Remove($data[$i].Name)} else {$apps.Add($data[$i].Name)}}
 				"R" {$apps = @()}
 				"A" {$apps = $data.Name}
+				"" {$button = "install"}
 			}
 		}
 	}
