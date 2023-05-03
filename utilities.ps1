@@ -97,13 +97,26 @@ $data = @(
 		Name = "dpi"
 		Code =
 		{
-			$mainURL = "https://antizapret.prostovpn.org/domains-export.txt"
-			$altURL = "https://raw.githubusercontent.com/zapret-info/z-i/master/nxdomain.txt"
 			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
-			try {iwr $mainURL -OutFile "$dir\russia-blacklist.txt"} catch {iwr $altURL -OutFile "$dir\russia-blacklist.txt"}
 			'`n' |& "$dir\service_install_russia_blacklist.cmd"
+			cls
+			write-host "Blacklist updating process`n"
+			for ($i = 1; $i -lt 6; $i++)
+			{   
+    				try
+				{
+        				write-host -NoNewline "Attempt $i of 5"
+        				iwr "https://antizapret.prostovpn.org/domains-export.txt" -OutFile "$dir\russia-blacklist.txt"
+					write-host ": success"
+        				break
+    				} catch
+				{
+        				write-host ": server not responding"
+        				Start-Sleep -Seconds 1
+    				}
+			}
 		}
 	}
 	@{
