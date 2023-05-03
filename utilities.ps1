@@ -101,7 +101,6 @@ $data = @(
 			Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
 			'`n' |& "$dir\service_install_russia_blacklist.cmd"
-			'`n' |& "$dir\0_russia_update_blacklist_file.cmd"
 		}
 	}
 	@{
