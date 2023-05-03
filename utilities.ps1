@@ -99,7 +99,9 @@ $data = @(
 		{
 			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 			Expand-Archive '.\goodbyedpi.zip' $Env:Programfiles
-			dir -Path $Env:Programfiles -Recurse -ErrorAction SilentlyContinue -Force | where {$_ -in 'service_install_russia_blacklist.cmd','0_russia_update_blacklist_file.cmd'} | %{'`n' |& $_.FullName}
+			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
+			'`n' |& "$dir\service_install_russia_blacklist.cmd"
+			'`n' |& "$dir\0_russia_update_blacklist_file.cmd"
 		}
 	}
 	@{
