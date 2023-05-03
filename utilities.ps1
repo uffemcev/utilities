@@ -209,7 +209,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "K-Lite Codec Pack Full manual install"
+		Description = "K-Lite Codec Pack Full manual setup"
 		Name = "codec"
 		Code =
 		{
@@ -217,7 +217,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "NVCleanstall manual install"
+		Description = "NVCleanstall manual setup"
 		Name = "nvidia"
 		Code =
 		{
@@ -249,14 +249,13 @@ function install([System.Collections.ArrayList]$apps = @())
 
 		for ($i = 0; $i -lt $data.count; $i++)
 		{
-			$number = "[" + ($i+1) + "]"
 			if ($data[$i].Name -in $apps)
 			{
-				write-host -NoNewLine -BackgroundColor Green $number
+				write-host -NoNewLine -BackgroundColor Green ("{0:[#]}" -f ($i+1))
 				write-host "" $data[$i].Description
 			} else
 			{
-				write-host -NoNewLine $number
+				write-host -NoNewLine ("{0:[#]}" -f ($i+1))
 				write-host "" $data[$i].Description
 			}
 		}
@@ -276,7 +275,12 @@ function install([System.Collections.ArrayList]$apps = @())
 		}
 	}
 	
-	foreach ($app in $apps) {cls; & ($data | Where Name -eq $app).Code}
+	foreach ($app in $apps)
+	{
+		cls
+		write-host `nInstalling ($data | Where Name -eq $app).Description`n
+		& ($data | Where Name -eq $app).Code
+	}
 
 	cd $env:USERPROFILE
 	ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
