@@ -236,7 +236,6 @@ function install([System.Collections.ArrayList]$apps = @())
 		for ($i = 0; $i -lt $data.count; $i++)
 		{
 			$number = "[" + ($i+1) + "]"
-			
 			if ($data[$i].Name -in $apps)
 			{
 				write-host -NoNewLine -BackgroundColor Green $number
