@@ -101,7 +101,6 @@ $data = @(
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
 			'`n' |& "$dir\service_install_russia_blacklist.cmd"
-			cls
 			write-host "`nBlacklist updating process`n"
 			for ($i = 1; $i -lt 6; $i++)
 			{   
