@@ -102,7 +102,7 @@ $data = @(
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
 			'`n' |& "$dir\service_install_russia_blacklist.cmd"
 			cls
-			write-host "Blacklist updating process`n"
+			write-host "`nBlacklist updating process`n"
 			for ($i = 1; $i -lt 6; $i++)
 			{   
     				try
