@@ -93,7 +93,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "GoodbyeDPI with -5 option"
+		Description = "GoodbyeDPI mode 5 + blacklist update"
 		Name = "dpi"
 		Code =
 		{
@@ -185,7 +185,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "OpenRGB"
+		Description = "OpenRGB + uffemcev rgb"
 		Name = "open"
 		Code =
 		{
