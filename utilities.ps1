@@ -236,8 +236,7 @@ function install([System.Collections.ArrayList]$apps = @())
 	
 	while ($button -ne "install")
 	{
-		cls
-		write-host "`ngithub.com/uffemcev/utilities`n"
+		"`ngithub.com/uffemcev/utilities`n"
 
 		for ($i = 0; $i -lt $data.count; $i++)
 		{
@@ -263,8 +262,9 @@ function install([System.Collections.ArrayList]$apps = @())
 				"" {$button = "install"}
 			}
 		}
+		cls
 	}
-	cls
+	
 	for ($i = 0; $i -lt $apps.count; $i++)
 	{
 		Write-Progress -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete ($i * (100 / $apps.count))
