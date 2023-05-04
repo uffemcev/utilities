@@ -24,7 +24,6 @@
 | blender | Blender |
 | open | OpenRGB + uffemcev rgb |
 | codec | K-Lite Codec Pack Full, ручная установка |
-| nvidia | NVCleanstall, ручная установка |
 
 </details>
 
