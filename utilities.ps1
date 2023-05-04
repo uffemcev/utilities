@@ -61,7 +61,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Store apps updater"
+		Description = "Update store apps"
 		Name = "store"
 		Code =
 		{
