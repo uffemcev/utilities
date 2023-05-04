@@ -243,12 +243,10 @@ function install([System.Collections.ArrayList]$apps = @())
 		{
 			if ($data[$i].Name -in $apps)
 			{
-				write-host -NoNewLine -BackgroundColor Green ("{0:[#]}" -f ($i+1))
-				write-host "" $data[$i].Description
+				"$([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description
 			} else
 			{
-				write-host -NoNewLine ("{0:[#]}" -f ($i+1))
-				write-host "" $data[$i].Description
+				"[" + ($i+1) + "] " + $data[$i].Description
 			}
 		}
 		
