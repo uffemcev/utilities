@@ -265,17 +265,14 @@ function install([System.Collections.ArrayList]$apps = @())
 		}
 	}
 	
-	foreach ($app in $apps)
+	for ($i = 0; $i -lt $apps.count; $i++)
 	{
-		cls
-		write-host `nInstalling ($data | Where Name -eq $app).Description`n
-		& ($data | Where Name -eq $app).Code
+		Write-Progress -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete ($i * (100 / $apps.count))
+		$null = & ($data | Where Name -eq $apps[$i]).Code
 	}
-
+	Write-Progress -Activity "   Installation" -Status "complete"
 	cd $env:USERPROFILE
 	ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
-	cls
-	write-host "`nInstallation complete"
 	start-sleep -seconds 5
 	taskkill /fi "WINDOWTITLE eq uffemcev utilities"
 }
