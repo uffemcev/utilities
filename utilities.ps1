@@ -264,12 +264,13 @@ function install([System.Collections.ArrayList]$apps = @())
 			}
 		}
 	}
-	
+	cls
 	for ($i = 0; $i -lt $apps.count; $i++)
 	{
 		Write-Progress -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete ($i * (100 / $apps.count))
 		$null = & ($data | Where Name -eq $apps[$i]).Code
 	}
+	
 	Write-Progress -Activity "   Installation" -Status "complete"
 	cd $env:USERPROFILE
 	ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
