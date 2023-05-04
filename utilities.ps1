@@ -61,7 +61,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Update store apps"
+		Description = "Store apps updater"
 		Name = "store"
 		Code =
 		{
@@ -214,14 +214,6 @@ $data = @(
 		Code =
 		{
 			winget install --id=CodecGuide.K-LiteCodecPack.Full --accept-package-agreements --accept-source-agreements --exact --interactive
-		}
-	}
-	@{
-		Description = "NVCleanstall manual setup"
-		Name = "nvidia"
-		Code =
-		{
-			winget install --id=TechPowerUp.NVCleanstall --accept-package-agreements --accept-source-agreements --exact --interactive
 		}
 	}
 	<#
