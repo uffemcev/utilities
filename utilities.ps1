@@ -20,6 +20,9 @@
 	powershell -ExecutionPolicy Bypass ".\utilities.ps1 all"
 #>
 
+[CmdletBinding()]
+param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
+
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
@@ -40,6 +43,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
+	Add-Type -AssemblyName System.Windows.Forms
 	cls
 }
 
@@ -238,52 +242,56 @@ $data = @(
 	#>
 )
 
-function install([System.Collections.ArrayList]$apps = @())
-{	
-	if ($apps -contains "all") {$apps = $data.Name; $button = "install"} elseif ($apps) {$button = "install"}
-	
-	while ($button -ne "install")
-	{
-		"`ngithub.com/uffemcev/utilities`n"
+if ($apps -contains "all") {$apps = $data.Name; $b = "install"} elseif ($apps) {$b = "install"}
 
-		for ($i = 0; $i -lt $data.count; $i++)
-		{
-			if ($data[$i].Name -in $apps)
-			{
-				"$([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description
-			} else
-			{
-				"[" + ($i+1) + "] " + $data[$i].Description
-			}
-		}
-		
-		if ($apps) {$number = "Confirm"} else {$number = "Exit"}
-		$button = read-host "`n[ENTER] $number [R] Reset [A] All"
-		
-		for ($i = 0; $i -lt $data.count; $i++)
-		{
-			switch ($button)
-			{
-				($i+1) {if ($data[$i].Name -in $apps) {$apps.Remove($data[$i].Name)} else {$apps.Add($data[$i].Name)}}
-				"R" {$apps = @()}
-				"A" {$apps = $data.Name}
-				"" {$button = "install"}
-			}
-		}
-		cls
-	}
-	
-	for ($i = 0; $i -lt $apps.count; $i++)
+#Меню
+while ($b -ne "install")
+{
+	#Вывод
+	"`ngithub.com/uffemcev/utilities`n"
+	if ($apps) {"[0] Reset"} else {"[0] Select all"}
+	for ($i = 0; $i -lt $data.count; $i++)
 	{
-		Write-Progress -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete ($i * (100 / $apps.count))
-		$null = & ($data | Where Name -eq $apps[$i]).Code
+		if ($data[$i].Name -in $apps) {"$([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description}
+		if ($data[$i].Name -notin $apps) {"[" + ($i+1) + "] " + $data[$i].Description}
 	}
-	
-	Write-Progress -Activity "   Installation" -Status "complete"
-	cd $env:USERPROFILE
-	ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
-	start-sleep -seconds 5
-	taskkill /fi "WINDOWTITLE eq uffemcev utilities"
+	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
+		
+	#Подсчёт	
+	switch ([console]::ReadKey($true))
+	{
+		{$_.Key -match "[1-9]"}
+		{
+			[System.Windows.Forms.SendKeys]::SendWait($_.KeyChar)
+			write-host -nonewline "`r[ENTER] Select "
+			$b = read-host
+			if ($b -gt 0) {if ($data[$b-1].Name -in $apps) {$apps.Remove($data[$b-1].Name)} else {$apps.Add($data[$b-1].Name)}}
+			if ($b -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+		}
+		
+		{$_.Key -eq "D0"} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+		
+		{$_.Key -eq "Enter"} {$b = "install"}
+	}
+	cls
 }
 
-if (!$args) {install} else {install $args}
+#Установка
+for ($i = 0; $i -lt $apps.count; $i++)
+{
+	try
+	{
+		Write-Progress -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete (($i+1) * (100 / $apps.count))
+		$null = & ($data | Where Name -eq $apps[$i]).Code
+	} catch
+	{
+		Write-Progress -Activity ("   " + $apps[$i]) -Status "not found" -PercentComplete (($i+1) * (100 / $apps.count))
+		start-sleep -seconds 5
+	}
+}
+
+Write-Progress -Activity "   Installation" -Status "complete"
+cd $env:USERPROFILE
+ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
+start-sleep -seconds 5
+taskkill /fi "WINDOWTITLE eq uffemcev utilities"
