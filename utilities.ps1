@@ -244,10 +244,10 @@ $data = @(
 
 if ($apps -contains "all") {$apps = $data.Name; $b = "install"} elseif ($apps) {$b = "install"}
 
-#Меню
+#МЕНЮ
 while ($b -ne "install")
 {
-	#Вывод
+	#ВЫВОД
 	"`ngithub.com/uffemcev/utilities`n"
 	if ($apps) {"[0] Reset"} else {"[0] Select all"}
 	for ($i = 0; $i -lt $data.count; $i++)
@@ -257,7 +257,7 @@ while ($b -ne "install")
 	}
 	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
-	#Подсчёт	
+	#ПОДСЧЁТ	
 	switch ([console]::ReadKey($true))
 	{
 		{$_.Key -match "[1-9]"}
@@ -276,7 +276,7 @@ while ($b -ne "install")
 	cls
 }
 
-#Установка
+#УСТАНОВКА
 for ($i = 0; $i -lt $apps.count; $i++)
 {
 	try
