@@ -322,6 +322,7 @@ for ($i = 0; $i -lt $apps.count; $i++)
 	}
 }
 
+$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 Write-Progress -Activity "   Installation" -Status "complete"
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
