@@ -228,6 +228,38 @@ $data = @(
 			winget install --id=TechPowerUp.NVCleanstall --accept-package-agreements --accept-source-agreements --exact --interactive
 		}
 	}
+	@{
+		Description = "Windows 11 22H2 iso folder"
+		Name = "win"
+		Code =
+		{
+			$os = "Windows 11, version 22H2 [x64]"
+			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
+			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
+			$link = iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetVersion?id=1"
+			$link = ($link.Content -split "},{" | Select-String -SimpleMatch $os) -replace ('"UpdateId":"'), ('') -replace ('".*$'), ('')
+			[string]$link = (iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetFiles?id=$link&lang=ru-ru&edition=core&pack=ru&down_aria2=yes").Links.href | Select-String -SimpleMatch "downUUP"
+			iwr $link -OutFile '.\download-UUP.cmd'
+			iwr 'https://github.com/uup-dump/containment-zone/raw/master/7zr.exe' -OutFile '.\7zr.exe'
+			iwr 'https://github.com/uup-dump/containment-zone/raw/master/uup-converter-wimlib.7z' -OutFile '.\uup.7z'
+			.\7zr.exe x *.7z
+			(gc ".\download-UUP.cmd") -replace '^set "destDir.*$','set "destDir=UUPs"' | sc '.\download-UUP.cmd'
+			(gc ".\download-UUP.cmd") -replace 'pause','' | sc '.\download-UUP.cmd'
+			(gc ".\ConvertConfig.ini") -replace ' ','' | sc '.\ConvertConfig.ini'
+			foreach ($app in $apps)
+			{
+				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
+				((gc '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | sc '.\CustomAppsList.txt'
+			}
+			foreach ($option in $options)
+			{
+				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
+			}
+			iex ".\download-UUP.cmd"
+			iex ".\convert-UUP.cmd"
+			dir -ErrorAction SilentlyContinue -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
+		}
+	}
 	<#
 	НОВОЕ ПРИЛОЖЕНИЕ
 	NEW APP
