@@ -259,6 +259,15 @@ $data = @(
 			iex ".\convert-UUP.cmd"
 			dir -ErrorAction SilentlyContinue -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
 		}
+		@{
+			Description = "Rufus"
+			Name = "rufus"
+			Code =
+			{
+				iwr 'https://github.com/pbatard/rufus/releases/download/v4.0/rufus-4.0p.exe' -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
+				start-process rufus.exe "--gui"
+			}
+		}
 	}
 	<#
 	НОВОЕ ПРИЛОЖЕНИЕ
