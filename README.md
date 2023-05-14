@@ -26,6 +26,7 @@
 | codec | K-Lite Codec Pack Full, ручная установка |
 | nvidia | NVCleanstall, ручная установка |
 | win | Windows 11 22H2 iso folder |
+| rufus | Rufus |
 
 </details>
 
