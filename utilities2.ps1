@@ -44,7 +44,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	Add-Type -AssemblyName System.Windows.Forms
-	#cls
+	cls
 }
 
 $data = @(
@@ -266,7 +266,7 @@ $data = @(
 		Code =
 		{
 			iwr "https://github.com/pbatard/rufus/releases/download/v4.0/rufus-4.0p.exe" -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
-			start-process ".\rufus.exe" "--gui"
+			start-process ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe") "--gui"
 		}
 	}
 	<#
