@@ -237,9 +237,8 @@ $data = @(
 			$os = "Windows 11, version 22H2 [x64]"
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
-			$link = iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetVersion?id=1"
-			$link = ($link.Content -split "},{" | Select-String -SimpleMatch $os) -replace ('"UpdateId":"'), ('') -replace ('".*$'), ('')
-			[string]$link = (iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetFiles?id=$link&lang=ru-ru&edition=core&pack=ru&down_aria2=yes").Links.href | Select-String -SimpleMatch "downUUP"
+			$id = ((irm "https://uup.rg-adguard.net/api/GetVersion?id=1").versions | Select-String -SimpleMatch $os) -replace ('@{UpdateId='),('') -replace (';.*$'),('')
+			[string]$link = (iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetFiles?id=$id&lang=ru-ru&edition=core&pack=ru&down_aria2=yes").Links.href | Select-String -SimpleMatch ".cmd"
 			iwr $link -OutFile '.\download-UUP.cmd'
 			iwr 'https://github.com/uup-dump/containment-zone/raw/master/7zr.exe' -OutFile '.\7zr.exe'
 			iwr 'https://github.com/uup-dump/containment-zone/raw/master/uup-converter-wimlib.7z' -OutFile '.\uup.7z'
