@@ -266,6 +266,7 @@ $data = @(
 		Code =
 		{
 			iwr "https://github.com/pbatard/rufus/releases/download/v4.0/rufus-4.0p.exe" -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
+			$null = start-process ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe") "--gui"
 		}
 	}
 	<#
