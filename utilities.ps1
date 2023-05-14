@@ -207,7 +207,7 @@ $data = @(
 		Name = "open"
 		Code =
 		{
-			iwr 'https://github.com/uffemcev/OpenRGB/releases/download/0.81/OpenRGB.zip' -OutFile '.\OpenRGB.zip'
+			iwr 'https://github.com/uffemcev/rgb/releases/download/0.81/OpenRGB.zip' -OutFile '.\OpenRGB.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\OpenRGB.zip' $env:APPDATA
 			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | %{ni -ItemType SymbolicLink -Target $_.FullName -Path ([Environment]::GetFolderPath("Desktop") + "\OpenRGB")}
 			& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))
