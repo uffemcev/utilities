@@ -44,7 +44,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	Add-Type -AssemblyName System.Windows.Forms
-	cls
+	#cls
 }
 
 $data = @(
