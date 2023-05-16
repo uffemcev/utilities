@@ -228,9 +228,9 @@ $data = @(
 			iwr 'https://github.com/uup-dump/containment-zone/raw/master/7zr.exe' -OutFile '.\7zr.exe'
 			iwr 'https://github.com/uup-dump/containment-zone/raw/master/uup-converter-wimlib.7z' -OutFile '.\uup.7z'
 			.\7zr.exe x *.7z
-			(gc ".\download-UUP.cmd") -replace ('^set "destDir.*$'), ('set "destDir=UUPs"') -replace ('pause'), ('') | sc '.\download-UUP.cmd'
-			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc '.\ConvertConfig.ini'
-			(gc '.\CustomAppsList.txt') -replace ("^\w"), ("# $&") | sc '.\CustomAppsList.txt'
+			(gc ".\download-UUP.cmd") -replace ('^set "destDir.*$'), ('set "destDir=UUPs"') -replace ('pause'), ('') | sc ".\download-UUP.cmd"
+			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
+			(gc ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | sc ".\CustomAppsList.txt"
 			foreach ($app in $apps)
 			{
 				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
