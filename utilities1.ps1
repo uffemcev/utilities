@@ -39,7 +39,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
 	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
-	#taskkill /fi "WINDOWTITLE eq initialization"
+	taskkill /fi "WINDOWTITLE eq initialization"
 } else
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
