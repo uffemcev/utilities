@@ -306,6 +306,7 @@ for ($i = 0; $i -lt $apps.count; $i++)
 {
 	try
 	{
+		$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation (($data | Where Name -eq $apps[$i]).Description)
 		$null = & ($data | Where Name -eq $apps[$i]).Code
 	} catch
@@ -315,7 +316,6 @@ for ($i = 0; $i -lt $apps.count; $i++)
 	}
 }
 
-$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 Write-Progress -Id 1 -Activity "   Installation" -Status "complete"
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
