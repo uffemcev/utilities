@@ -306,11 +306,11 @@ for ($i = 0; $i -lt $apps.count; $i++)
 {
 	try
 	{
-		Write-Progress -Id 1 -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation " "
+		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation (($data | Where Name -eq $apps[$i]).Description)
 		$null = & ($data | Where Name -eq $apps[$i]).Code
 	} catch
 	{
-		Write-Progress -Id 1 -Activity ("   " + $apps[$i]) -Status "not found" -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation " "
+		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation ($apps[$i] + " not found")
 		start-sleep -seconds 5
 	}
 }
