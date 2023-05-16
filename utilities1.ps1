@@ -34,7 +34,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	$o = $MyInvocation.line
 	pushd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-	& ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
+	if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {$null = & ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))}
 	Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | %{Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
