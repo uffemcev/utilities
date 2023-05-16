@@ -28,7 +28,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	$o = $MyInvocation.line
 	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
-	taskkill /fi "WINDOWTITLE eq initialization"
+	($host.ui.RawUI.WindowTitle) | %{taskkill /fi "WINDOWTITLE eq $_"}
 } elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
@@ -39,7 +39,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
 	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
-	taskkill /fi "WINDOWTITLE eq initialization"
+	($host.ui.RawUI.WindowTitle) | %{taskkill /fi "WINDOWTITLE eq $_"}
 } else
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
@@ -322,4 +322,4 @@ Write-Progress -Activity "   Installation" -Status "complete"
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 start-sleep -seconds 5
-taskkill /fi "WINDOWTITLE eq uffemcev utilities"
+($host.ui.RawUI.WindowTitle) | %{taskkill /fi "WINDOWTITLE eq $_"}
