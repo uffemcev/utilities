@@ -26,19 +26,17 @@ param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayLis
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
-	$o = $MyInvocation.line
-	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
+	$MyInvocation.line | %{Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
 	($host.ui.RawUI.WindowTitle) | %{taskkill /fi "WINDOWTITLE eq $_"}
 } elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
-	$o = $MyInvocation.line
 	pushd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {$null = & ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))}
 	Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | %{Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
-	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
+	$MyInvocation.line | %{Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
 	($host.ui.RawUI.WindowTitle) | %{taskkill /fi "WINDOWTITLE eq $_"}
 } else
 {
