@@ -35,6 +35,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	$o = $MyInvocation.line
 	pushd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	& ([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))
+	Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | %{Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
 	Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $o`"" -Verb RunAs
@@ -105,21 +106,7 @@ $data = @(
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
 			'`n' |& "$dir\service_install_russia_blacklist.cmd"
-			write-host "`nBlacklist updating process`n"
-			for ($i = 1; $i -lt 6; $i++)
-			{   
-    				try
-				{
-        				write-host -NoNewline "Attempt $i of 5"
-        				iwr "https://antizapret.prostovpn.org/domains-export.txt" -OutFile "$dir\russia-blacklist.txt"
-					write-host ": success"
-        				break
-    				} catch
-				{
-        				write-host ": server not responding"
-        				Start-Sleep -Seconds 1
-    				}
-			}
+			for ($i = 0; $i -lt 5; $i++) {try {iwr "https://antizapret.prostovpn.org/domains-export.txt" -OutFile "$dir\russia-blacklist.txt"; break} catch {Start-Sleep -Seconds 1}}
 		}
 	}
 	@{
