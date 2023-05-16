@@ -103,8 +103,8 @@ $data = @(
 			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
-			'`n' |& "$dir\service_install_russia_blacklist.cmd"
-			for ($i = 0; $i -lt 5; $i++) {try {iwr "https://antizapret.prostovpn.org/domains-export.txt" -OutFile "$dir\russia-blacklist.txt"; break} catch {Start-Sleep -Seconds 1}}
+			"`n" |& "$dir\service_install_russia_blacklist.cmd"
+			(iwr "https://reestr.rublacklist.net/api/v3/domains") -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"
 		}
 	}
 	@{
@@ -306,17 +306,17 @@ for ($i = 0; $i -lt $apps.count; $i++)
 {
 	try
 	{
-		Write-Progress -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete (($i+1) * (100 / $apps.count))
+		Write-Progress -Id 1 -Activity "   Installing" -Status (($data | Where Name -eq $apps[$i]).Description) -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation " "
 		$null = & ($data | Where Name -eq $apps[$i]).Code
 	} catch
 	{
-		Write-Progress -Activity ("   " + $apps[$i]) -Status "not found" -PercentComplete (($i+1) * (100 / $apps.count))
+		Write-Progress -Id 1 -Activity ("   " + $apps[$i]) -Status "not found" -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation " "
 		start-sleep -seconds 5
 	}
 }
 
 $host.ui.RawUI.WindowTitle = 'uffemcev utilities'
-Write-Progress -Activity "   Installation" -Status "complete"
+Write-Progress -Id 1 -Activity "   Installation" -Status "complete"
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 start-sleep -seconds 5
