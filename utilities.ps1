@@ -28,13 +28,13 @@ if (Get-Process | Where-Object {$_.mainWindowTitle -match "uffemcev|initializati
 	cls
 	"`nApp is already running"
 	start-sleep -seconds 5
-	$host.ui.RawUI.WindowTitle | %{taskkill /fi "WINDOWTITLE eq $_"}
+	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 }
 elseif (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
-	$MyInvocation.line | %{Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
-	$host.ui.RawUI.WindowTitle | %{taskkill /fi "WINDOWTITLE eq $_"}
+	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
+	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 }
 elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
 {
@@ -44,8 +44,8 @@ elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force 
 	Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | %{Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
-	$MyInvocation.line | %{Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
-	$host.ui.RawUI.WindowTitle | %{taskkill /fi "WINDOWTITLE eq $_"}
+	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
+	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 }
 else
 {
@@ -334,4 +334,4 @@ Write-Progress -Id 1 -Activity "   Installation" -Status "complete"
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 start-sleep -seconds 5
-$host.ui.RawUI.WindowTitle | %{taskkill /fi "WINDOWTITLE eq $_"}
+$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
