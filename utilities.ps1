@@ -194,8 +194,13 @@ $data = @(
 		{
 			iwr 'https://github.com/uffemcev/rgb/releases/download/0.81/OpenRGB.zip' -OutFile '.\OpenRGB.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\OpenRGB.zip' $env:APPDATA
-			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | %{ni -ItemType SymbolicLink -Target $_.FullName -Path ([Environment]::GetFolderPath("Desktop") + "\OpenRGB")}
-			& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))
+			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | %{$file = $_.FullName}
+			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\OpenRGB.lnk")
+			$Shortcut.TargetPath = "powershell.exe"
+			$Shortcut.IconLocation = $file
+			$Shortcut.Arguments = "-WindowStyle hidden `"start-process $file `"--noautoconnect`"`" -Verb RunAs"
+			$Shortcut.Save()
+			start-process -wait powershell "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))"
 		}
 	}
 	@{
