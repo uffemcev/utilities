@@ -23,7 +23,7 @@
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
-if (Get-Process | Where-Object {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -eq "powershell"})
+if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -eq "powershell"})
 {
 	cls
 	"`nApp is already running"
