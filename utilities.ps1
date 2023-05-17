@@ -207,7 +207,7 @@ $data = @(
 			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\OpenRGB.lnk")
 			$Shortcut.TargetPath = "powershell.exe"
 			$Shortcut.IconLocation = $file
-			$Shortcut.Arguments = "-WindowStyle hidden `"start-process -Wait $file `"--noautoconnect`"`" -Verb RunAs; taskkill /f /im `"OpenConsole.exe`""
+			$Shortcut.Arguments = "-WindowStyle hidden `"start-process $file `"--noautoconnect`"`" -Verb RunAs"
 			$Shortcut.Save()
 			start-process -wait powershell "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))"
 		}
