@@ -41,7 +41,7 @@ elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force 
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	pushd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {$null = iwr raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1 -Useb | iex}
-	Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | %{Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+	Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | where {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	popd
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
@@ -111,7 +111,7 @@ $data = @(
 		{
 			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
-			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | %{$dir = $_.FullName}
+			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | where {$dir = $_.FullName}
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
 			(iwr "https://reestr.rublacklist.net/api/v3/domains") -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"
 		}
@@ -203,7 +203,7 @@ $data = @(
 		{
 			iwr 'https://github.com/uffemcev/rgb/releases/download/0.81/OpenRGB.zip' -OutFile '.\OpenRGB.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\OpenRGB.zip' $env:APPDATA
-			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | %{$file = $_.FullName}
+			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | where {$file = $_.FullName}
 			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\OpenRGB.lnk")
 			$Shortcut.TargetPath = "powershell.exe"
 			$Shortcut.IconLocation = $file
