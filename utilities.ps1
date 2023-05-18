@@ -58,13 +58,16 @@ $data = @(
 		Name = "dns"
 		Code =
 		{
-			Get-NetAdapter -Physical | ForEach-Object {
-				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses ("1.1.1.1","1.0.0.1","2606:4700:4700::1111","2606:4700:4700::1001")
-				$path = 'HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\' + $_.InterfaceGuid + '\DohInterfaceSettings'
-				New-Item -Path $path\Doh\1.1.1.1 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
-				New-Item -Path $path\Doh\1.0.0.1 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
-				New-Item -Path $path\Doh6\2606:4700:4700::1111 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
-				New-Item -Path $path\Doh6\2606:4700:4700::1001 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+			$ips = '1.1.1.2', '1.0.0.2', '2606:4700:4700::1112', '2606:4700:4700::1002'
+			$doh = "https://security.cloudflare-dns.com/dns-query"
+			foreach ($ip in $ips) {
+    				Add-DnsClientDohServerAddress -errorAction SilentlyContinue -ServerAddress $ip -DohTemplate $doh
+    				Get-NetAdapter -Physical | ForEach-Object {
+        				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
+        				if ($ip -match '\.') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
+        				if ($ip -match ':') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
+        				New-Item -Path $path -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+    				}
 			}
 			New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters' -Name 'EnableAutoDoh' -Value 2 -PropertyType DWord -Force
 			Clear-DnsClientCache
