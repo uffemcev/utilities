@@ -210,7 +210,9 @@ $data = @(
 			$Shortcut.IconLocation = $file
 			$Shortcut.Arguments = "-WindowStyle hidden `"start-process $file `"--noautoconnect`"`" -Verb RunAs"
 			$Shortcut.Save()
-			start-process -wait powershell "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1)))"
+			pushd (Split-Path -Parent $file)
+			start-process powershell -WindowStyle hidden -Wait "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1))) -option install -sleeptime 1800 -locktime 3600"
+			popd
 		}
 	}
 	@{
