@@ -29,14 +29,12 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 	"`nApp is already running"
 	start-sleep -seconds 5
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
-}
-elseif (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
+} elseif (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
-}
-elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
+} elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	pushd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
@@ -46,8 +44,7 @@ elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force 
 	popd
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
-}
-else
+} else
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
