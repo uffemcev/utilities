@@ -66,6 +66,7 @@ $data = @(
 				New-Item -Path $path\Doh6\2606:4700:4700::1111 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
 				New-Item -Path $path\Doh6\2606:4700:4700::1001 -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
 			}
+			New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters' -Name 'EnableAutoDoh' -Value 2 -PropertyType DWord -Force
 			Clear-DnsClientCache
 		}
 	}
