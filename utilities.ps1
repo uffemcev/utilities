@@ -211,7 +211,7 @@ $data = @(
 			$Shortcut.Arguments = "-WindowStyle hidden `"start-process $file `"--noautoconnect`"`" -Verb RunAs"
 			$Shortcut.Save()
 			pushd (Split-Path -Parent $file)
-			start-process powershell -WindowStyle hidden -Wait "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1))) -option install -sleeptime 1800 -locktime 3600"
+			& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1))) -option install -sleeptime 1800 -locktime 3600
 			popd
 		}
 	}
@@ -326,7 +326,7 @@ for ($i = 0; $i -lt $apps.count; $i++)
 		$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation (($data | Where Name -eq $apps[$i]).Description)
 		$null = & ($data | Where Name -eq $apps[$i]).Code
-	} catch
+	} catch [System.Management.Automation.RuntimeException]
 	{
 		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation ($apps[$i] + " not found")
 		start-sleep -seconds 5
