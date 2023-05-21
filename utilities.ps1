@@ -58,8 +58,8 @@ $data = @(
 		Name = "dns"
 		Code =
 		{
-			$ips = '1.1.1.2', '1.0.0.2', '2606:4700:4700::1112', '2606:4700:4700::1002'
-			$doh = "https://security.cloudflare-dns.com/dns-query"
+			$ips = '1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001'
+			$doh = "https://cloudflare-dns.com/dns-query"
 			foreach ($ip in $ips) {
     				Add-DnsClientDohServerAddress -errorAction SilentlyContinue -ServerAddress $ip -DohTemplate $doh
     				Get-NetAdapter -Physical | ForEach-Object {
