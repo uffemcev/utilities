@@ -86,7 +86,7 @@ $data = @(
 		Name = "office"
 		Code =
 		{
-			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -OutFile '.\Office.zip'
+			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\Office.zip' '.\'
 			pushd '.\Office'
 			(gc '.\Default.xml').replace('Display Level="Full"', 'Display Level="None"') | sc '.\Default.xml'
@@ -110,11 +110,11 @@ $data = @(
 		Name = "dpi"
 		Code =
 		{
-			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -OutFile '.\goodbyedpi.zip'
+			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -Useb -OutFile '.\goodbyedpi.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | where {$dir = $_.FullName}
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
-			(iwr "https://reestr.rublacklist.net/api/v3/domains") -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"
+			(iwr "https://reestr.rublacklist.net/api/v3/domains" -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"
 		}
 	}
 	@{
@@ -202,7 +202,7 @@ $data = @(
 		Name = "open"
 		Code =
 		{
-			iwr 'https://github.com/uffemcev/rgb/releases/download/0.81/OpenRGB.zip' -OutFile '.\OpenRGB.zip'
+			iwr 'https://github.com/uffemcev/rgb/releases/download/0.81/OpenRGB.zip' -Useb -OutFile '.\OpenRGB.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\OpenRGB.zip' $env:APPDATA
 			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | where {$file = $_.FullName}
 			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\OpenRGB.lnk")
@@ -241,9 +241,9 @@ $data = @(
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
 			$id = ((irm "https://uup.rg-adguard.net/api/GetVersion?id=1").versions | Select-String -SimpleMatch $os) -replace ('@{UpdateId=|;.*$'),('')
 			[string]$link = (iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetFiles?id=$id&lang=ru-ru&edition=core&pack=ru&down_aria2=yes").Links.href | Select-String -SimpleMatch ".cmd"
-			iwr $link -OutFile '.\download-UUP.cmd'
-			iwr 'https://github.com/uup-dump/containment-zone/raw/master/7zr.exe' -OutFile '.\7zr.exe'
-			iwr 'https://github.com/uup-dump/containment-zone/raw/master/uup-converter-wimlib.7z' -OutFile '.\uup.7z'
+			iwr $link -Useb -OutFile '.\download-UUP.cmd'
+			iwr 'https://github.com/uup-dump/containment-zone/raw/master/7zr.exe' -Useb -OutFile '.\7zr.exe'
+			iwr 'https://github.com/uup-dump/containment-zone/raw/master/uup-converter-wimlib.7z' -Useb -OutFile '.\uup.7z'
 			.\7zr.exe x *.7z
 			(gc ".\download-UUP.cmd") -replace ('^set "destDir.*$'), ('set "destDir=UUPs"') -replace ('pause'), ('') | sc ".\download-UUP.cmd"
 			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
@@ -267,7 +267,7 @@ $data = @(
 		Name = "rufus"
 		Code =
 		{
-			iwr "https://github.com/pbatard/rufus/releases/download/v4.0/rufus-4.0p.exe" -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
+			iwr "https://github.com/pbatard/rufus/releases/download/v4.0/rufus-4.0p.exe" -Useb -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
 		}
 	}
 	<#
