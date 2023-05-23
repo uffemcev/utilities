@@ -270,6 +270,19 @@ $data = @(
 			iwr "https://github.com/pbatard/rufus/releases/download/v4.0/rufus-4.0p.exe" -Useb -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
 		}
 	}
+	@{
+		Description = "SophiApp Tweaker"
+		Name = "sophi"
+		Code =
+		{
+			iwr "https://github.com/Sophia-Community/SophiApp/releases/download/1.0.94/SophiApp.zip" -Useb -OutFile ".\SophiApp.zip"
+			Expand-Archive -ErrorAction SilentlyContinue -Force ".\SophiApp.zip" $Env:Programfiles
+			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match '^SophiApp.exe$'} | where {$file = $_.FullName}
+			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\SophiApp.lnk")
+			$Shortcut.TargetPath = $file
+			$Shortcut.Save()
+		}
+	}
 	<#
 	НОВОЕ ПРИЛОЖЕНИЕ
 	NEW APP
