@@ -27,6 +27,7 @@
 | nvidia | NVCleanstall, ручная установка |
 | win | Windows 11 22H2 iso folder |
 | rufus | Rufus |
+| sophi | SophiApp Tweaker |
 
 </details>
 
@@ -42,7 +43,9 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubuser
 Рекомендую ознакомиться с комментариями в скрипте.
 
 ## Ссылки
-* [Uffemcev rgb](https://github.com/uffemcev/rgb)
+* [Rufus](https://github.com/pbatard/rufus)
+* [SophiApp](https://github.com/Sophia-Community/SophiApp)
+* [uffemcev rgb](https://github.com/uffemcev/rgb)
 * [Winget installer](https://github.com/asheroto/winget-installer)
 * [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
 * [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
