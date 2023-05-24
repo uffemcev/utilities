@@ -315,7 +315,8 @@ Start-Job {
 
 	function Get-ParentProcesses ($ChildProcessId)
 	{
-		(Get-CIMInstance -ClassName win32_process | where processid -eq $ChildProcessId).parentprocessid
+		$filter = "processid = '$($ChildProcessId)'"
+		Get-CIMInstance -ClassName win32_process -filter $filter | Foreach {$_.ParentProcessId}
 	}
 	
 	$parentID = Get-ParentProcesses $pid
