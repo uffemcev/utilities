@@ -320,12 +320,10 @@ Start-Job {
 	
 	$parentID = Get-ParentProcesses $pid
 	
-	while ((get-process -id $parentID).mainWindowTitle -ne "Installation complete")
+	while ($true)
 	{
 		Get-ChildProcesses $parentID | foreach {get-process | where id -eq $_} | foreach {[API]::ShowWindow($_.MainwindowHandle,'Hide')}
 	}
-	
-	exit
 } | out-null
 
 if ($apps -contains "all") {$apps = $data.Name; $b = "install"} elseif ($apps) {$b = "install"}
@@ -377,10 +375,9 @@ for ($i = 0; $i -lt $apps.count; $i++)
 	}
 }
 
-$host.ui.RawUI.WindowTitle = "Installation complete"
 Write-Progress -Id 1 -Activity "   Installation" -Status "complete"
+get-job | remove-job -force
 Start-sleep -seconds 5
-Get-Job | Wait-Job
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
-$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+#$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
