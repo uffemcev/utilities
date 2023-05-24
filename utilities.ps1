@@ -365,7 +365,8 @@ for ($i = 0; $i -lt $apps.count; $i++)
 	{
 		$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation (($data | Where Name -eq $apps[$i]).Description)
-		($data | Where Name -eq $apps[$i]).Code | where {Start-Process powershell -Wait -WindowStyle Hidden -Args '-EncodedCommand', ([Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($_)))}
+		($data | Where Name -eq $apps[$i]).Code | where {$job = Start-Job -ScriptBlock $_}
+		Wait-Job $job | out-null
 	} catch [System.Management.Automation.RuntimeException]
 	{
 		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation ($apps[$i] + " not found")
