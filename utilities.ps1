@@ -306,18 +306,25 @@ Start-Job {
 	[DllImport("user32.dll")]
 	public static extern int ShowWindow(IntPtr hwnd, SW nCmdShow);
 	}'
-	$parentID = (gwmi win32_process | where processid -eq $pid).parentprocessid
-	$time = Get-Date -UFormat "%m.%d.%Y %T"
-	while ((get-process -id $parentid).mainWindowTitle -ne "Installation complete")
+
+	function Get-ChildProcesses ($ParentProcessId)
 	{
-		get-process | where StartTime -gt $time | foreach {
-			if ((gwmi win32_process | where processid -eq $_.Id).parentprocessid -eq $parentID)
-			{
-				$Window = $_.MainwindowHandle
-				[API]::ShowWindow($Window,'Hide')
-			}
-		}
+		$filter = "parentprocessid = '$($ParentProcessId)'"
+		Get-CIMInstance -ClassName win32_process -filter $filter | Foreach {$_.ProcessId; if ($_.ParentProcessId -ne $_.ProcessId) {Get-ChildProcesses $_.ProcessId}}
 	}
+
+	function Get-ParentProcesses ($ChildProcessId)
+	{
+		(Get-CIMInstance -ClassName win32_process | where processid -eq $ChildProcessId).parentprocessid
+	}
+	
+	$parentID = Get-ParentProcesses $pid
+	
+	while ((get-process -id $parentID).mainWindowTitle -ne "Installation complete")
+	{
+		Get-ChildProcesses $parentID | foreach {get-process | where id -eq $_} | foreach {[API]::ShowWindow($_.MainwindowHandle,'Hide')}
+	}
+	
 	exit
 } | out-null
 
@@ -370,7 +377,9 @@ for ($i = 0; $i -lt $apps.count; $i++)
 	}
 }
 
+$host.ui.RawUI.WindowTitle = "Installation complete"
 Write-Progress -Id 1 -Activity "   Installation" -Status "complete"
+Start-sleep -seconds 5
 Get-Job | Wait-Job
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
