@@ -297,6 +297,30 @@ $data = @(
 	#>
 )
 
+Start-Job {
+	Add-Type '
+	using System;
+	using System.Runtime.InteropServices;
+	public class API {
+	public enum SW : int {Hide = 0}
+	[DllImport("user32.dll")]
+	public static extern int ShowWindow(IntPtr hwnd, SW nCmdShow);
+	}'
+	$parentID = (gwmi win32_process | where processid -eq $pid).parentprocessid
+	$time = Get-Date -UFormat "%m.%d.%Y %T"
+	while ((get-process -id $parentid).mainWindowTitle -ne "Installation complete")
+	{
+		get-process | where StartTime -gt $time | foreach {
+			if ((gwmi win32_process | where processid -eq $_.Id).parentprocessid -eq $parentID)
+			{
+				$Window = $_.MainwindowHandle
+				[API]::ShowWindow($Window,'Hide')
+			}
+		}
+	}
+	exit
+} | out-null
+
 if ($apps -contains "all") {$apps = $data.Name; $b = "install"} elseif ($apps) {$b = "install"}
 
 #МЕНЮ
@@ -347,7 +371,7 @@ for ($i = 0; $i -lt $apps.count; $i++)
 }
 
 Write-Progress -Id 1 -Activity "   Installation" -Status "complete"
+Get-Job | Wait-Job
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
-start-sleep -seconds 5
 $host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
