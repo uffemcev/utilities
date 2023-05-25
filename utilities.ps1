@@ -297,36 +297,13 @@ $data = @(
 	#>
 )
 
-Start-Job {
-	Add-Type '
-	using System;
-	using System.Runtime.InteropServices;
-	public class API {
-	public enum SW : int {Hide = 0}
-	[DllImport("user32.dll")]
-	public static extern int ShowWindow(IntPtr hwnd, SW nCmdShow);
-	}'
-
-	function Get-ChildProcesses ($ParentProcessId)
-	{
-		$filter = "parentprocessid = '$($ParentProcessId)'"
-		Get-CIMInstance -ClassName win32_process -filter $filter | Foreach {$_.ProcessId; if ($_.ParentProcessId -ne $_.ProcessId) {Get-ChildProcesses $_.ProcessId}}
-	}
-
-	function Get-ParentProcesses ($ChildProcessId)
-	{
-		$filter = "processid = '$($ChildProcessId)'"
-		Get-CIMInstance -ClassName win32_process -filter $filter | Foreach {$_.ParentProcessId}
-	}
-	
-	$parentID = Get-ParentProcesses $pid
-	
-	while ($true) {Get-ChildProcesses $parentID | foreach {get-process | where id -eq $_} | foreach {[API]::ShowWindow($_.MainwindowHandle,'Hide')}}
-} | out-null
-
 if ($apps -contains "all") {$apps = $data.Name; $b = "install"} elseif ($apps) {$b = "install"}
 
 #МЕНЮ
+[console]::WindowHeight = $data.count + 7
+[console]::WindowWidth = 54
+[console]::BufferWidth = [console]::WindowWidth
+
 while ($b -ne "install")
 {
 	#ВЫВОД
@@ -361,21 +338,31 @@ while ($b -ne "install")
 #УСТАНОВКА
 for ($i = 0; $i -lt $apps.count; $i++)
 {
-	try
-	{
-		$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
-		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation (($data | Where Name -eq $apps[$i]).Description)
-		($data | Where Name -eq $apps[$i]).Code | where {$job = Start-Job -ScriptBlock $_}
-		Wait-Job $job | out-null
-	} catch [System.Management.Automation.RuntimeException]
-	{
-		Write-Progress -Id 1 -Activity "   Installation progress" -Status " " -PercentComplete (($i+1) * (100 / $apps.count)) -CurrentOperation ($apps[$i] + " not found")
-		start-sleep -seconds 5
-	}
+	try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name ("[" + ($i+1) + "] " + ($data | Where Name -eq $apps[$i]).Description) -ScriptBlock $_} | out-null}
+	catch {{throw} | where {Start-Job -Name ("[" + ($i+1) + "] " + $apps[$i]) -ScriptBlock $_} | out-null}	
 }
 
-Write-Progress -Id 1 -Activity "   Installation" -Status "complete"
-get-job | remove-job -force
+#ПРОГРЕСС
+[console]::WindowHeight = $apps.count + 5
+[console]::WindowWidth = 54
+[console]::BufferWidth = [console]::WindowWidth
+[System.Collections.ArrayList]$counter = @()
+$LoadSign = "="
+$EmptySign = " "
+
+While ($true)
+{
+	[Console]::SetCursorPosition(0,0)
+	get-job | foreach {if (($_.State -ne "Running") -and ($_.Name -notin $counter)) {[void]$counter.Add($_.Name)}}
+	$Processed = [Math]::Round(($counter.count) / $apps.Count * 46,0)
+	$Remaining = 46 - $Processed
+	$PercentProcessed = [Math]::Round(($counter.count) / $apps.Count * 100,0)
+	get-job | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
+	"$PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
+	if (!(Get-Job -State "Running")) {break}
+	Start-Sleep 1
+}
+
 Start-sleep -seconds 5
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
