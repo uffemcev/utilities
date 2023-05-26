@@ -363,7 +363,7 @@ While ($true)
 	Start-Sleep 1
 }
 
-Start-sleep -seconds 5555
+Start-sleep -seconds 5
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 $host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
