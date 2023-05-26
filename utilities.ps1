@@ -272,7 +272,7 @@ $data = @(
 	}
 	@{
 		Description = "SophiApp Tweaker"
-		Name = "sophi"
+		Name = "sophia"
 		Code =
 		{
 			iwr "https://github.com/Sophia-Community/SophiApp/releases/download/1.0.94/SophiApp.zip" -Useb -OutFile ".\SophiApp.zip"
