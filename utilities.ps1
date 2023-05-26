@@ -300,21 +300,21 @@ $data = @(
 if ($apps -contains "all") {$apps = $data.Name; $b = "install"} elseif ($apps) {$b = "install"}
 
 #МЕНЮ
-[console]::WindowHeight = $data.count + 7
+[console]::WindowHeight = $data.count + 6
 [console]::WindowWidth = 54
 [console]::BufferWidth = [console]::WindowWidth
 
 while ($b -ne "install")
 {
 	#ВЫВОД
-	"`ngithub.com/uffemcev/utilities`n"
-	if ($apps) {"[0] Reset"} else {"[0] Select all"}
+	"`n github.com/uffemcev/utilities`n"
+	if ($apps) {" [0] Reset"} else {" [0] Select all"}
 	for ($i = 0; $i -lt $data.count; $i++)
 	{
-		if ($data[$i].Name -in $apps) {"$([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description}
-		if ($data[$i].Name -notin $apps) {"[" + ($i+1) + "] " + $data[$i].Description}
+		if ($data[$i].Name -in $apps) {" $([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description}
+		if ($data[$i].Name -notin $apps) {" [" + ($i+1) + "] " + $data[$i].Description}
 	}
-	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
+	if ($apps) {write-host -nonewline "`n [ENTER] Confirm "} else {write-host -nonewline "`n [ENTER] Exit "}
 		
 	#ПОДСЧЁТ	
 	switch ([console]::ReadKey($true))
@@ -322,7 +322,7 @@ while ($b -ne "install")
 		{$_.Key -match "[1-9]"}
 		{
 			[System.Windows.Forms.SendKeys]::SendWait($_.KeyChar)
-			write-host -nonewline "`r[ENTER] Select "
+			write-host -nonewline "`r [ENTER] Select "
 			$b = read-host
 			if ($b -gt 0) {if ($data[$b-1].Name -in $apps) {$apps.Remove($data[$b-1].Name)} else {$apps.Add($data[$b-1].Name)}}
 			if ($b -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
@@ -338,8 +338,8 @@ while ($b -ne "install")
 #УСТАНОВКА
 for ($i = 0; $i -lt $apps.count; $i++)
 {
-	try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name ("[" + ($i+1) + "] " + ($data | Where Name -eq $apps[$i]).Description) -ScriptBlock $_} | out-null}
-	catch {{throw} | where {Start-Job -Name ("[" + ($i+1) + "] " + $apps[$i]) -ScriptBlock $_} | out-null}	
+	try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (" [" + ($i+1) + "] " + ($data | Where Name -eq $apps[$i]).Description) -ScriptBlock $_} | out-null}
+	catch {{throw} | where {Start-Job -Name (" [" + ($i+1) + "] " + $apps[$i]) -ScriptBlock $_} | out-null}	
 }
 
 #ПРОГРЕСС
@@ -354,16 +354,16 @@ While ($true)
 {
 	[Console]::SetCursorPosition(0,0)
 	get-job | foreach {if (($_.State -ne "Running") -and ($_.Name -notin $counter)) {[void]$counter.Add($_.Name)}}
-	$Processed = [Math]::Round(($counter.count) / $apps.Count * 46,0)
-	$Remaining = 46 - $Processed
+	$Processed = [Math]::Round(($counter.count) / $apps.Count * 45,0)
+	$Remaining = 45 - $Processed
 	$PercentProcessed = [Math]::Round(($counter.count) / $apps.Count * 100,0)
 	get-job | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
-	"$PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
+	" $PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
 	if (!(Get-Job -State "Running")) {break}
 	Start-Sleep 1
 }
 
-Start-sleep -seconds 5
+Start-sleep -seconds 5555
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 $host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
