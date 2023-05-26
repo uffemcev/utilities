@@ -335,6 +335,8 @@ while ($b -ne "install")
 	cls
 }
 
+if ($apps.count -eq 0) {$b = "finish"; "`n`n Installation completed"}
+
 #УСТАНОВКА
 for ($i = 0; $i -lt $apps.count; $i++)
 {
@@ -350,7 +352,7 @@ for ($i = 0; $i -lt $apps.count; $i++)
 $LoadSign = "="
 $EmptySign = " "
 
-While ($true)
+While ($b -ne "finish")
 {
 	[Console]::SetCursorPosition(0,0)
 	get-job | foreach {if (($_.State -ne "Running") -and ($_.Name -notin $counter)) {[void]$counter.Add($_.Name)}}
@@ -359,7 +361,7 @@ While ($true)
 	$PercentProcessed = [Math]::Round(($counter.count) / $apps.Count * 100,0)
 	get-job | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
 	" $PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
-	if (!(Get-Job -State "Running")) {break}
+	if (!(Get-Job -State "Running")) {$b = "finish"}
 	Start-Sleep 1
 }
 
