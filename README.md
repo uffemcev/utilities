@@ -27,7 +27,7 @@
 | nvidia | NVCleanstall, ручная установка |
 | win | Windows 11 22H2 iso folder |
 | rufus | Rufus |
-| sophi | SophiApp Tweaker |
+| sophia | SophiApp Tweaker |
 
 </details>
 
