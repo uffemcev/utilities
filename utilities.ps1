@@ -340,8 +340,8 @@ if ($apps.count -eq 0) {$b = "finish"; "`n`n Installation completed"}
 #УСТАНОВКА
 for ($i = 0; $i -lt $apps.count; $i++)
 {
-	try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (" [" + ($i+1) + "] " + ($data | Where Name -eq $apps[$i]).Description) -ScriptBlock $_} | out-null}
-	catch {{throw} | where {Start-Job -Name (" [" + ($i+1) + "] " + $apps[$i]) -ScriptBlock $_} | out-null}	
+	try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (" [" + ($i+1) + "] " + ($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock ($_)} | out-null}
+	catch {{throw} | where {Start-Job -Name (" [" + ($i+1) + "] " + $apps[$i]) -ScriptBlock ($_)} | out-null}	
 }
 
 #ПРОГРЕСС
