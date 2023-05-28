@@ -297,14 +297,14 @@ $data = @(
 	#>
 )
 
-if ($apps -contains "all") {$apps = $data.Name; $b = "install"} elseif ($apps) {$b = "install"}
+if ($apps -contains "all") {$apps = $data.Name; $status = "install"} elseif ($apps) {$status = "install"}
 
 #МЕНЮ
 [console]::WindowHeight = $data.count + 6
 [console]::WindowWidth = 54
 [console]::BufferWidth = [console]::WindowWidth
 
-while ($b -ne "install")
+while ($status -ne "install")
 {
 	#ВЫВОД
 	"`n github.com/uffemcev/utilities`n"
@@ -323,46 +323,48 @@ while ($b -ne "install")
 		{
 			[System.Windows.Forms.SendKeys]::SendWait($_.KeyChar)
 			write-host -nonewline "`r [ENTER] Select "
-			$b = read-host
-			if ($b -gt 0) {if ($data[$b-1].Name -in $apps) {$apps.Remove($data[$b-1].Name)} else {$apps.Add($data[$b-1].Name)}}
-			if ($b -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+			$status = read-host
+			if ($status -gt 0) {if ($data[$status-1].Name -in $apps) {$apps.Remove($data[$status-1].Name)} else {$apps.Add($data[$status-1].Name)}}
+			if ($status -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 		}
 		
 		{$_.Key -eq "D0"} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 		
-		{$_.Key -eq "Enter"} {$b = "install"}
+		{$_.Key -eq "Enter"} {$status = "install"}
 	}
 	cls
 }
 
-if ($apps.count -eq 0) {$b = "finish"; "`n`n Installation completed"}
+if ($apps.count -eq 0) {$status = "finish"; "`n`n Goodbye, $Env:UserName"}
 
 #УСТАНОВКА
-for ($i = 0; $i -lt $apps.count; $i++)
-{
-	try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (" [" + ($i+1) + "] " + ($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock ($_)} | out-null}
-	catch {{throw} | where {Start-Job -Name (" [" + ($i+1) + "] " + $apps[$i]) -ScriptBlock ($_)} | out-null}	
-}
-
-#ПРОГРЕСС
-[console]::WindowHeight = $apps.count + 5
 [console]::WindowWidth = 54
+[console]::WindowHeight = $apps.count + 5
 [console]::BufferWidth = [console]::WindowWidth
-[System.Collections.ArrayList]$counter = @()
 $LoadSign = "="
 $EmptySign = " "
 
-While ($b -ne "finish")
+while ($status -ne "finish")
 {
-	[Console]::SetCursorPosition(0,0)
-	get-job | foreach {if (($_.State -ne "Running") -and ($_.Name -notin $counter)) {[void]$counter.Add($_.Name)}}
-	$Processed = [Math]::Round(($counter.count) / $apps.Count * 45,0)
-	$Remaining = 45 - $Processed
-	$PercentProcessed = [Math]::Round(($counter.count) / $apps.Count * 100,0)
-	get-job | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
-	" $PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
-	if (!(Get-Job -State "Running")) {$b = "finish"}
-	Start-Sleep 1
+	for ($i = 0; $i -lt $apps.count+1; $i++)
+	{
+		#ЗАПУСК
+		[Console]::SetCursorPosition(0,0)
+		try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (" " + ($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock ($_)} | out-null}
+		catch {{throw} | where {Start-Job -Name (" " + $apps[$i]) -ScriptBlock ($_)} | out-null}
+		$Processed = [Math]::Round(($i) / $apps.Count * 45,0)
+		$Remaining = 45 - $Processed
+		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
+	
+		#ВЫВОД
+		($apps | foreach {$data | where Name -eq $_}).Description | Select @{Name="Name"; Expression={" $_"}}, @{Name="State"; Expression={'Waiting'}} | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
+		" $PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
+		[Console]::SetCursorPosition(0,0)
+		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
+		Get-job | Wait-Job | out-null
+	}
+
+	$status = "finish"
 }
 
 Start-sleep -seconds 5
