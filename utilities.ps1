@@ -323,9 +323,11 @@ while ($status -ne "install")
 		{
 			$WShell.sendkeys($_.KeyChar)
 			write-host -nonewline "`r [ENTER] Select "
-			$status = read-host
-			if ($status -gt 0) {if ($data[$status-1].Name -in $apps) {[void]$apps.Remove($data[$status-1].Name)} else {[void]$apps.Add($data[$status-1].Name)}}
-			if ($status -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+			switch (read-host)
+			{
+				{[Int]$_ -gt 0 -and [Int]$_ -le $data.count} {if ($data[$_-1].Name -in $apps) {[void]$apps.Remove($data[$_-1].Name)} else {[void]$apps.Add($data[$_-1].Name)}}
+				{[Int]$_ -eq 0} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+			}
 		}
 		
 		{$_.Key -eq "D0"} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
