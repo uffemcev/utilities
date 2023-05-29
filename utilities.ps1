@@ -49,6 +49,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	$WShell = New-Object -com "Wscript.Shell"
+	[console]::CursorVisible = $false
 	cls
 }
 
@@ -338,24 +339,30 @@ if ($apps.count -eq 0) {$status = "finish"; "`nGoodbye, $Env:UserName"}
 #УСТАНОВКА
 while ($status -ne "finish")
 {
+	"`ngithub.com/uffemcev/utilities"
+	
 	for ($i = 0; $i -lt $apps.count+1; $i++)
 	{
 		#ЗАПУСК
-		[Console]::SetCursorPosition(0,0)
+		Get-job | Wait-Job | out-null
 		try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock ($_)} | out-null}
 		catch {{throw} | where {Start-Job -Name ($apps[$i]) -ScriptBlock ($_)} | out-null}
-		$LoadSign = "="
+		
+		#ПОДСЧЁТ
+		$LoadSign = "$([char]27)[7m $([char]27)[0m"
 		$EmptySign = " "
-		$Processed = [Math]::Round(($i) / $apps.Count * 45,0)
-		$Remaining = 45 - $Processed
+		$Processed = [Math]::Round(($i) / $apps.Count * 47,0)
+		$Remaining = 47 - $Processed
 		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
-	
+		$table = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={'Waiting'}}
+		
 		#ВЫВОД
-		($apps | foreach {$data | where Name -eq $_}).Description | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={'Waiting'}} | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
-		"$PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
-		[Console]::SetCursorPosition(0,0)
-		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
-		Get-job | Wait-Job | out-null
+		[Console]::SetCursorPosition(0,2)
+		$table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders
+		[Console]::SetCursorPosition(0,($apps.count + 4))
+		"$([char]27)[7m$PercentProcessed%$([char]27)[0m" + ($LoadSign * $Processed) + ($EmptySign * $Remaining)
+		[Console]::SetCursorPosition(0,2)
+		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders
 	}
 
 	$status = "finish"
