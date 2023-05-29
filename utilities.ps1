@@ -322,7 +322,7 @@ while ($status -ne "install")
 			switch (read-host)
 			{
 				{[Int]$_ -gt 0 -and [Int]$_ -le $data.count} {if ($data[$_-1].Name -in $apps) {[void]$apps.Remove($data[$_-1].Name)} else {[void]$apps.Add($data[$_-1].Name)}}
-				{[Int]$_ -eq 0} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+				{$_ -eq 0} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 			}
 		}
 		
