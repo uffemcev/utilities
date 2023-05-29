@@ -334,7 +334,7 @@ while ($status -ne "install")
 	cls
 }
 
-if ($apps.count -eq 0) {$status = "finish"; "`nGoodbye, $Env:UserName"}
+if ($apps.count -eq 0) {$status = "finish"; "`nBye, $Env:UserName " + [System.Char]::ConvertFromUtf32([System.Convert]::toInt32('1F603',16))}
 
 #УСТАНОВКА
 while ($status -ne "finish")
@@ -365,6 +365,7 @@ while ($status -ne "finish")
 		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders
 	}
 
+	"`nInstallation complete"
 	$status = "finish"
 }
 
