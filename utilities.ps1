@@ -26,7 +26,7 @@ param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayLis
 if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
 	cls
-	"`ngithub.com/uffemcev/utilities"
+	"`nhttps://github.com/uffemcev/utilities"
 	"`nApp is already running, try again soon`n"
 	5..1 | foreach {write-host "`rPlease wait $_ sec" -nonewline; start-sleep 1}
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
@@ -308,7 +308,7 @@ while ($status -ne "install")
 {
 	#ВЫВОД
 	cleaner
-	"`ngithub.com/uffemcev/utilities`n"
+	"`nhttps://github.com/uffemcev/utilities`n"
 	if ($apps) {"[0] Reset"} else {"[0] Select all"}
 	for ($i = 0; $i -lt $data.count; $i++)
 	{
@@ -340,13 +340,13 @@ while ($status -ne "install")
 	}
 }
 
-if ($apps.count -eq 0) {$status = "finish"; cleaner; "`ngithub.com/uffemcev/utilities"; "`nBye, $Env:UserName`n"}
+if ($apps.count -eq 0) {$status = "finish"; cleaner; "`nhttps://github.com/uffemcev/utilities"; "`nBye, $Env:UserName`n"}
 
 #УСТАНОВКА
 while ($status -ne "finish")
 {
 	cleaner
-	"`ngithub.com/uffemcev/utilities"
+	"`nhttps://github.com/uffemcev/utilities"
 	
 	for ($i = 0; $i -lt $apps.count+1; $i++)
 	{
