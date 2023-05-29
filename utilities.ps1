@@ -300,21 +300,17 @@ $data = @(
 if ($apps -contains "all") {$apps = $data.Name; $status = "install"} elseif ($apps) {$status = "install"}
 
 #МЕНЮ
-[console]::WindowHeight = $data.count + 6
-[console]::WindowWidth = 54
-[console]::BufferWidth = [console]::WindowWidth
-
 while ($status -ne "install")
 {
 	#ВЫВОД
-	"`n github.com/uffemcev/utilities`n"
-	if ($apps) {" [0] Reset"} else {" [0] Select all"}
+	"`ngithub.com/uffemcev/utilities`n"
+	if ($apps) {"[0] Reset"} else {"[0] Select all"}
 	for ($i = 0; $i -lt $data.count; $i++)
 	{
-		if ($data[$i].Name -in $apps) {" $([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description}
-		if ($data[$i].Name -notin $apps) {" [" + ($i+1) + "] " + $data[$i].Description}
+		if ($data[$i].Name -in $apps) {"$([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description}
+		if ($data[$i].Name -notin $apps) {"[" + ($i+1) + "] " + $data[$i].Description}
 	}
-	if ($apps) {write-host -nonewline "`n [ENTER] Confirm "} else {write-host -nonewline "`n [ENTER] Exit "}
+	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
 	#ПОДСЧЁТ	
 	switch ([console]::ReadKey($true))
@@ -322,7 +318,7 @@ while ($status -ne "install")
 		{$_.Key -match "[1-9]"}
 		{
 			$WShell.sendkeys($_.KeyChar)
-			write-host -nonewline "`r [ENTER] Select "
+			write-host -nonewline "`r[ENTER] Select "
 			switch (read-host)
 			{
 				{[Int]$_ -gt 0 -and [Int]$_ -le $data.count} {if ($data[$_-1].Name -in $apps) {[void]$apps.Remove($data[$_-1].Name)} else {[void]$apps.Add($data[$_-1].Name)}}
@@ -337,30 +333,26 @@ while ($status -ne "install")
 	cls
 }
 
-if ($apps.count -eq 0) {$status = "finish"; "`n`n Goodbye, $Env:UserName"}
+if ($apps.count -eq 0) {$status = "finish"; "`nGoodbye, $Env:UserName"}
 
 #УСТАНОВКА
-[console]::WindowWidth = 54
-[console]::WindowHeight = $apps.count + 5
-[console]::BufferWidth = [console]::WindowWidth
-$LoadSign = "="
-$EmptySign = " "
-
 while ($status -ne "finish")
 {
 	for ($i = 0; $i -lt $apps.count+1; $i++)
 	{
 		#ЗАПУСК
 		[Console]::SetCursorPosition(0,0)
-		try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (" " + ($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock ($_)} | out-null}
-		catch {{throw} | where {Start-Job -Name (" " + $apps[$i]) -ScriptBlock ($_)} | out-null}
+		try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock ($_)} | out-null}
+		catch {{throw} | where {Start-Job -Name ($apps[$i]) -ScriptBlock ($_)} | out-null}
+		$LoadSign = "="
+		$EmptySign = " "
 		$Processed = [Math]::Round(($i) / $apps.Count * 45,0)
 		$Remaining = 45 - $Processed
 		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
 	
 		#ВЫВОД
-		($apps | foreach {$data | where Name -eq $_}).Description | Select @{Name="Name"; Expression={" $_"}}, @{Name="State"; Expression={'Waiting'}} | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
-		" $PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
+		($apps | foreach {$data | where Name -eq $_}).Description | Select @{Name="Name"; Expression={"$_"}}, @{Name="State"; Expression={'Waiting'}} | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
+		"$PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
 		[Console]::SetCursorPosition(0,0)
 		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
 		Get-job | Wait-Job | out-null
