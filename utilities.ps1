@@ -48,7 +48,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-	Add-Type -AssemblyName System.Windows.Forms
+	$WShell = New-Object -com "Wscript.Shell"
 	cls
 }
 
@@ -321,10 +321,10 @@ while ($status -ne "install")
 	{
 		{$_.Key -match "[1-9]"}
 		{
-			[System.Windows.Forms.SendKeys]::SendWait($_.KeyChar)
+			$WShell.sendkeys($_.KeyChar)
 			write-host -nonewline "`r [ENTER] Select "
 			$status = read-host
-			if ($status -gt 0) {if ($data[$status-1].Name -in $apps) {$apps.Remove($data[$status-1].Name)} else {$apps.Add($data[$status-1].Name)}}
+			if ($status -gt 0) {if ($data[$status-1].Name -in $apps) {[void]$apps.Remove($data[$status-1].Name)} else {[void]$apps.Add($data[$status-1].Name)}}
 			if ($status -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 		}
 		
