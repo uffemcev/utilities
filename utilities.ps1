@@ -23,11 +23,12 @@
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
-if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -eq "powershell"})
+if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
 	cls
-	"`nApp is already running"
-	start-sleep -seconds 5
+	"`ngithub.com/uffemcev/utilities"
+	"`nApp is already running, try again soon`n"
+	5..1 | foreach {write-host "`rPlease wait $_ sec" -nonewline; start-sleep 1}
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 } elseif (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
@@ -46,11 +47,13 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 } else
 {
-	$host.ui.RawUI.WindowTitle = 'uffemcev utilities'
+	$host.ui.RawUI.WindowTitle = 'uffemcev utilities ' + [char]::ConvertFromUtf32(0x1F916)
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 	$WShell = New-Object -com "Wscript.Shell"
 	[console]::CursorVisible = $false
-	cls
+	function cleaner () {$e = [char]27; Write-Host "$e[H$e[J" -NoNewline}
+	function color ($text) {$e = [char]27; Write-Host "$e[7m$text$e[0m" -NoNewline}
+	cleaner
 }
 
 $data = @(
@@ -304,12 +307,16 @@ if ($apps -contains "all") {$apps = $data.Name; $status = "install"} elseif ($ap
 while ($status -ne "install")
 {
 	#ВЫВОД
+	cleaner
 	"`ngithub.com/uffemcev/utilities`n"
 	if ($apps) {"[0] Reset"} else {"[0] Select all"}
 	for ($i = 0; $i -lt $data.count; $i++)
 	{
-		if ($data[$i].Name -in $apps) {"$([char]27)[7m[" + ($i+1) + "]$([char]27)[0m " + $data[$i].Description}
-		if ($data[$i].Name -notin $apps) {"[" + ($i+1) + "] " + $data[$i].Description}
+		switch ($data[$i].Name)
+		{
+			{$_ -in $apps} {(color ("[" + ($i+1) + "]")) + " " + $data[$i].Description}
+			DEFAULT {"[" + ($i+1) + "] " + $data[$i].Description}
+		}
 	}
 	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
@@ -331,14 +338,14 @@ while ($status -ne "install")
 		
 		{$_.Key -eq "Enter"} {$status = "install"}
 	}
-	cls
 }
 
-if ($apps.count -eq 0) {$status = "finish"; "`nBye, $Env:UserName " + [System.Char]::ConvertFromUtf32([System.Convert]::toInt32('1F603',16))}
+if ($apps.count -eq 0) {$status = "finish"; cleaner; "`ngithub.com/uffemcev/utilities"; "`nBye, $Env:UserName`n"}
 
 #УСТАНОВКА
 while ($status -ne "finish")
 {
+	cleaner
 	"`ngithub.com/uffemcev/utilities"
 	
 	for ($i = 0; $i -lt $apps.count+1; $i++)
@@ -349,8 +356,6 @@ while ($status -ne "finish")
 		catch {{throw} | where {Start-Job -Name ($apps[$i]) -ScriptBlock ($_)} | out-null}
 		
 		#ПОДСЧЁТ
-		$LoadSign = "$([char]27)[7m $([char]27)[0m"
-		$EmptySign = " "
 		$Processed = [Math]::Round(($i) / $apps.Count * 47,0)
 		$Remaining = 47 - $Processed
 		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
@@ -360,16 +365,17 @@ while ($status -ne "finish")
 		[Console]::SetCursorPosition(0,2)
 		$table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders
 		[Console]::SetCursorPosition(0,($apps.count + 4))
-		"$([char]27)[7m$PercentProcessed%$([char]27)[0m" + ($LoadSign * $Processed) + ($EmptySign * $Remaining)
+		color "$PercentProcessed%" + (color (" " * $Processed)) + (" " * $Remaining)
 		[Console]::SetCursorPosition(0,2)
 		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders
 	}
 
-	"`nInstallation complete"
+	[Console]::SetCursorPosition(0,($apps.Count + 4))
+	color "Installation completed`n`n"
 	$status = "finish"
 }
 
-Start-sleep -seconds 5
+5..1 | foreach {write-host "`rPlease wait $_ sec" -nonewline; start-sleep 1}
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 $host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
