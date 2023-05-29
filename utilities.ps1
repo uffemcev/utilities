@@ -351,7 +351,7 @@ while ($status -ne "finish")
 		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
 	
 		#ВЫВОД
-		($apps | foreach {$data | where Name -eq $_}).Description | Select @{Name="Name"; Expression={"$_"}}, @{Name="State"; Expression={'Waiting'}} | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
+		($apps | foreach {$data | where Name -eq $_}).Description | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={'Waiting'}} | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
 		"$PercentProcessed% ["+ ($LoadSign * $Processed) + ($EmptySign * $Remaining) + "]"
 		[Console]::SetCursorPosition(0,0)
 		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=16; Alignment="Right"} -HideTableHeaders
