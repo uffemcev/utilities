@@ -8,7 +8,7 @@
 | :-- | :-- |
 | all | Установить всё |
 | dns | Cloudflare DNS-over-HTTPS |
-| store | Обновление приложений в MS store |
+| update | Обновление всех приложений на пк |
 | office | Office, Word, Excel 365 mondo volume license |
 | spotx | Spotify мод |
 | dpi | GoodbyeDPI, режим 5 + обновление blacklist |
