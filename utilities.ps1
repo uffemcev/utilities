@@ -28,7 +28,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 	cls
 	"`nhttps://github.com/uffemcev/utilities"
 	"`nApp is already running, try again soon`n"
-	5..1 | foreach {write-host "`rPlease wait $_ sec" -nonewline; start-sleep 1}
+	start-sleep 5
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 } elseif (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
@@ -375,7 +375,7 @@ while ($status -ne "finish")
 	$status = "finish"
 }
 
-5..1 | foreach {write-host "`rPlease wait $_ sec" -nonewline; start-sleep 1}
+start-sleep 5
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 $host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
