@@ -45,6 +45,14 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 	popd
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+} elseif ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
+{
+	$host.ui.RawUI.WindowTitle = 'initialization'
+	winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
+	Get-AppxPackage -allusers Microsoft.WindowsTerminal | where {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
+	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 } else
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities ' + [char]::ConvertFromUtf32(0x1F916)
@@ -78,11 +86,13 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Update store apps"
-		Name = "store"
+		Description = "Update all apps on pc"
+		Name = "update"
 		Code =
 		{
-			Get-CimInstance -Namespace 'root\cimv2\mdm\dmmap' -ClassName 'MDM_EnterpriseModernAppManagement_AppManagement01' | Invoke-CimMethod -MethodName UpdateScanMethod
+			winget upgrade --all --silent --accept-source-agreements
+			Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseModernAppManagement_AppManagement01" | Invoke-CimMethod -MethodName UpdateScanMethod
+			(Get-WmiObject -Namespace "Root\cimv2\mdm\dmmap" -Class "MDM_EnterpriseModernAppManagement_AppManagement01").UpdateScanMethod()
 		}
 	}
 	@{
