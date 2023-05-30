@@ -312,11 +312,8 @@ while ($status -ne "install")
 	if ($apps) {"[0] Reset"} else {"[0] Select all"}
 	for ($i = 0; $i -lt $data.count; $i++)
 	{
-		switch ($data[$i].Name)
-		{
-			{$_ -in $apps} {(color ("[" + ($i+1) + "]")) + " " + $data[$i].Description}
-			DEFAULT {"[" + ($i+1) + "] " + $data[$i].Description}
-		}
+		if ($data[$i].Name -in $apps) {(color ("[" + ($i+1) + "]")) + " " + $data[$i].Description}
+		if ($data[$i].Name -notin $apps) {"[" + ($i+1) + "] " + $data[$i].Description}
 	}
 	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
@@ -327,11 +324,9 @@ while ($status -ne "install")
 		{
 			$WShell.sendkeys($_.KeyChar)
 			write-host -nonewline "`r[ENTER] Select "
-			switch (read-host)
-			{
-				{[Int]$_ -gt 0 -and [Int]$_ -le $data.count} {if ($data[$_-1].Name -in $apps) {[void]$apps.Remove($data[$_-1].Name)} else {[void]$apps.Add($data[$_-1].Name)}}
-				{$_ -eq 0} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
-			}
+			$status = read-host
+			if ([int]$status -gt 0 -and [int]$status -le $data.count) {if ($data[$status-1].Name -in $apps) {$apps.Remove($data[$status-1].Name)} else {$apps.Add($data[$status-1].Name)}}
+			if ($status -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 		}
 		
 		{$_.Key -eq "D0"} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
