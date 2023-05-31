@@ -32,7 +32,7 @@ cleaner
 #ПРОВЕРКА ДУБЛИКАТА
 if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
-	"`nApp is already running, try again soon`n"
+	"`nApp is already running, try again soon"
 	start-sleep 5
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 }
@@ -40,7 +40,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 #ПРОВЕРКА ИНТЕРНЕТА
 if (!(Get-NetAdapterStatistics))
 {
-	"`nNo internet connection, try again soon`n"
+	"`nNo internet connection, try again soon"
 	start-sleep 5
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 }
@@ -355,7 +355,7 @@ while ($status -ne "install")
 }
 
 #ПРОВЕРКА ВЫХОДА
-if ($apps.count -eq 0) {$status = "finish"; cleaner; "`nhttps://github.com/uffemcev/utilities"; "`nBye, $Env:UserName`n"}
+if ($apps.count -eq 0) {$status = "finish"; cleaner; "`nhttps://github.com/uffemcev/utilities"; "`nBye, $Env:UserName"}
 
 #УСТАНОВКА
 while ($status -ne "finish")
@@ -386,7 +386,7 @@ while ($status -ne "finish")
 	}
 
 	[Console]::SetCursorPosition(0,($apps.Count + 4))
-	color "Installation completed`n`n"
+	color "Installation completed"
 	$status = "finish"
 }
 
