@@ -20,36 +20,66 @@
 	powershell -ExecutionPolicy Bypass ".\utilities.ps1 all"
 #>
 
+#НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
+function cleaner () {$e = [char]27; Write-Host "$e[H$e[J" -NoNewline}
+function color ($text) {$e = [char]27; Write-Host "$e[7m$text$e[0m" -NoNewline}
+[console]::CursorVisible = $false
+cleaner
+"`nhttps://github.com/uffemcev/utilities"
 
+#ПРОВЕРКА ДУБЛИКАТА
 if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
-	cls
-	"`nhttps://github.com/uffemcev/utilities"
 	"`nApp is already running, try again soon`n"
 	start-sleep 5
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
-} elseif (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
+}
+
+#ПРОВЕРКА ИНТЕРНЕТА
+if (!(Get-NetAdapterStatistics))
 {
-	$host.ui.RawUI.WindowTitle = 'initialization'
+	"`nNo internet connection, try again soon`n"
+	start-sleep 5
+	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+}
+
+#ПРОВЕРКА ПРАВ
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
+{
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
-} elseif (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
+}
+
+#ПРОВЕРКА WINGET
+if (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'winget.exe'}))
+{
+	start-job {
+		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
+		if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {iwr raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1 -Useb | iex}
+		Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+	} | out-null
+}
+
+#ПРОВЕРКА TERMINAL
+if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
+{
+	start-job {
+		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
+		iwr "https://github.com/microsoft/terminal/releases/download/v1.17.11461.0/Microsoft.WindowsTerminal_1.17.11461.0_8wekyb3d8bbwe.msixbundle_Windows10_PreinstallKit.zip" -Useb -OutFile ".\Terminal.zip"
+		Expand-Archive ".\Terminal.zip" ".\"
+		Add-AppxPackage -Path ".\1ff951bd438b4b28b40cb1599e7c9f72.msixbundle" -DependencyPath ".\Microsoft.VCLibs.140.00.UWPDesktop_14.0.30704.0_x64__8wekyb3d8bbwe.appx", ".\Microsoft.UI.Xaml.2.7_7.2208.15002.0_x64__8wekyb3d8bbwe.appx"
+		Get-AppxPackage -allusers Microsoft.WindowsTerminal | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+	} | out-null
+}
+
+#ОЖИДАНИЕ ПРОВЕРОК
+if (get-job | where State -eq "Running")
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
-	pushd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-	if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {iwr raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1 -Useb | iex}
-	Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | where {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
-	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-	popd
-	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
-	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
-} elseif ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
-{
-	$host.ui.RawUI.WindowTitle = 'initialization'
-	winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
-	Get-AppxPackage -allusers Microsoft.WindowsTerminal | where {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+	"`nPlease stand by"
+	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
@@ -57,13 +87,10 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities ' + [char]::ConvertFromUtf32(0x1F916)
 	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-	$WShell = New-Object -com "Wscript.Shell"
-	[console]::CursorVisible = $false
-	function cleaner () {$e = [char]27; Write-Host "$e[H$e[J" -NoNewline}
-	function color ($text) {$e = [char]27; Write-Host "$e[7m$text$e[0m" -NoNewline}
-	cleaner
+	get-job | remove-job | out-null
 }
 
+#ПРИЛОЖЕНИЯ
 $data = @(
 	@{
 		Description = "Cloudflare DNS-over-HTTPS"
@@ -129,22 +156,6 @@ $data = @(
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | where {$dir = $_.FullName}
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
 			(iwr "https://reestr.rublacklist.net/api/v3/domains" -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"
-		}
-	}
-	@{
-		Description = "DirectX"
-		Name = "directx"
-		Code =
-		{
-			winget install --id=Microsoft.DirectX --accept-package-agreements --accept-source-agreements --exact --silent
-		}
-	}
-	@{
-		Description = "Microsoft Visual C++ 2015-2022"
-		Name = "vcredist"
-		Code =
-		{
-			winget install --id=Microsoft.VCRedist.2015+.x64 --accept-package-agreements --accept-source-agreements --exact --silent
 		}
 	}
 	@{
@@ -299,7 +310,6 @@ $data = @(
 	}
 	<#
 	НОВОЕ ПРИЛОЖЕНИЕ
-	NEW APP
 	@{
 		Description = ""
 		Name = ""
@@ -311,6 +321,7 @@ $data = @(
 	#>
 )
 
+#ПРОВЕРКА НА АРГУМЕНТЫ
 if ($apps -contains "all") {$apps = $data.Name; $status = "install"} elseif ($apps) {$status = "install"}
 
 #МЕНЮ
@@ -332,7 +343,7 @@ while ($status -ne "install")
 	{
 		{$_.Key -match "[1-9]"}
 		{
-			$WShell.sendkeys($_.KeyChar)
+			(New-Object -com "Wscript.Shell").sendkeys($_.KeyChar)
 			write-host -nonewline "`r[ENTER] Select "
 			$status = read-host
 			if ([int]$status -gt 0 -and [int]$status -le $data.count) {if ($data[$status-1].Name -in $apps) {$apps.Remove($data[$status-1].Name)} else {$apps.Add($data[$status-1].Name)}}
@@ -343,6 +354,7 @@ while ($status -ne "install")
 	}
 }
 
+#ПРОВЕРКА ВЫХОДА
 if ($apps.count -eq 0) {$status = "finish"; cleaner; "`nhttps://github.com/uffemcev/utilities"; "`nBye, $Env:UserName`n"}
 
 #УСТАНОВКА
@@ -378,6 +390,7 @@ while ($status -ne "finish")
 	$status = "finish"
 }
 
+#ЗАВЕРШЕНИЕ РАБОТЫ
 start-sleep 5
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
