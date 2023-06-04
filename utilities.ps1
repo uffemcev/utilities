@@ -360,9 +360,6 @@ if ($apps.count -eq 0) {$status = "finish"; cleaner; "`nhttps://github.com/uffem
 #УСТАНОВКА
 while ($status -ne "finish")
 {
-	cleaner
-	"`nhttps://github.com/uffemcev/utilities"
-	
 	for ($i = 0; $i -lt $apps.count+1; $i++)
 	{
 		#ЗАПУСК
@@ -374,15 +371,21 @@ while ($status -ne "finish")
 		$Processed = [Math]::Round(($i) / $apps.Count * 47,0)
 		$Remaining = 47 - $Processed
 		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
-		$table = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={'Waiting'}}
+		$table = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
+			switch ((get-job -name $_).State)
+			{
+				"Running" {'Running'}
+				"Completed" {'Completed'}
+				"Failed" {'Failed'}
+				DEFAULT {'Waiting'}
+			}
+		}}
 		
 		#ВЫВОД
-		[Console]::SetCursorPosition(0,2)
-		$table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders
-		[Console]::SetCursorPosition(0,($apps.count + 4))
+		cleaner
+		"`nhttps://github.com/uffemcev/utilities`n"
+		($table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
 		color "$PercentProcessed%" + (color (" " * $Processed)) + (" " * $Remaining)
-		[Console]::SetCursorPosition(0,2)
-		get-job | select -first $apps.count | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders
 	}
 
 	[Console]::SetCursorPosition(0,($apps.Count + 4))
