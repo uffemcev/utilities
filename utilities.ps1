@@ -24,7 +24,7 @@
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 function cleaner () {$e = [char]27; Write-Host "$e[H$e[J" -NoNewline}
-function color ($text) {$e = [char]27; Write-Host "$e[7m$text$e[0m" -NoNewline}
+function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 [console]::CursorVisible = $false
 cleaner
 "`nhttps://github.com/uffemcev/utilities"
@@ -330,12 +330,11 @@ while ($status -ne "install")
 	#ВЫВОД
 	cleaner
 	"`nhttps://github.com/uffemcev/utilities`n"
-	if ($apps) {"[0] Reset"} else {"[0] Select all"}
-	for ($i = 0; $i -lt $data.count; $i++)
-	{
-		if ($data[$i].Name -in $apps) {(color ("[" + ($i+1) + "]")) + " " + $data[$i].Description}
-		if ($data[$i].Name -notin $apps) {"[" + ($i+1) + "] " + $data[$i].Description}
-	}
+	if ($apps) {"[0] Reset"} else {"[0] All"}
+	($data | Select @{Name="Description"; Expression={
+		if ($_.Name -in $apps) {(color ("[" + ($data.indexof($_)+1) + "]")) + " " + $_.Description}
+		else {"[" + ($data.indexof($_)+1) + "] " + $_.Description}
+	}} | ft -HideTableHeaders | Out-String).Trim()
 	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
 	#ПОДСЧЁТ	
@@ -344,7 +343,7 @@ while ($status -ne "install")
 		{$_.Key -match "[1-9]"}
 		{
 			(New-Object -com "Wscript.Shell").sendkeys($_.KeyChar)
-			write-host -nonewline "`r[ENTER] Select "
+			write-host -nonewline "`r[ENTER] Switch "
 			$status = read-host
 			if ([int]$status -gt 0 -and [int]$status -le $data.count) {if ($data[$status-1].Name -in $apps) {$apps.Remove($data[$status-1].Name)} else {$apps.Add($data[$status-1].Name)}}
 			if ($status -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
@@ -385,11 +384,9 @@ while ($status -ne "finish")
 		cleaner
 		"`nhttps://github.com/uffemcev/utilities`n"
 		($table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
-		color "$PercentProcessed%" + (color (" " * $Processed)) + (" " * $Remaining)
+		(color "$PercentProcessed%") + (color (" " * $Processed)) + (" " * $Remaining)
 	}
 
-	[Console]::SetCursorPosition(0,($apps.Count + 4))
-	color "Installation completed"
 	$status = "finish"
 }
 
