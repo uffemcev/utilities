@@ -308,6 +308,28 @@ $data = @(
 			$Shortcut.Save()
 		}
 	}
+	@{
+		Description = "Trackers links on desktop"
+		Name = "tracker"
+		Code =
+		{
+			$sites = 'https://tapochek.net/', 'https://rutracker.org/', 'https://nnmclub.to/'
+			$browser = (Get-Item 'HKCU:\SOFTWARE\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice' | Get-ItemProperty).ProgId -replace ('URL|HTML|HTTP'),('')
+			switch ($browser)
+			{
+				$null {$browser = (dir "C:\Program Files*" -recurse | where Name -eq "msedge.exe").fullname | select -first 1}
+				DEFAULT {$browser = (dir "C:\Program Files*" -recurse | where Name -eq "$browser.exe").fullname | select -first 1}
+			}
+			foreach ($site in $sites)
+			{
+				$name = $site -replace ('.*.//|\..*'),('')
+				$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\$name.lnk")
+				$Shortcut.IconLocation = $browser
+				$Shortcut.TargetPath = $site
+				$Shortcut.Save()
+			}
+		}
+	}
 	<#
 	НОВОЕ ПРИЛОЖЕНИЕ
 	@{
