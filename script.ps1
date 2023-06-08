@@ -8,13 +8,13 @@
 	Команды для управления скриптом одинаковы для CMD и PowerShell
 	
 	Интерактивный выбор компонентов для установки:
-	powershell "&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))"
+	&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))
 	
 	Автоматическая установка указанных компонентов:
-	powershell "&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome"
+	&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome
 	
 	Автоматическая установка всех компонентов:
-	powershell "&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) all"
+	&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) all
 #>
 
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
