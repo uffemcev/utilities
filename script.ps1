@@ -227,9 +227,7 @@ $data = @(
 		Code =
 		{
 			winget install --id=WhirlwindFX.SignalRgb --accept-package-agreements --accept-source-agreements --exact --silent
-			dir -Path $env:LOCALAPPDATA -Recurse | where {$_.Name -match "Keychron" -and $_.Attributes -eq "Directory"} | where {$path = $_.fullname}
-			iwr "raw.githubusercontent.com/SRGBmods/QMK-Binaries/main/SignalRGB-Plugins/Keychron/_Archived/Keychron_Q5_QMK_ANSI_Encoder.js" -Useb -OutFile "$path\Keychron_Q5_QMK_ANSI_Encoder.js"
-			dir -Path $env:LOCALAPPDATA -Recurse | where {$_.Name -match "SignalRgbLauncher.exe"} | where {$path = Split-Path -Parent $_.FullName}
+			dir -Path $env:LOCALAPPDATA -Recurse | where Name -match "SignalRgbLauncher.exe" | where {$path = Split-Path -Parent $_.FullName}
 			pushd $path
 			& ([ScriptBlock]::Create((irm uffemcev.github.io/rgb/script.ps1))) -option install -locktime 1800 -sleeptime 3600
 			popd
