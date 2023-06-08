@@ -110,7 +110,7 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.githu
 ```
 
 ## Ссылки
-* [Репозиторий](https://github.com/uffemcev/utilities/tree/main)
+* [Репозиторий](https://github.com/uffemcev/utilities)
 * [Rufus](https://github.com/pbatard/rufus)
 * [SophiApp](https://github.com/Sophia-Community/SophiApp)
 * [uffemcev rgb](https://github.com/uffemcev/rgb)
