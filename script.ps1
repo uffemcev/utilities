@@ -31,7 +31,6 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initializ
 {
 	"App is already running, try again soon"
 	start-sleep 5
-	exit
 }
 
 #ПРОВЕРКА ИНТЕРНЕТА
