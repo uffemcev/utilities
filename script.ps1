@@ -227,8 +227,8 @@ $data = @(
 		Code =
 		{
 			winget install --id=WhirlwindFX.SignalRgb --accept-package-agreements --accept-source-agreements --exact --silent
-			dir -Path $env:LOCALAPPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match "SignalRgbLauncher.exe"} | Select -first 1 | where {$file = $_.FullName}
-			pushd (Split-Path -Parent $file)
+			dir -Path $env:LOCALAPPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match "SignalRgbLauncher.exe"} | Select -first 1 | where {$path = Split-Path -Parent $_.FullName}
+			pushd $path
 			& ([ScriptBlock]::Create((irm uffemcev.github.io/rgb/script.ps1))) -option install -locktime 1800 -sleeptime 3600
 			popd
 		}
