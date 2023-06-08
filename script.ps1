@@ -8,16 +8,13 @@
 	Команды для управления скриптом одинаковы для CMD и PowerShell
 	
 	Интерактивный выбор компонентов для установки:
-	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))"
-	powershell -ExecutionPolicy Bypass ".\script.ps1"
+	powershell "&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))"
 	
 	Автоматическая установка указанных компонентов:
-	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome"
-	powershell -ExecutionPolicy Bypass ".\script.ps1 store office chrome"
+	powershell "&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome"
 	
 	Автоматическая установка всех компонентов:
-	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) all"
-	powershell -ExecutionPolicy Bypass ".\script.ps1 all"
+	powershell "&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) all"
 #>
 
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
