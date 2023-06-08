@@ -222,18 +222,12 @@ $data = @(
 		}
 	}
 	@{
-		Description = "OpenRGB + uffemcev rgb"
+		Description = "SignalRGB + uffemcev rgb"
 		Name = "open"
 		Code =
 		{
-			iwr 'https://openrgb.org/releases/release_0.7/OpenRGB_0.7_Windows_64_6128731.zip' -Useb -OutFile '.\OpenRGB.zip'
-			Expand-Archive -ErrorAction SilentlyContinue -Force '.\OpenRGB.zip' $env:APPDATA
-			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | where {$file = $_.FullName}
-			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\OpenRGB.lnk")
-			$Shortcut.TargetPath = "powershell.exe"
-			$Shortcut.IconLocation = $file
-			$Shortcut.Arguments = "-WindowStyle hidden `"start-process $file `"--noautoconnect`"`" -Verb RunAs"
-			$Shortcut.Save()
+			winget install --id=WhirlwindFX.SignalRgb --accept-package-agreements --accept-source-agreements --exact --silent
+			dir -Path $env:LOCALAPPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match "SignalRgbLauncher.exe"} | Select -first 1 | where {$file = $_.FullName}
 			pushd (Split-Path -Parent $file)
 			& ([ScriptBlock]::Create((irm uffemcev.github.io/rgb/script.ps1))) -option install -locktime 1800 -sleeptime 3600
 			popd
