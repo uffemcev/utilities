@@ -376,7 +376,7 @@ while ($status -ne "install")
 }
 
 #ПРОВЕРКА ВЫХОДА
-if ($apps.count -eq 0) {$status = "finish"; cleaner; "`nhttps://github.com/uffemcev/utilities"; "`nBye, $Env:UserName"}
+if ($apps.count -eq 0) {$status = "finish"}
 
 #УСТАНОВКА
 while ($status -ne "finish")
@@ -408,11 +408,14 @@ while ($status -ne "finish")
 		($table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
 		(color "$PercentProcessed%") + (color (" " * $Processed)) + (" " * $Remaining)
 	}
-
+	start-sleep 5
 	$status = "finish"
 }
 
 #ЗАВЕРШЕНИЕ РАБОТЫ
+cleaner
+"`nhttps://github.com/uffemcev/utilities"
+"`nBye, $Env:UserName"
 start-sleep 5
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
