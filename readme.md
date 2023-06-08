@@ -29,7 +29,7 @@
 			</tr>
 			<tr>
 				<td>spotx</td>
-				<td>Spotifyмод</td>
+				<td>Spotify мод</td>
 			</tr>
 			<tr>
 				<td>dpi</td>
@@ -53,7 +53,7 @@
 			</tr>
 			<tr>
 				<td>zip</td>
-				<td>7zip</td>
+				<td>7-zip</td>
 			</tr>
 			<tr>
 				<td>gdrive</td>
