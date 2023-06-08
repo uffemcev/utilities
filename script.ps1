@@ -31,7 +31,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initializ
 {
 	"App is already running, try again soon"
 	start-sleep 5
-	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+	exit
 }
 
 #ПРОВЕРКА ИНТЕРНЕТА
