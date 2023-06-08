@@ -102,11 +102,11 @@
 ## Запуск
 Интерактивный выбор компонентов для установки:
 ```
-powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/utilities.ps1)))"
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))"
 ```
 Автоматическая установка указанных компонентов:
 ```
-powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/utilities.ps1))) store office chrome"
+powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome"
 ```
 
 ## Ссылки
