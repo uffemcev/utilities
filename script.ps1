@@ -372,7 +372,7 @@ while ($status -ne "finish")
 				DEFAULT {'Waiting'}
 			}
 		}}
-		
+
 		#ВЫВОД
 		cleaner
 		($table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
