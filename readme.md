@@ -108,9 +108,9 @@ powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.githu
 ```
 powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/utilities.ps1))) store office chrome"
 ```
-Рекомендую ознакомиться с комментариями в скрипте.
 
 ## Ссылки
+* [Репозиторий](https://github.com/uffemcev/utilities/tree/main)
 * [Rufus](https://github.com/pbatard/rufus)
 * [SophiApp](https://github.com/Sophia-Community/SophiApp)
 * [uffemcev rgb](https://github.com/uffemcev/rgb)
