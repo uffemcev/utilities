@@ -31,7 +31,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initializ
 {
 	"App is already running, try again soon"
 	start-sleep 5
-	get-process | where-object {$_.MainWindowTitle -eq $host.ui.RawUI.WindowTitle} | stop-process
+	get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle | stop-process
 }
 
 #ПРОВЕРКА ИНТЕРНЕТА
@@ -39,14 +39,14 @@ if (!(Get-NetAdapterStatistics))
 {
 	"No internet connection, try again soon"
 	start-sleep 5
-	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+	get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle | stop-process
 }
 
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
-	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+	get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle | stop-process
 }
 
 #ПРОВЕРКА WINGET
@@ -79,7 +79,7 @@ if (get-job | where State -eq "Running")
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
-	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+	get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle | stop-process
 } else
 {
 	$host.ui.RawUI.WindowTitle = 'uffemcev utilities ' + [char]::ConvertFromUtf32(0x1F916)
@@ -407,4 +407,4 @@ cleaner
 start-sleep 5
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
-$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
+get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle | stop-process
