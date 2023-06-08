@@ -8,31 +8,30 @@
 	Команды для управления скриптом одинаковы для CMD и PowerShell
 	
 	Интерактивный выбор компонентов для установки:
-	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1)))"
-	powershell -ExecutionPolicy Bypass ".\utilities.ps1"
+	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))"
+	powershell -ExecutionPolicy Bypass ".\script.ps1"
 	
 	Автоматическая установка указанных компонентов:
-	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) store office chrome"
-	powershell -ExecutionPolicy Bypass ".\utilities.ps1 store office chrome"
+	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome"
+	powershell -ExecutionPolicy Bypass ".\script.ps1 store office chrome"
 	
 	Автоматическая установка всех компонентов:
-	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/utilities/main/utilities.ps1))) all"
-	powershell -ExecutionPolicy Bypass ".\utilities.ps1 all"
+	powershell -ExecutionPolicy Bypass "& ([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) all"
+	powershell -ExecutionPolicy Bypass ".\script.ps1 all"
 #>
 
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
-function cleaner () {$e = [char]27; Write-Host "$e[H$e[J" -NoNewline}
+function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 [console]::CursorVisible = $false
 cleaner
-"`nhttps://github.com/uffemcev/utilities"
 
 #ПРОВЕРКА ДУБЛИКАТА
 if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
-	"`nApp is already running, try again soon"
+	"App is already running, try again soon"
 	start-sleep 5
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 }
@@ -40,7 +39,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -an
 #ПРОВЕРКА ИНТЕРНЕТА
 if (!(Get-NetAdapterStatistics))
 {
-	"`nNo internet connection, try again soon"
+	"No internet connection, try again soon"
 	start-sleep 5
 	$host.ui.RawUI.WindowTitle | where {taskkill /fi "WINDOWTITLE eq $_"}
 }
@@ -78,7 +77,7 @@ if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.1026
 if (get-job | where State -eq "Running")
 {
 	$host.ui.RawUI.WindowTitle = 'initialization'
-	"`nPlease stand by"
+	"Please stand by"
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass `"cd '$pwd'; $_`"" -Verb RunAs}
@@ -227,7 +226,7 @@ $data = @(
 		Name = "open"
 		Code =
 		{
-			iwr 'https://github.com/uffemcev/rgb/releases/download/0.81/OpenRGB.zip' -Useb -OutFile '.\OpenRGB.zip'
+			iwr 'https://openrgb.org/releases/release_0.7/OpenRGB_0.7_Windows_64_6128731.zip' -Useb -OutFile '.\OpenRGB.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\OpenRGB.zip' $env:APPDATA
 			dir -Path $env:APPDATA -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match 'OpenRGB.exe'} | where {$file = $_.FullName}
 			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\OpenRGB.lnk")
@@ -236,7 +235,7 @@ $data = @(
 			$Shortcut.Arguments = "-WindowStyle hidden `"start-process $file `"--noautoconnect`"`" -Verb RunAs"
 			$Shortcut.Save()
 			pushd (Split-Path -Parent $file)
-			& ([ScriptBlock]::Create((irm raw.githubusercontent.com/uffemcev/rgb/main/rgb.ps1))) -option install -locktime 1800 -sleeptime 3600
+			& ([ScriptBlock]::Create((irm uffemcev.github.io/rgb/script.ps1))) -option install -locktime 1800 -sleeptime 3600
 			popd
 		}
 	}
@@ -351,7 +350,6 @@ while ($status -ne "install")
 {
 	#ВЫВОД
 	cleaner
-	"`nhttps://github.com/uffemcev/utilities`n"
 	if ($apps) {"[0] Reset"} else {"[0] All"}
 	($data | Select @{Name="Description"; Expression={
 		if ($_.Name -in $apps) {(color ("[" + ($data.indexof($_)+1) + "]")) + " " + $_.Description}
@@ -404,7 +402,6 @@ while ($status -ne "finish")
 		
 		#ВЫВОД
 		cleaner
-		"`nhttps://github.com/uffemcev/utilities`n"
 		($table | ft @{Expression={$_.Name}; Width=35; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
 		(color "$PercentProcessed%") + (color (" " * $Processed)) + (" " * $Remaining)
 	}
@@ -414,8 +411,7 @@ while ($status -ne "finish")
 
 #ЗАВЕРШЕНИЕ РАБОТЫ
 cleaner
-"`nhttps://github.com/uffemcev/utilities"
-"`nBye, $Env:UserName"
+"Bye, $Env:UserName"
 start-sleep 5
 cd $env:USERPROFILE
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
