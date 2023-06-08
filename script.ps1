@@ -1,20 +1,3 @@
-<#
-	Запускать скрипт можно из любого места любым способом, необходимы права администратора
-
-	Скрипт создаёт рабочий каталог "Users\Имя Пользователя\uffemcev utilities", который удаляется после завершения работы скрипта
-	
-	Для работы скрипта необходим winget, при необходимости установится автоматически
-	
-	Интерактивный выбор компонентов для установки:
-	&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))
-	
-	Автоматическая установка указанных компонентов:
-	&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome
-	
-	Автоматическая установка всех компонентов:
-	&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) all
-#>
-
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
