@@ -27,7 +27,7 @@ function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 cleaner
 
 #ПРОВЕРКА ДУБЛИКАТА
-if (Get-Process | where {$_.mainWindowTitle -match "uffemcev|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
+if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
 	"App is already running, try again soon"
 	start-sleep 5
