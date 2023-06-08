@@ -31,7 +31,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initializ
 {
 	"App is already running, try again soon"
 	start-sleep 5
-	Stop-Process -id $PID
+	get-process | where-object {$_.MainWindowTitle -eq $host.ui.RawUI.WindowTitle} | stop-process
 }
 
 #ПРОВЕРКА ИНТЕРНЕТА
