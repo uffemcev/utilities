@@ -302,6 +302,14 @@ $data = @(
 			}
 		}
 	}
+	@{
+		Description = "MSMG Toolkit"
+		Name = "msmg"
+		Code =
+		{
+			iwr "https://github.com/devbytemehedi/msmg-toolkit/raw/main/Toolkit_v13.4.7z" -Useb -OutFile "$env:USERPROFILE\Desktop\Toolkit.7z"
+		}
+	}
 	<#
 	НОВОЕ ПРИЛОЖЕНИЕ
 	@{
