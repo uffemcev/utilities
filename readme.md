@@ -1,99 +1,83 @@
 ## Описание
-Скрипт .ps1 для автоматической установки компонентов и программ. Имеются параметры для интерактивной и автоматической установки. По возможности устанавливаются последние версии программ в тихом режиме. Работоспособность скрипта проверена на Windows 11 22H2.
+Скрипт для автоматической установки компонентов и программ. Имеются параметры для интерактивной и автоматической установки. По возможности устанавливаются последние версии программ в тихом режиме. Работоспособность скрипта проверена на Windows 11 22H2.
 
 <details>
 	<summary>Компоненты</summary>
 	<table>
 		<thead>
 			<tr>
-				<th>Компонент</th>
-				<th>Описание</th>
+				<th align="center">Компонент</th>
+				<th align="center" width="400px">Описание</th>
+				<th align="center">Компонент</th>
+				<th align="center" width="400px">Описание</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td>all</td>
 				<td>Установить всё</td>
+				<td>zip</td>
+				<td>7-zip</td>
 			</tr>
 			<tr>
 				<td>dns</td>
 				<td>Cloudflare DNS-over-HTTPS</td>
+				<td>gdrive</td>
+				<td>Google Drive</td>
 			</tr>
 			<tr>
 				<td>update</td>
 				<td>Обновление всех приложений на пк</td>
+				<td>adguard</td>
+				<td>AdGuard</td>
 			</tr>
 			<tr>
 				<td>office</td>
 				<td>Office, Word, Excel 365 mondo volume license</td>
+				<td>blender</td>
+				<td>Blender</td>
 			</tr>
 			<tr>
 				<td>spotx</td>
 				<td>Spotify мод</td>
+				<td>open</td>
+				<td>OpenRGB + uffemcev rgb</td>
 			</tr>
 			<tr>
 				<td>dpi</td>
 				<td>GoodbyeDPI, режим 5 + обновление blacklist</td>
+				<td>codec</td>
+				<td>K-Lite Codec Pack Full, ручная установка</td>
 			</tr>
 			<tr>
 				<td>chrome</td>
 				<td>Google Chrome</td>
+				<td>nvidia</td>
+				<td>NVCleanstall, ручная установка</td>
 			</tr>
 			<tr>
 				<td>discord</td>
 				<td>Discord</td>
-			</tr>
-			<tr>
 				<td>steam</td>
 				<td>Steam</td>
 			</tr>
 			<tr>
 				<td>qbit</td>
 				<td>qBittorrent</td>
-			</tr>
-			<tr>
-				<td>zip</td>
-				<td>7-zip</td>
-			</tr>
-			<tr>
-				<td>gdrive</td>
-				<td>Google Drive</td>
-			</tr>
-			<tr>
-				<td>adguard</td>
-				<td>AdGuard</td>
-			</tr>
-			<tr>
-				<td>blender</td>
-				<td>Blender</td>
-			</tr>
-			<tr>
-				<td>open</td>
-				<td>OpenRGB + uffemcev rgb</td>
-			</tr>
-				<tr>
-				<td>codec</td>
-				<td>K-Lite Codec Pack Full, ручная установка</td>
-			</tr>
-			<tr>
-				<td>nvidia</td>
-				<td>NVCleanstall, ручная установка</td>
+				<td>trackers</td>
+				<td>Ссылки на торрент трекеры</td>
 			</tr>
 			<tr>
 				<td>win</td>
 				<td>Windows 11 22H2 iso folder</td>
-			</tr>
-			<tr>
-				<td>rufus</td>
-				<td>Rufus</td>
-			</tr>
-			<tr>
 				<td>sophia</td>
 				<td>SophiApp Tweaker</td>
 			</tr>
 			<tr>
-				<td>trackers</td>
-				<td>Ссылки на торрент трекеры</td>
+				<td>rufus</td>
+				<td>Rufus</td>
+				<td>msmg</td>
+				<td>MSMG Toolkit</td>
 			</tr>
 		</tbody>
 	</table>
