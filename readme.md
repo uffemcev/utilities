@@ -64,20 +64,14 @@
 			<tr>
 				<td>qbit</td>
 				<td>qBittorrent</td>
-				<td>trackers</td>
-				<td>Ссылки на торрент трекеры</td>
-			</tr>
-			<tr>
-				<td>win</td>
-				<td>Windows 11 22H2 iso folder</td>
 				<td>sophia</td>
 				<td>SophiApp Tweaker</td>
 			</tr>
 			<tr>
+				<td>win</td>
+				<td>Windows 11 22H2 iso folder</td>
 				<td>rufus</td>
 				<td>Rufus</td>
-				<td>msmg</td>
-				<td>MSMG Toolkit</td>
 			</tr>
 		</tbody>
 	</table>
