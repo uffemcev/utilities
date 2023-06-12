@@ -41,18 +41,6 @@ if (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | wh
 	} | out-null
 }
 
-#ПРОВЕРКА TERMINAL
-if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
-{
-	start-job {
-		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-		iwr "https://github.com/microsoft/terminal/releases/download/v1.17.11461.0/Microsoft.WindowsTerminal_1.17.11461.0_8wekyb3d8bbwe.msixbundle_Windows10_PreinstallKit.zip" -Useb -OutFile ".\Terminal.zip"
-		Expand-Archive ".\Terminal.zip" ".\"
-		Add-AppxPackage -Path ".\1ff951bd438b4b28b40cb1599e7c9f72.msixbundle" -DependencyPath ".\Microsoft.VCLibs.140.00.UWPDesktop_14.0.30704.0_x64__8wekyb3d8bbwe.appx", ".\Microsoft.UI.Xaml.2.7_7.2208.15002.0_x64__8wekyb3d8bbwe.appx"
-		Get-AppxPackage -allusers Microsoft.WindowsTerminal | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
-	} | out-null
-}
-
 #ОЖИДАНИЕ ПРОВЕРОК
 if (get-job | where State -eq "Running")
 {
