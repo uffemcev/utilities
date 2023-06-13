@@ -26,8 +26,8 @@ if (!(Get-NetAdapterStatistics))
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	try {$MyInvocation.line | where {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd $pwd\; $_}" -Verb RunAs}}
-	catch {$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass -Command &{cd $pwd; $_}" -Verb RunAs}}
+	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd $pwd\; $($MyInvocation.line)}" -Verb RunAs}
+	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd $pwd; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
@@ -48,8 +48,8 @@ if (get-job | where State -eq "Running")
 	"Please stand by"
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-	try {$MyInvocation.line | where {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd $pwd\; $_}" -Verb RunAs}}
-	catch {$MyInvocation.line | where {Start-Process powershell "-ExecutionPolicy Bypass -Command &{cd $pwd; $_}" -Verb RunAs}}
+	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd $pwd\; $($MyInvocation.line)}" -Verb RunAs}
+	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd $pwd; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 } else
 {
@@ -324,8 +324,8 @@ while ($status -ne "finish")
 	{
 		#ЗАПУСК
 		Get-job | Wait-Job | out-null
-		try {($data | Where Name -eq $apps[$i]).Code | where {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock ($_)} | out-null}
-		catch {{throw} | where {Start-Job -Name ($apps[$i]) -ScriptBlock ($_)} | out-null}
+		try {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock $(($data | Where Name -eq $apps[$i]).Code) | out-null}
+		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {throw} | out-null}
 		
 		#ПОДСЧЁТ
 		$Processed = [Math]::Round(($i) / $apps.Count * 47,0)
