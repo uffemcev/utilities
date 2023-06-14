@@ -36,8 +36,18 @@ if (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | wh
 {
 	start-job {
 		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-		if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {iwr raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1 -Useb | iex}
+		if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {&([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))}
 		Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+	} | out-null
+}
+
+#ПРОВЕРКА TERMINAL
+if (!(dir -Path ($env:Path -split ';') -ErrorAction SilentlyContinue -Force | where {$_ -in 'wt.exe'}))
+{
+	start-job {
+		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
+		if (!(Get-AppxPackage -allusers Microsoft.WindowsTerminal)) {&([ScriptBlock]::Create((irm uffemcev.github.io/terminal/script.ps1)))}
+		Get-AppxPackage -allusers Microsoft.WindowsTerminal | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	} | out-null
 }
 
