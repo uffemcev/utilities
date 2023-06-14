@@ -58,6 +58,8 @@ if (get-job | where State -eq "Running")
 	"Please stand by"
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+	$MyInvocation
+	pause
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd $pwd\; $($MyInvocation.line)}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd $pwd; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
