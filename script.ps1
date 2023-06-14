@@ -10,7 +10,7 @@ cleaner
 #ПРОВЕРКА ДУБЛИКАТА
 if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
-	"App is already running, try again soon"
+	"Script is already running"
 	start-sleep 5
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
@@ -18,7 +18,7 @@ if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initializ
 #ПРОВЕРКА ИНТЕРНЕТА
 if (!(Get-NetAdapterStatistics))
 {
-	"No internet connection, try again soon"
+	"No internet connection"
 	start-sleep 5
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
@@ -26,8 +26,8 @@ if (!(Get-NetAdapterStatistics))
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd $pwd\; $($MyInvocation.line)}" -Verb RunAs}
-	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd $pwd; $($MyInvocation.line)}" -Verb RunAs}
+	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
+	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
@@ -46,7 +46,7 @@ if (!(dir -Path ($env:Path -split ';') | where Name -match 'wt.exe'))
 {
 	start-job {
 		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-		if (!(Get-AppxPackage -allusers Microsoft.WindowsTerminal)) {&([ScriptBlock]::Create((irm uffemcev.github.io/terminal/script.ps1)))}
+		if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0") {&([ScriptBlock]::Create((irm uffemcev.github.io/terminal/script.ps1)))}
 		Get-AppxPackage -allusers Microsoft.WindowsTerminal | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	} | out-null
 }
@@ -58,10 +58,8 @@ if (get-job | where State -eq "Running")
 	"Please stand by"
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-	$MyInvocation
-	pause
-	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd $pwd\; $($MyInvocation.line)}" -Verb RunAs}
-	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd $pwd; $($MyInvocation.line)}" -Verb RunAs}
+	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
+	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 } else
 {
