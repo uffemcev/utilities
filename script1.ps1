@@ -28,11 +28,8 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 {
 	#try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))" -Verb RunAs}
 	#try {Start-Process wt "-d $pwd powershell -ExecutionPolicy Bypass -Command $($MyInvocation.line)" -Verb RunAs}
-	switch ($MyInvocation)
-	{
-		{$_.MyCommand.Path} {Start-Process wt "powershell -ExecutionPolicy Bypass -Command $($_.MyCommand.Path)" -Verb RunAs}
-		DEFAULT {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command $($_.Line)" -Verb RunAs}
-	}
+	try {$MyInvocation.MyCommand.Path | where {Start-Process wt "powershell -ExecutionPolicy Bypass -Command $_" -Verb RunAs}}
+	catch {$MyInvocation.Line | where {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command $_" -Verb RunAs}}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
