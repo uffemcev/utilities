@@ -26,7 +26,7 @@ if (!(Get-NetAdapterStatistics))
 #$MyInvocation.MyCommand.Path
 #$MyInvocation.MyCommand.Definition
 $PSScriptRoot
-MyInvocation
+$MyInvocation
 pause
 
 #ПРОВЕРКА ПРАВ
