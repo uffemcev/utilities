@@ -23,10 +23,10 @@ if (!(Get-NetAdapterStatistics))
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
-$MyInvocation.MyCommand.Path
+#$MyInvocation.MyCommand.Path
 #$MyInvocation.MyCommand.Definition
-#$PSScriptRoot
-#MyInvocation
+$PSScriptRoot
+MyInvocation
 pause
 
 #ПРОВЕРКА ПРАВ
