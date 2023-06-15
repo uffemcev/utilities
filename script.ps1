@@ -23,6 +23,10 @@ if (!(Get-NetAdapterStatistics))
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
+$MyInvocation.MyCommand.Path
+$MyInvocation.MyCommand.Definition
+pause
+
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
