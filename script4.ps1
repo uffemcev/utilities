@@ -24,10 +24,7 @@ if (!(Get-NetAdapterStatistics))
 }
 
 #$MyInvocation.MyCommand.Path
-#$MyInvocation.MyCommand.Definition
-#$PSScriptRoot
-#$MyInvocation
-$MyInvocation.MyCommand | gm
+$MyInvocation.MyCommand.Definition
 pause
 
 #ПРОВЕРКА ПРАВ
