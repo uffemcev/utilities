@@ -26,7 +26,8 @@ if (!(Get-NetAdapterStatistics))
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
 {
-	Start-Process -Verb RunAs powershell "-ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}"
+	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
+	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
@@ -57,7 +58,8 @@ if (get-job | where State -eq "Running")
 	"Please stand by"
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-	Start-Process -Verb RunAs powershell "-ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}"
+	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
+	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 } else
 {
