@@ -42,12 +42,11 @@ if (!(dir -Path ($env:Path -split ';') | where Name -match 'winget.exe'))
 }
 
 #ПРОВЕРКА TERMINAL
-if (!(dir -Path ($env:Path -split ';') | where Name -match 'wt.exe'))
+if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
 {
 	start-job {
-		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
-		if (!(Get-AppxPackage -allusers Microsoft.WindowsTerminal)) {&([ScriptBlock]::Create((irm uffemcev.github.io/terminal/script.ps1)))}
-		Get-AppxPackage -allusers Microsoft.WindowsTerminal | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+		while ($true) {try {winget; break} catch {start-sleep 1}}
+		winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
 	} | out-null
 }
 
