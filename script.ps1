@@ -140,7 +140,9 @@ $data = @(
 		Name = "chrome"
 		Code =
 		{
-			winget install --id=Google.Chrome --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "Google.Chrome"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -148,7 +150,9 @@ $data = @(
 		Name = "discord"
 		Code =
 		{
-			winget install --id=Discord.Discord --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "Discord.Discord"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -156,7 +160,9 @@ $data = @(
 		Name = "steam"
 		Code =
 		{
-			winget install --id=Valve.Steam --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "Valve.Steam"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -164,7 +170,9 @@ $data = @(
 		Name = "qbit"
 		Code =
 		{
-			winget install --id=qBittorrent.qBittorrent --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "qBittorrent.qBittorrent"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -172,7 +180,9 @@ $data = @(
 		Name = "zip"
 		Code =
 		{
-			winget install --id=7zip.7zip --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "7zip.7zip"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -180,7 +190,9 @@ $data = @(
 		Name = "gdrive"
 		Code =
 		{
-			winget install --id=Google.Drive --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "Google.Drive"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -188,7 +200,9 @@ $data = @(
 		Name = "adguard"
 		Code =
 		{
-			winget install --id=AdGuard.AdGuard --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "AdGuard.AdGuard"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -196,7 +210,9 @@ $data = @(
 		Name = "blender"
 		Code =
 		{
-			winget install --id=BlenderFoundation.Blender --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "BlenderFoundation.Blender"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -204,7 +220,9 @@ $data = @(
 		Name = "open"
 		Code =
 		{
-			winget install --id=WhirlwindFX.SignalRgb --accept-package-agreements --accept-source-agreements --exact --silent
+			$id = "WhirlwindFX.SignalRgb"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!(winget list | where {$_ -match $id})) {throw}
 			dir -Path $env:LOCALAPPDATA -Recurse | where Name -match "SignalRgbLauncher.exe" | where {$path = Split-Path -Parent $_.FullName}
 			pushd $path
 			& ([ScriptBlock]::Create((irm uffemcev.github.io/rgb/script.ps1))) -option install -locktime 1800 -sleeptime 3600
@@ -216,7 +234,9 @@ $data = @(
 		Name = "codec"
 		Code =
 		{
-			winget install --id=CodecGuide.K-LiteCodecPack.Full --accept-package-agreements --accept-source-agreements --exact --interactive
+			$id = "CodecGuide.K-LiteCodecPack.Full"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
@@ -224,7 +244,9 @@ $data = @(
 		Name = "nvidia"
 		Code =
 		{
-			winget install --id=TechPowerUp.NVCleanstall --accept-package-agreements --accept-source-agreements --exact --interactive
+			$id = "TechPowerUp.NVCleanstall"
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
+			if (!(winget list | where {$_ -match $id})) {throw}
 		}
 	}
 	@{
