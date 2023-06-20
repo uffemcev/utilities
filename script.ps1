@@ -37,7 +37,7 @@ if (!(dir -Path ($env:Path -split ';') | where Name -match 'winget.exe'))
 	start-job {
 		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
 		if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {&([ScriptBlock]::Create((irm raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1)))}
-		Get-AppxPackage -allusers Microsoft.DesktopAppInstaller | where {Add-AppxPackage -ForceApplicationShutdown -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}	
+		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 	} | out-null
 }
 
