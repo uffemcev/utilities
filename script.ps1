@@ -1,7 +1,6 @@
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 [console]::CursorVisible = $false
@@ -21,6 +20,12 @@ if (!(Get-NetAdapterStatistics))
 	"No internet connection"
 	start-sleep 5
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+}
+
+#ПРОВЕРКА ПОЛИТИК
+if ((Get-ExecutionPolicy) -ne "Bypass")
+{
+	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 }
 
 #ПРОВЕРКА ПРАВ
