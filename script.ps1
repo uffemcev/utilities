@@ -390,6 +390,6 @@ while ($status -ne "finish")
 cleaner
 "Bye, $Env:UserName"
 start-sleep 5
-cd $env:USERPROFILE
+cd \
 ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
 (get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
