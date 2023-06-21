@@ -289,7 +289,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Rufus"
+		Description = "Rufus Portable"
 		Name = "rufus"
 		Code =
 		{
@@ -300,7 +300,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "SophiApp Tweaker"
+		Description = "SophiApp Tweaker Portable"
 		Name = "sophia"
 		Code =
 		{
