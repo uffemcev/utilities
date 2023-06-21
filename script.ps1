@@ -333,13 +333,11 @@ while ($status -ne "install")
 	#ВЫВОД
 	cleaner
 	if ($apps) {"[0] Reset"} else {"[0] All"}
-	
 	$table = $data | Select @{Name="Description"; Expression={
 		if ($_.Name -in $apps) {(color ("[" + ($data.indexof($_)+1) + "]")) + " " + $_.Description}
 		else {"[" + ($data.indexof($_)+1) + "] " + $_.Description}
 	}}
 	($table | ft -HideTableHeaders | Out-String).Trim()
-
 	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
 	#ПОДСЧЁТ	
