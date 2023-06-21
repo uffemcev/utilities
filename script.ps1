@@ -293,8 +293,8 @@ $data = @(
 		Name = "rufus"
 		Code =
 		{
-			$uri = "https://api.github.com/repos/pbatard/rufus/releases/latest"
-			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+			$url = "https://api.github.com/repos/pbatard/rufus/releases/latest"
+			$get = Invoke-RestMethod -uri $url -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "rufus.*.exe$" | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
 		}
@@ -304,8 +304,8 @@ $data = @(
 		Name = "sophia"
 		Code =
 		{
-			$uri = "https://api.github.com/repos/Sophia-Community/SophiApp/releases/latest"
-			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+			$url = "https://api.github.com/repos/Sophia-Community/SophiApp/releases/latest"
+			$get = Invoke-RestMethod -uri $url -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "SophiApp.zip" | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile ".\SophiApp.zip"
 			Expand-Archive -ErrorAction SilentlyContinue -Force ".\SophiApp.zip" ([Environment]::GetFolderPath("Desktop"))
@@ -333,10 +333,13 @@ while ($status -ne "install")
 	#ВЫВОД
 	cleaner
 	if ($apps) {"[0] Reset"} else {"[0] All"}
-	($data | Select @{Name="Description"; Expression={
+	
+	$table = $data | Select @{Name="Description"; Expression={
 		if ($_.Name -in $apps) {(color ("[" + ($data.indexof($_)+1) + "]")) + " " + $_.Description}
 		else {"[" + ($data.indexof($_)+1) + "] " + $_.Description}
-	}} | ft -HideTableHeaders | Out-String).Trim()
+	}}
+	($table | ft -HideTableHeaders | Out-String).Trim()
+
 	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
 	#ПОДСЧЁТ	
