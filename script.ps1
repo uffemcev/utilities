@@ -290,8 +290,8 @@ $data = @(
 		Name = "rufus"
 		Code =
 		{
-			$uri = "https://api.github.com/repos/pbatard/rufus/releases/latest"
-			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+			$url = "https://api.github.com/repos/pbatard/rufus/releases/latest"
+			$get = Invoke-RestMethod -uri $url -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "rufus.*.exe$" | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
 		}
@@ -301,12 +301,11 @@ $data = @(
 		Name = "sophia"
 		Code =
 		{
-			iwr "https://github.com/Sophia-Community/SophiApp/releases/download/1.0.94/SophiApp.zip" -Useb -OutFile ".\SophiApp.zip"
-			Expand-Archive -ErrorAction SilentlyContinue -Force ".\SophiApp.zip" $Env:Programfiles
-			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force -Recurse | where {$_ -match '^SophiApp.exe$'} | where {$file = $_.FullName}
-			$Shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$env:USERPROFILE\Desktop\SophiApp.lnk")
-			$Shortcut.TargetPath = $file
-			$Shortcut.Save()
+			$url = "https://api.github.com/repos/Sophia-Community/SophiApp/releases/latest"
+			$get = Invoke-RestMethod -uri $url -Method Get -ErrorAction stop
+			$data = $get.assets | Where-Object name -match "SophiApp.zip" | select -first 1
+   			iwr $data.browser_download_url -Useb -OutFile ".\SophiApp.zip"
+			Expand-Archive -ErrorAction SilentlyContinue -Force ".\SophiApp.zip" ([Environment]::GetFolderPath("Desktop"))
 		}
 	}
 	<#
