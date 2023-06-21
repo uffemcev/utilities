@@ -65,13 +65,13 @@
 				<td>qbit</td>
 				<td>qBittorrent</td>
 				<td>sophia</td>
-				<td>SophiApp Tweaker</td>
+				<td>SophiApp Tweaker Portable</td>
 			</tr>
 			<tr>
 				<td>win</td>
 				<td>Windows 11 22H2 iso folder</td>
 				<td>rufus</td>
-				<td>Rufus</td>
+				<td>Rufus Portable</td>
 			</tr>
 		</tbody>
 	</table>
