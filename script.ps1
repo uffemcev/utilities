@@ -133,7 +133,10 @@ $data = @(
 		Name = "dpi"
 		Code =
 		{
-			iwr 'https://github.com/ValdikSS/GoodbyeDPI/releases/latest/download/goodbyedpi-0.2.2.zip' -Useb -OutFile '.\goodbyedpi.zip'
+			$uri = "https://api.github.com/repos/ValdikSS/GoodbyeDPI/releases/latest"
+			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+			$data = $get.assets | Where-Object name -match "goodbyedpi.*.zip$" | select -first 1
+   			iwr $data.browser_download_url -Useb -OutFile '.\goodbyedpi.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
 			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | where {$dir = $_.FullName}
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
