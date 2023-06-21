@@ -290,7 +290,10 @@ $data = @(
 		Name = "rufus"
 		Code =
 		{
-			iwr "https://github.com/pbatard/rufus/releases/download/v4.0/rufus-4.0p.exe" -Useb -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
+			$uri = "https://api.github.com/repos/pbatard/rufus/releases/latest"
+			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+			$data = $get.assets | Where-Object name -match "rufus.*.exe$" | select -first 1
+   			iwr $data.browser_download_url -Useb -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
 		}
 	}
 	@{
