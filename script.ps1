@@ -150,7 +150,7 @@ $data = @(
 		{
 			$id = "Google.Chrome"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -160,7 +160,7 @@ $data = @(
 		{
 			$id = "Discord.Discord"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -170,7 +170,7 @@ $data = @(
 		{
 			$id = "Valve.Steam"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -180,7 +180,7 @@ $data = @(
 		{
 			$id = "qBittorrent.qBittorrent"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -190,7 +190,7 @@ $data = @(
 		{
 			$id = "7zip.7zip"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -200,7 +200,7 @@ $data = @(
 		{
 			$id = "Google.Drive"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -210,7 +210,7 @@ $data = @(
 		{
 			$id = "AdGuard.AdGuard"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -220,7 +220,7 @@ $data = @(
 		{
 			$id = "BlenderFoundation.Blender"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -230,7 +230,7 @@ $data = @(
 		{
 			$id = "WhirlwindFX.SignalRgb"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 			dir -Path $env:LOCALAPPDATA -Recurse | where Name -match "SignalRgbLauncher.exe" | where {$path = Split-Path -Parent $_.FullName}
 			pushd $path
 			& ([ScriptBlock]::Create((irm uffemcev.github.io/rgb/script.ps1))) -option install -locktime 1800 -sleeptime 3600
@@ -244,7 +244,7 @@ $data = @(
 		{
 			$id = "CodecGuide.K-LiteCodecPack.Full"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
@@ -254,7 +254,7 @@ $data = @(
 		{
 			$id = "TechPowerUp.NVCleanstall"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
-			if (!(winget list | where {$_ -match $id})) {throw; exit}
+			if (!((winget list) -match $id)) {throw; exit}
 		}
 	}
 	@{
