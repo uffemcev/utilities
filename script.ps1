@@ -37,7 +37,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 
 #ПРОВЕРКА WINGET
-if (!(dir -Path ($env:Path -split ';') | where Name -match 'winget.exe'))
+if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | where Name -match 'winget.exe'))
 {
 	start-job {
 		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
