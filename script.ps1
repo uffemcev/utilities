@@ -7,7 +7,7 @@ function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 cleaner
 
 #ПРОВЕРКА ДУБЛИКАТА
-if (Get-Process | where {$_.mainWindowTitle -match "uffemcev utilities|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
+if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
 	"Script is already running"
 	start-sleep 5
@@ -40,7 +40,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | where Name -match 'winget.exe'))
 {
 	start-job {
-		cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
+		cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
 		if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force}
 		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 	} | out-null
@@ -67,8 +67,8 @@ if (get-job | where State -eq "Running")
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 } else
 {
-	$host.ui.RawUI.WindowTitle = 'uffemcev utilities ' + [char]::ConvertFromUtf32(0x1F916)
-	cd (ni -Force -Path "$env:USERPROFILE\uffemcev utilities" -ItemType Directory)
+	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
+	cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
 	get-job | remove-job | out-null
 }
 
@@ -393,5 +393,5 @@ cleaner
 "Bye, $Env:UserName"
 start-sleep 5
 cd \
-ri -Recurse -Force "$env:USERPROFILE\uffemcev utilities"
+ri -Recurse -Force "$env:USERPROFILE\utilities"
 (get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
