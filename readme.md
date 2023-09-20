@@ -40,8 +40,8 @@
 			<tr>
 				<td>spotx</td>
 				<td>Spotify мод</td>
-				<td>open</td>
-				<td>OpenRGB + uffemcev rgb</td>
+				<td>signal</td>
+				<td>SignalRGB</td>
 			</tr>
 			<tr>
 				<td>dpi</td>
