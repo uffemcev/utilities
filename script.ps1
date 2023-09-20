@@ -225,7 +225,7 @@ $data = @(
 	}
 	@{
 		Description = "SignalRGB"
-		Name = "open"
+		Name = "signal"
 		Code =
 		{
 			$id = "WhirlwindFX.SignalRgb"
