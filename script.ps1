@@ -224,17 +224,13 @@ $data = @(
 		}
 	}
 	@{
-		Description = "SignalRGB + uffemcev rgb"
+		Description = "SignalRGB"
 		Name = "open"
 		Code =
 		{
 			$id = "WhirlwindFX.SignalRgb"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
-			dir -Path $env:LOCALAPPDATA -Recurse | where Name -match "SignalRgbLauncher.exe" | where {$path = Split-Path -Parent $_.FullName}
-			pushd $path
-			& ([ScriptBlock]::Create((irm uffemcev.github.io/rgb/script.ps1))) -option install -locktime 1800 -sleeptime 3600
-			popd
 		}
 	}
 	@{
