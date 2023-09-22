@@ -41,7 +41,7 @@ if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | wh
 {
 	start-job {
 		cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
-		if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force}
+		if (!(Get-AppxPackage -allusers Microsoft.DesktopAppInstaller)) {&([ScriptBlock]::Create((irm https://github.com/asheroto/winget-install/blob/Testing/winget-install.ps1))) -Force}
 		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 	} | out-null
 }
