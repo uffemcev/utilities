@@ -90,7 +90,6 @@
 ## Ссылки
 * [Rufus](https://github.com/pbatard/rufus)
 * [SophiApp](https://github.com/Sophia-Community/SophiApp)
-* [uffemcev rgb](https://github.com/uffemcev/rgb)
 * [Winget installer](https://github.com/asheroto/winget-installer)
 * [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
 * [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
