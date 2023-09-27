@@ -69,7 +69,7 @@
 			</tr>
 			<tr>
 				<td>win</td>
-				<td>Windows 11 22H2 iso folder</td>
+				<td>Windows 11 23H2 iso folder</td>
 				<td>rufus</td>
 				<td>Rufus portable</td>
 			</tr>
