@@ -254,11 +254,11 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Windows 11 22H2 iso folder"
+		Description = "Windows 11 23H2 iso folder"
 		Name = "win"
 		Code =
 		{
-			$os = "Windows 11, version 22H2 [x64]"
+			$os = "Windows 11, version 23H2 [x64]"
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
 			$id = ((irm "https://uup.rg-adguard.net/api/GetVersion?id=1").versions | where name -eq $os).UpdateId
