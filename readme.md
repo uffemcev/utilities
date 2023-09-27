@@ -90,7 +90,7 @@
 ## Ссылки
 * [Rufus](https://github.com/pbatard/rufus)
 * [SophiApp](https://github.com/Sophia-Community/SophiApp)
-* [Winget installer](https://github.com/asheroto/winget-installer)
+* [Winget install](https://github.com/asheroto/winget-install)
 * [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI)
 * [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
 * [SpotX](https://github.com/amd64fox/SpotX)
