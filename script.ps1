@@ -47,10 +47,10 @@ if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | wh
 }
 
 #ПРОВЕРКА TERMINAL
-if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
+if (!(Get-AppxPackage Microsoft.WindowsTerminal))
 {
 	start-job {
-		while ($true) {try {winget | out-null; break} catch {start-sleep 1}}
+		while ($true) {try {winget; break} catch {start-sleep 1}}
 		winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
 	} | out-null
 }
