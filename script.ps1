@@ -47,7 +47,7 @@ if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | wh
 }
 
 #ПРОВЕРКА TERMINAL
-if (!(Get-AppxPackage Microsoft.WindowsTerminal))
+if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
 {
 	start-job {
 		while ($true) {try {winget; break} catch {start-sleep 1}}
