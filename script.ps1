@@ -45,15 +45,13 @@ if (get-job | where State -eq "Running")
 	"Please stand by"
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
-	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
-} else
-{
-	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
-	cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
-	get-job | remove-job | out-null
 }
+
+#НАЧАЛО РАБОТЫ
+ri -Recurse -Force -ErrorAction SilentlyContinue "$env:USERPROFILE\utilities"
+$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
+cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
+get-job | remove-job | out-null
 
 #ПРИЛОЖЕНИЯ
 $data = @(
