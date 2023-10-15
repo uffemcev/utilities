@@ -7,9 +7,10 @@ function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 cleaner
 
 #ПРОВЕРКА ДУБЛИКАТА
-if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
+if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization|error" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
 {
-	"Script is already running"
+	$host.ui.RawUI.WindowTitle = 'error'
+ 	"Script is already running"
 	start-sleep 5
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
