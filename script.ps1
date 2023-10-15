@@ -14,14 +14,6 @@ if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization" -a
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
-#ПРОВЕРКА ИНТЕРНЕТА
-if (!(Get-NetAdapterStatistics))
-{
-	"No internet connection"
-	start-sleep 5
-	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
-}
-
 #ПРОВЕРКА ПОЛИТИК
 if ((Get-ExecutionPolicy) -ne "Bypass")
 {
@@ -43,15 +35,6 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 		cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
 		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force
 		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
-	} | out-null
-}
-
-#ПРОВЕРКА TERMINAL
-if ((Get-AppxPackage Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
-{
-	start-job {
-		while ($true) {if ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1} else {break}}
-		winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
 	} | out-null
 }
 
