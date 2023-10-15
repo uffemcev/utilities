@@ -37,7 +37,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 
 #ПРОВЕРКА WINGET
-if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | where Name -match 'winget.exe'))
+if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 {
 	start-job {
 		cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
@@ -47,10 +47,10 @@ if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | wh
 }
 
 #ПРОВЕРКА TERMINAL
-if ((Get-AppxPackage -allusers Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
+if ((Get-AppxPackage Microsoft.WindowsTerminal).Version -lt "1.16.10261.0")
 {
 	start-job {
-		while ($true) {try {winget; break} catch {start-sleep 1}}
+		while ($true) {if ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1} else {break}}
 		winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
 	} | out-null
 }
