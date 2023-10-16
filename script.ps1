@@ -37,6 +37,19 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 	} | out-null
 }
 
+#ПРОВЕРКА TERMINAL
+if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | where Name -match 'wt.exe'))
+{
+	start-job {
+		if (!(Get-Appxpackage -allusers Microsoft.WindowsTerminal))
+		{
+			while ($true) {if ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1} else {break}}
+			winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
+		}
+		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
+	} | out-null
+}
+
 #ОЖИДАНИЕ ПРОВЕРОК
 if (get-job | where State -eq "Running")
 {
@@ -44,13 +57,18 @@ if (get-job | where State -eq "Running")
 	"Please stand by"
 	get-job | wait-job | out-null
 	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+ 	reg add "HKCU\Console\%%%%Startup" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
+	reg add "HKCU\Console\%%%%Startup" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f
+ 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
+	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
+	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+} else
+{
+	ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
+	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
+	cd ([System.IO.Path]::GetTempPath())
+	get-job | remove-job | out-null
 }
-
-#НАЧАЛО РАБОТЫ
-ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
-$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
-cd ([System.IO.Path]::GetTempPath())
-get-job | remove-job | out-null
 
 #ПРИЛОЖЕНИЯ
 $data = @(
