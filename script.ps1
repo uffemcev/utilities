@@ -373,5 +373,5 @@ cleaner
 "Bye, $Env:UserName"
 start-sleep 5
 cd \
-ri -Recurse -Force ([System.IO.Path]::GetTempPath())
+ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
 (get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
