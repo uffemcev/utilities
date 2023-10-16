@@ -35,7 +35,6 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 	start-job {
 		cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
 		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force
-		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 	} | out-null
 }
 
