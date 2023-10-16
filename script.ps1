@@ -1,8 +1,8 @@
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
-reg add "HKCU\Console\%%Startup" /v "DelegationConsole" /t REG_SZ /d "{00000000-0000-0000-0000-000000000000}" /f | out-null
-reg add "HKCU\Console\%%Startup" /v "DelegationTerminal" /t REG_SZ /d "{00000000-0000-0000-0000-000000000000}" /f | out-null
+reg add "HKCU\Console\%%Startup" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f | out-null
+reg add "HKCU\Console\%%Startup" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f | out-null
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 [console]::CursorVisible = $false
