@@ -1,8 +1,6 @@
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
-reg add "HKCU\Console\%%Startup" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f | out-null
-reg add "HKCU\Console\%%Startup" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f | out-null
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 [console]::CursorVisible = $false
@@ -40,7 +38,7 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 }
 
 #ПРОВЕРКА TERMINAL
-if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | where Name -match 'wt.exe'))
+if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console\%%Startup))
 {
 	start-job {
 		if (!(Get-Appxpackage -allusers Microsoft.WindowsTerminal))
@@ -49,6 +47,8 @@ if (!(dir -Path ($env:Path -split ';') -errorAction SilentlyContinue -Force | wh
 			winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
 		}
 		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
+		reg add "HKCU\Console\%%Startup" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
+		reg add "HKCU\Console\%%Startup" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f
 	} | out-null
 }
 
