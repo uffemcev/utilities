@@ -180,7 +180,7 @@ $data = @(
 		Name = "gdrive"
 		Code =
 		{
-			$id = "Google.Drive"
+			$id = "Google.GoogleDrive"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
 		}
