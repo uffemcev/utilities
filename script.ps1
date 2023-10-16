@@ -47,9 +47,9 @@ if (get-job | where State -eq "Running")
 }
 
 #НАЧАЛО РАБОТЫ
-ri -Recurse -Force -ErrorAction SilentlyContinue "$env:USERPROFILE\utilities"
+ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
 $host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
-cd (ni -Force -Path "$env:USERPROFILE\utilities" -ItemType Directory)
+cd ([System.IO.Path]::GetTempPath())
 get-job | remove-job | out-null
 
 #ПРИЛОЖЕНИЯ
@@ -373,5 +373,5 @@ cleaner
 "Bye, $Env:UserName"
 start-sleep 5
 cd \
-ri -Recurse -Force "$env:USERPROFILE\utilities"
+ri -Recurse -Force ([System.IO.Path]::GetTempPath())
 (get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
