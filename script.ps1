@@ -32,9 +32,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 #ПРОВЕРКА WINGET
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 {
-	start-job {
-		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force
-	} | out-null
+	&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force
 }
 
 #ПРОВЕРКА TERMINAL
