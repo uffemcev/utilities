@@ -36,8 +36,6 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force
 	} | out-null
 }
-get-job | Receive-Job
-pause
 
 #ПРОВЕРКА TERMINAL
 if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console\%%Startup))
