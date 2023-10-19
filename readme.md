@@ -26,8 +26,8 @@
 				<td>Google Drive</td>
 			</tr>
 			<tr>
-				<td>update</td>
-				<td>Обновление всех приложений на пк</td>
+				<td>sophia</td>
+				<td>SophiApp Tweaker portable</td>
 				<td>adguard</td>
 				<td>AdGuard</td>
 			</tr>
@@ -64,12 +64,6 @@
 			<tr>
 				<td>qbit</td>
 				<td>qBittorrent</td>
-				<td>sophia</td>
-				<td>SophiApp Tweaker portable</td>
-			</tr>
-			<tr>
-				<td>win</td>
-				<td>Windows 11 23H2 iso folder</td>
 				<td>rufus</td>
 				<td>Rufus portable</td>
 			</tr>
