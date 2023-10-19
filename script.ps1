@@ -93,16 +93,6 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Update all apps on pc"
-		Name = "update"
-		Code =
-		{
-			winget upgrade --all --silent --accept-source-agreements
-			Get-CimInstance -Namespace "Root\cimv2\mdm\dmmap" -ClassName "MDM_EnterpriseModernAppManagement_AppManagement01" | Invoke-CimMethod -MethodName UpdateScanMethod
-			(Get-WmiObject -Namespace "Root\cimv2\mdm\dmmap" -Class "MDM_EnterpriseModernAppManagement_AppManagement01").UpdateScanMethod()
-		}
-	}
-	@{
 		Description = "Office, Word, Excel 365 mondo volume license"
 		Name = "office"
 		Code =
@@ -249,37 +239,6 @@ $data = @(
 			$id = "TechPowerUp.NVCleanstall"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
 			if (!((winget list) -match $id)) {throw; exit}
-		}
-	}
-	@{
-		Description = "Windows 11 23H2 iso folder"
-		Name = "win"
-		Code =
-		{
-			$os = "Windows 11, version 23H2 [x64]"
-			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
-			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
-			$id = ((irm "https://uup.rg-adguard.net/api/GetVersion?id=1").versions | where name -eq $os).UpdateId
-			[string]$link = (iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetFiles?id=$id&lang=ru-ru&edition=core&pack=ru&down_aria2=yes").Links.href | where {$_ -match ".cmd"}
-			iwr $link -Useb -OutFile '.\download-UUP.cmd'
-			iwr 'https://github.com/uup-dump/containment-zone/raw/master/7zr.exe' -Useb -OutFile '.\7zr.exe'
-			iwr 'https://github.com/uup-dump/containment-zone/raw/master/uup-converter-wimlib.7z' -Useb -OutFile '.\uup.7z'
-			.\7zr.exe x *.7z
-			(gc ".\download-UUP.cmd") -replace ('^set "destDir.*$'), ('set "destDir=UUPs"') -replace ('pause'), ('') | sc ".\download-UUP.cmd"
-			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
-			(gc ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | sc ".\CustomAppsList.txt"
-			foreach ($app in $apps)
-			{
-				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
-				((gc '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | sc '.\CustomAppsList.txt'
-			}
-			foreach ($option in $options)
-			{
-				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
-			}
-			iex ".\download-UUP.cmd"
-			iex ".\convert-UUP.cmd"
-			dir -ErrorAction SilentlyContinue -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
 		}
 	}
 	@{
