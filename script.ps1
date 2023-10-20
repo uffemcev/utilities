@@ -112,8 +112,8 @@ $data = @(
 		Name = "spotx"
 		Code =
 		{
-			[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-			iex "& { $((iwr -useb 'https://raw.githubusercontent.com/amd64fox/SpotX/main/Install.ps1').Content) } -premium -new_theme -podcasts_on -block_update_on"
+			[Net.ServicePointManager]::SecurityProtocol = 3072
+   			iex "& { $(iwr -useb 'https://spotx-official.github.io/run.ps1') } -premium -new_theme -podcasts_on -block_update_on"
 		}
 	}
 	@{
