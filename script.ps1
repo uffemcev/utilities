@@ -32,7 +32,12 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 #ПРОВЕРКА WINGET
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 {
-	start-job {
+	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal")
+ 	{
+ 		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
+        	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+	}
+ 	start-job {
 		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose
 	} | out-null
 }
