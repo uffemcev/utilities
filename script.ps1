@@ -254,13 +254,11 @@ $data = @(
 			(gc ".\download-UUP.cmd") -replace ('^set "destDir.*$'), ('set "destDir=UUPs"') -replace ('pause'), ('') | sc ".\download-UUP.cmd"
 			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
 			(gc ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | sc ".\CustomAppsList.txt"
-			foreach ($app in $apps)
-			{
+			foreach ($app in $apps) {
 				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
 				((gc '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | sc '.\CustomAppsList.txt'
 			}
-			foreach ($option in $options)
-			{
+			foreach ($option in $options) {
 				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
 			}
 			iex ".\download-UUP.cmd"
