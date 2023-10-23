@@ -80,10 +80,6 @@ irm uffemcev.github.io/utilities/script.ps1 | iex
 ```
 &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) steam office chrome
 ```
-Или
-```
-iex "& { $(iwr uffemcev.github.io/utilities/script.ps1) } steam office chrome"
-```
 
 ## Ссылки
 * [Rufus](https://github.com/pbatard/rufus)
