@@ -74,11 +74,15 @@
 ## Запуск
 Интерактивный выбор компонентов для установки:
 ```
-&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))
+irm uffemcev.github.io/utilities/script.ps1 | iex
 ```
 Автоматическая установка указанных компонентов:
 ```
-&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) store office chrome
+&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) steam office chrome
+```
+Или
+```
+iex "& { $(iwr uffemcev.github.io/utilities/script.ps1) } steam office chrome"
 ```
 
 ## Ссылки
