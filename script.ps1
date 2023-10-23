@@ -80,7 +80,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Office, Word, Excel 365 mondo volume license"
+		Description = "Office, Word, Excel 365 licensed"
 		Name = "office"
 		Code = {
 			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
