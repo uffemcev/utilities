@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
-function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
+function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 [console]::CursorVisible = $false
 cleaner
 
@@ -315,7 +315,7 @@ while ($status -ne "finish") {
 		#ВЫВОД
 		cleaner
 		($table | ft @{Expression={$_.Name}; Width=40; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
-		(color "$PercentProcessed%") + (color (" " * $Processed)) + (" " * $Remaining)
+		(color -text (" " * $Processed) -number 7) + (color -text ("$PercentProcessed%") -number 7) + (" " * $Remaining)
 	}
 	start-sleep 5
 	$status = "finish"
