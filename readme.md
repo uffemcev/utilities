@@ -79,6 +79,8 @@ irm uffemcev.github.io/utilities/script.ps1 | iex
 Автоматическая установка указанных компонентов:
 ```
 &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) steam office chrome
+или
+iex "& { $(irm uffemcev.github.io/utilities/script.ps1) } steam office chrome"
 ```
 
 ## Ссылки
