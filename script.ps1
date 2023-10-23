@@ -7,8 +7,7 @@ function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 cleaner
 
 #ПРОВЕРКА ДУБЛИКАТА
-if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization|error" -and $_.ProcessName -match "powershell|windowsterminal|cmd"})
-{
+if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization|error" -and $_.ProcessName -match "powershell|windowsterminal|cmd"}) {
 	$host.ui.RawUI.WindowTitle = 'error'
  	"Script is already running"
 	start-sleep 5
@@ -16,24 +15,20 @@ if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization|err
 }
 
 #ПРОВЕРКА ПОЛИТИК
-if ((Get-ExecutionPolicy) -ne "Bypass")
-{
+if ((Get-ExecutionPolicy) -ne "Bypass") {
 	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 }
 
 #ПРОВЕРКА ПРАВ
-if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))
-{
+if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
 #ПРОВЕРКА WINGET
-if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
-{
-	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal")
- 	{
+if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {
+	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal") {
  		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
         	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 	}
@@ -43,11 +38,9 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0")
 }
 
 #ПРОВЕРКА TERMINAL
-if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console\%%Startup))
-{
+if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console\%%Startup)) {
 	start-job {
-		if (!(Get-Appxpackage -allusers Microsoft.WindowsTerminal))
-		{
+		if (!(Get-Appxpackage -allusers Microsoft.WindowsTerminal)) {
 			while ($true) {if ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1} else {break}}
 			winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
 		}
@@ -58,8 +51,7 @@ if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console
 }
 
 #ОЖИДАНИЕ ПРОВЕРОК
-if (get-job | where State -eq "Running")
-{
+if (get-job | where State -eq "Running") {
 	$host.ui.RawUI.WindowTitle = 'initialization'
 	"Please stand by"
 	get-job | wait-job | out-null
@@ -67,8 +59,7 @@ if (get-job | where State -eq "Running")
  	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
-} else
-{
+} else {
 	ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
 	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 	cd ([System.IO.Path]::GetTempPath())
@@ -80,8 +71,7 @@ $data = @(
 	@{
 		Description = "Cloudflare DNS-over-HTTPS"
 		Name = "dns"
-		Code =
-		{
+		Code = {
 			$ips = '1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001'
 			$doh = "https://cloudflare-dns.com/dns-query"
 			foreach ($ip in $ips) {
@@ -100,8 +90,7 @@ $data = @(
 	@{
 		Description = "Office, Word, Excel 365 mondo volume license"
 		Name = "office"
-		Code =
-		{
+		Code = {
 			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
 			Expand-Archive -ErrorAction SilentlyContinue -Force '.\Office.zip' '.\'
 			pushd '.\Office'
@@ -115,8 +104,7 @@ $data = @(
 	@{
 		Description = "SpotX spotify modification"
 		Name = "spotx"
-		Code =
-		{
+		Code = {
 			[Net.ServicePointManager]::SecurityProtocol = 3072
    			iex "& { $(iwr -useb 'https://spotx-official.github.io/run.ps1') } -premium -new_theme -podcasts_on -block_update_on"
 		}
@@ -124,8 +112,7 @@ $data = @(
 	@{
 		Description = "GoodbyeDPI mode 5 + blacklist update"
 		Name = "dpi"
-		Code =
-		{
+		Code = {
 			$uri = "https://api.github.com/repos/ValdikSS/GoodbyeDPI/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "goodbyedpi.*.zip$" | select -first 1
@@ -139,8 +126,7 @@ $data = @(
 	@{
 		Description = "Google Chrome"
 		Name = "chrome"
-		Code =
-		{
+		Code = {
 			$id = "Google.Chrome"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -149,8 +135,7 @@ $data = @(
 	@{
 		Description = "Discord"
 		Name = "discord"
-		Code =
-		{
+		Code = {
 			$id = "Discord.Discord"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -159,8 +144,7 @@ $data = @(
 	@{
 		Description = "Steam"
 		Name = "steam"
-		Code =
-		{
+		Code = {
 			$id = "Valve.Steam"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -169,8 +153,7 @@ $data = @(
 	@{
 		Description = "qBittorrent"
 		Name = "qbit"
-		Code =
-		{
+		Code = {
 			$id = "qBittorrent.qBittorrent"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -179,8 +162,7 @@ $data = @(
 	@{
 		Description = "7-Zip"
 		Name = "zip"
-		Code =
-		{
+		Code = {
 			$id = "7zip.7zip"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -189,8 +171,7 @@ $data = @(
 	@{
 		Description = "Google Drive"
 		Name = "gdrive"
-		Code =
-		{
+		Code = {
 			$id = "Google.GoogleDrive"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -199,8 +180,7 @@ $data = @(
 	@{
 		Description = "Adguard"
 		Name = "adguard"
-		Code =
-		{
+		Code = {
 			$id = "AdGuard.AdGuard"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -209,8 +189,7 @@ $data = @(
 	@{
 		Description = "Blender"
 		Name = "blender"
-		Code =
-		{
+		Code = {
 			$id = "BlenderFoundation.Blender"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -219,8 +198,7 @@ $data = @(
 	@{
 		Description = "SignalRGB"
 		Name = "signal"
-		Code =
-		{
+		Code = {
 			$id = "WhirlwindFX.SignalRgb"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {throw; exit}
@@ -229,8 +207,7 @@ $data = @(
 	@{
 		Description = "K-Lite Codec Pack Full manual setup"
 		Name = "codec"
-		Code =
-		{
+		Code = {
 			$id = "CodecGuide.K-LiteCodecPack.Full"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
 			if (!((winget list) -match $id)) {throw; exit}
@@ -239,8 +216,7 @@ $data = @(
 	@{
 		Description = "NVCleanstall manual setup"
 		Name = "nvidia"
-		Code =
-		{
+		Code = {
 			$id = "TechPowerUp.NVCleanstall"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
 			if (!((winget list) -match $id)) {throw; exit}
@@ -249,8 +225,7 @@ $data = @(
 	@{
 		Description = "Rufus portable"
 		Name = "rufus"
-		Code =
-		{
+		Code = {
 			$uri = "https://api.github.com/repos/pbatard/rufus/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "rufus.*.exe$" | select -first 1
@@ -260,8 +235,7 @@ $data = @(
 	@{
 		Description = "SophiApp Tweaker portable"
 		Name = "sophia"
-		Code =
-		{
+		Code = {
 			$uri = "https://api.github.com/repos/Sophia-Community/SophiApp/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "SophiApp.zip" | select -first 1
@@ -274,8 +248,7 @@ $data = @(
 	@{
 		Description = ""
 		Name = ""
-		Code =
-		{
+		Code = {
 			
 		}
 	}
@@ -286,12 +259,11 @@ $data = @(
 if ($apps -contains "all") {$apps = $data.Name; $status = "install"} elseif ($apps) {$status = "install"}
 
 #МЕНЮ
-while ($status -ne "install")
-{
+while ($status -ne "install") {
 	#ВЫВОД
 	cleaner
 	if ($apps) {"[0] Reset"} else {"[0] All"}
-	$table = $data | Select @{Name="Description"; Expression={
+	$table = $data | Select @{Name="Description"; Expression= {
 		if ($_.Name -in $apps) {(color ("[" + ($data.indexof($_)+1) + "]")) + " " + $_.Description}
 		else {"[" + ($data.indexof($_)+1) + "] " + $_.Description}
 	}}
@@ -299,10 +271,8 @@ while ($status -ne "install")
 	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
 		
 	#ПОДСЧЁТ	
-	switch ([console]::ReadKey($true))
-	{
-		{$_.Key -match "[1-9]"}
-		{
+	switch ([console]::ReadKey($true)) {
+		{$_.Key -match "[1-9]"} {
 			(New-Object -com "Wscript.Shell").sendkeys($_.KeyChar)
 			write-host -nonewline "`r[ENTER] Switch "
 			$status = read-host
@@ -318,10 +288,8 @@ while ($status -ne "install")
 if ($apps.count -eq 0) {$status = "finish"}
 
 #УСТАНОВКА
-while ($status -ne "finish")
-{
-	for ($i = 0; $i -lt $apps.count+1; $i++)
-	{
+while ($status -ne "finish") {
+	for ($i = 0; $i -lt $apps.count+1; $i++) {
 		#ЗАПУСК
 		Get-job | Wait-Job | out-null
 		try {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock $(($data | Where Name -eq $apps[$i]).Code) | out-null}
@@ -332,8 +300,7 @@ while ($status -ne "finish")
 		$Remaining = 47 - $Processed
 		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
 		$table = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
-			switch ((get-job -name $_).State)
-			{
+			switch ((get-job -name $_).State) {
 				"Running" {'Running'}
 				"Completed" {'Completed'}
 				"Failed" {'Failed'}
