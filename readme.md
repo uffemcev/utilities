@@ -34,8 +34,8 @@
 			<tr>
 				<td>office</td>
 				<td>Office, Word, Excel 365 mondo volume license</td>
-				<td>blender</td>
-				<td>Blender</td>
+				<td>qbit</td>
+				<td>qBittorrent</td>
 			</tr>
 			<tr>
 				<td>spotx</td>
@@ -62,8 +62,8 @@
 				<td>Steam</td>
 			</tr>
 			<tr>
-				<td>qbit</td>
-				<td>qBittorrent</td>
+				<td>win</td>
+				<td>Win 11 23H2 iso folder</td>
 				<td>rufus</td>
 				<td>Rufus portable</td>
 			</tr>
