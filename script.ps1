@@ -300,8 +300,8 @@ while ($status -ne "finish") {
 		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {throw} | out-null}
 		
 		#ПОДСЧЁТ
-		$Processed = [Math]::Round(($i) / $apps.Count * 52,0)
-		$Remaining = 52 - $Processed
+		$Processed = [Math]::Round(($i) / $apps.Count * 49,0)
+		$Remaining = 49 - $Processed
 		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
 		$table = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
 			switch ((get-job -name $_).State) {
@@ -314,7 +314,7 @@ while ($status -ne "finish") {
 
 		#ВЫВОД
 		cleaner
-		($table | ft @{Expression={$_.Name}; Width=40; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
+		($table | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
 		(color -text (" " * $Processed) -number 7) + (color -text ("$PercentProcessed%") -number 7) + (" " * $Remaining)
 	}
 	start-sleep 5
