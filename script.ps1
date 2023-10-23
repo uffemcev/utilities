@@ -179,15 +179,6 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Blender"
-		Name = "blender"
-		Code = {
-			$id = "BlenderFoundation.Blender"
-			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
-		}
-	}
-	@{
 		Description = "SignalRGB"
 		Name = "signal"
 		Code = {
