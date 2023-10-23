@@ -80,7 +80,7 @@ $data = @(
 		}
 	}
 	@{
-		Description = "Office, Word, Excel 365 licensed"
+		Description = "Office, Word, Excel 365 mondo volume license"
 		Name = "office"
 		Code = {
 			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
@@ -268,7 +268,7 @@ while ($status -ne "install") {
 	cleaner
 	if ($apps) {"[0] Reset"} else {"[0] All"}
 	$table = $data | Select @{Name="Description"; Expression= {
-		if ($_.Name -in $apps) {(color ("[" + ($data.indexof($_)+1) + "]")) + " " + $_.Description}
+		if ($_.Name -in $apps) {(color -text ("[" + ($data.indexof($_)+1) + "]") -number 7) + " " + $_.Description}
 		else {"[" + ($data.indexof($_)+1) + "] " + $_.Description}
 	}}
 	($table | ft -HideTableHeaders | Out-String).Trim()
