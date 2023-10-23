@@ -6,6 +6,14 @@ function color ($text) {$e = [char]27; "$e[7m" + $text + "$e[0m"}
 [console]::CursorVisible = $false
 cleaner
 
+#ПРОВЕРКА ДУБЛИКАТА
+if (Get-Process | where {$_.mainWindowTitle -match "utilities|initialization|error" -and $_.ProcessName -match "powershell|windowsterminal|cmd"}) {
+	$host.ui.RawUI.WindowTitle = 'error'
+ 	"Script is already running"
+	start-sleep 5
+	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+}
+
 #ПРОВЕРКА ПОЛИТИК
 if ((Get-ExecutionPolicy) -ne "Bypass") {
 	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
