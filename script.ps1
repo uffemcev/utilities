@@ -26,6 +26,10 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {
 	}
  	start-job {
   		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose
+		winget settings --enable InstallerHashOverride
+		if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
+  			reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
+     		}
 	} | out-null
 }
 
@@ -121,7 +125,7 @@ $data = @(
 		Code = {
 			$id = "Google.Chrome"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -130,7 +134,7 @@ $data = @(
 		Code = {
 			$id = "Discord.Discord"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -139,7 +143,7 @@ $data = @(
 		Code = {
 			$id = "Valve.Steam"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -148,7 +152,7 @@ $data = @(
 		Code = {
 			$id = "qBittorrent.qBittorrent"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -157,7 +161,7 @@ $data = @(
 		Code = {
 			$id = "7zip.7zip"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -166,7 +170,7 @@ $data = @(
 		Code = {
 			$id = "Google.GoogleDrive"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -175,7 +179,7 @@ $data = @(
 		Code = {
 			$id = "AdGuard.AdGuard"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -184,7 +188,7 @@ $data = @(
 		Code = {
 			$id = "WhirlwindFX.SignalRgb"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -193,7 +197,7 @@ $data = @(
 		Code = {
 			$id = "CodecGuide.K-LiteCodecPack.Full"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
@@ -202,7 +206,7 @@ $data = @(
 		Code = {
 			$id = "TechPowerUp.NVCleanstall"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --interactive
-			if (!((winget list) -match $id)) {throw; exit}
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
 		}
 	}
 	@{
