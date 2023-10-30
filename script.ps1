@@ -28,8 +28,8 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {
   		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose
 		winget settings --enable InstallerHashOverride
 		if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
-  			reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
-     		}
+			reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
+		}
 	} | out-null
 }
 
@@ -37,8 +37,10 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {
 if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console\%%Startup)) {
 	start-job {
 		if (!(Get-Appxpackage -allusers Microsoft.WindowsTerminal)) {
-			while ($true) {if ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1} else {break}}
+			while ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1}
 			winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --exact --silent
+			if (!((winget list) -match "Microsoft.WindowsTerminal")) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
+			while (!(Get-Appxpackage -allusers Microsoft.WindowsTerminal)) {start-sleep 1}
 		}
 		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
 		reg add "HKCU\Console\%%Startup" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
