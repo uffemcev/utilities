@@ -248,7 +248,7 @@ $data = @(
 				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
 			}
 			start-job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
-			while ($true) {if (dir -errorAction SilentlyContinue "CustomAppsList.txt") {break} else {start-sleep 1}}
+			while (!(dir -errorAction SilentlyContinue "CustomAppsList.txt")) {start-sleep 1}
 			(gc ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | sc ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
 				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
