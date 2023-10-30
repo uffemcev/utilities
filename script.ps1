@@ -17,7 +17,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations) -or ((Get-ExecutionPolicy) -ne "Bypass")) {
 	$path = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
  	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-	reg add "HKCU\$path" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f | out-null
+	reg add "HKCU\$path" /v "LowRiskFileTypes" /t REG_SZ /d ".avi;.bat;.com;.cmd;.exe;.htm;.html;.mpg;.mpeg;.mov;.mp3;.msi;.m3u;.rar;.reg;.txt;.vbs;.wav;.zip;" /f | out-null
 }
 
 #ПРОВЕРКА WINGET
@@ -39,7 +39,7 @@ if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console
 			while ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1}
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {
-   				winget settings --enable InstallerHashOverride
+   				winget settings --enable InstallerHashOverride | out-null
    				runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
        				while (!(Get-Appxpackage -allusers $id)) {start-sleep 1}
        			}
@@ -60,7 +60,7 @@ if (get-job | where State -eq "Running") {
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 } else {
-	winget settings --enable InstallerHashOverride
+	winget settings --enable InstallerHashOverride | out-null
  	ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
 	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 	cd ([System.IO.Path]::GetTempPath())
