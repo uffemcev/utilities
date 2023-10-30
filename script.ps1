@@ -6,16 +6,18 @@ function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0
 [console]::CursorVisible = $false
 cleaner
 
-#ПРОВЕРКА ПОЛИТИК
-if ((Get-ExecutionPolicy) -ne "Bypass") {
-	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-}
-
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+}
+
+#ПРОВЕРКА ПОЛИТИК
+if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations) -or ((Get-ExecutionPolicy) -ne "Bypass")) {
+	$path = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
+ 	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+	reg add "HKCU\$path" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f | out-null
 }
 
 #ПРОВЕРКА WINGET
@@ -26,11 +28,7 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {
 	}
  	start-job {
   		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose
-		winget settings --enable InstallerHashOverride
-		if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
-			reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
-		}
-	} | out-null
+    	} | out-null
 }
 
 #ПРОВЕРКА TERMINAL
@@ -40,8 +38,11 @@ if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console
 		if (!(Get-Appxpackage -allusers $id)) {
 			while ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1}
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"}
-			while (!(Get-Appxpackage -allusers $id)) {start-sleep 1}
+			if (!((winget list) -match $id)) {
+   				winget settings --enable InstallerHashOverride
+   				runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
+       				while (!(Get-Appxpackage -allusers $id)) {start-sleep 1}
+       			}
 		}
 		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
 		reg add "HKCU\Console\%%Startup" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
@@ -59,7 +60,8 @@ if (get-job | where State -eq "Running") {
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 } else {
-	ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
+	winget settings --enable InstallerHashOverride
+ 	ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
 	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 	cd ([System.IO.Path]::GetTempPath())
 	get-job | remove-job | out-null
