@@ -21,7 +21,7 @@ if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Softwar
 }
 
 #ПРОВЕРКА WINGET
-if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {
+if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
 	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal") {
  		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
         	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
@@ -36,7 +36,7 @@ if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console
 	start-job {
 		$id = "Microsoft.WindowsTerminal"
 		if (!(Get-Appxpackage -allusers $id)) {
-			while ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1}
+			while ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {start-sleep 1}
 			$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
    			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {
