@@ -37,7 +37,8 @@ if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console
 		$id = "Microsoft.WindowsTerminal"
 		if (!(Get-Appxpackage -allusers $id)) {
 			while ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt "1.21.2771.0") {start-sleep 1}
-			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
+			$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+   			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {
    				winget settings --enable InstallerHashOverride | out-null
    				runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
