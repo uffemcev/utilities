@@ -3,6 +3,7 @@
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 [console]::CursorVisible = $false
 cleaner
 
@@ -13,11 +14,19 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
-#ПРОВЕРКА ПОЛИТИК
-if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations) -or ((Get-ExecutionPolicy) -ne "Bypass")) {
-	$path = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
- 	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-	reg add "HKCU\$path" /v "LowRiskFileTypes" /t REG_SZ /d ".avi;.bat;.com;.cmd;.exe;.htm;.html;.mpg;.mpeg;.mov;.mp3;.msi;.m3u;.rar;.reg;.txt;.vbs;.wav;.zip;" /f | out-null
+#ПРОВЕРКА REGEDIT
+if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations) -or !(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Console\%%Startup)) {
+	start-job {
+		$policies = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
+		$terminal = "Console\%%Startup"
+		if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\$policies)) {
+			reg add "HKCU\$policies" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
+		}
+		if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\$terminal)) {
+			reg add "HKCU\$terminal" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
+			reg add "HKCU\$terminal" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f
+		}
+	} | out-null
 }
 
 #ПРОВЕРКА WINGET
@@ -25,14 +34,13 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]
 	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal") {
  		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
         	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+	} else {
+ 		start-job {&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose} | out-null
 	}
- 	start-job {
-  		&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose
-    	} | out-null
 }
 
 #ПРОВЕРКА TERMINAL
-if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console\%%Startup)) {
+if ((Get-AppxPackage Microsoft.WindowsTerminal).Version -lt [System.Version]"1.16.10261.0") {
 	start-job {
 		$id = "Microsoft.WindowsTerminal"
 		if (!(Get-Appxpackage -allusers $id)) {
@@ -40,14 +48,13 @@ if (!(gp -ErrorAction SilentlyContinue -Path Registry::HKEY_CURRENT_USER\Console
 			$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
    			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
 			if (!((winget list) -match $id)) {
-   				winget settings --enable InstallerHashOverride | out-null
+   				winget settings --enable InstallerHashOverride
    				runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-       				while (!(Get-Appxpackage -allusers $id)) {start-sleep 1}
-       			}
+				while (!(Get-Appxpackage -allusers $id)) {start-sleep 1}
+			}
+		} else {
+			Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
 		}
-		Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
-		reg add "HKCU\Console\%%Startup" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
-		reg add "HKCU\Console\%%Startup" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f
 	} | out-null
 }
 
@@ -62,7 +69,7 @@ if (get-job | where State -eq "Running") {
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 } else {
 	winget settings --enable InstallerHashOverride | out-null
- 	ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
+ 	ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
 	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 	cd ([System.IO.Path]::GetTempPath())
 	get-job | remove-job | out-null
@@ -77,7 +84,7 @@ $data = @(
 			$ips = '1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001'
 			$doh = "https://cloudflare-dns.com/dns-query"
 			foreach ($ip in $ips) {
-    				Add-DnsClientDohServerAddress -errorAction SilentlyContinue -ServerAddress $ip -DohTemplate $doh
+    				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
     				Get-NetAdapter -Physical | ForEach-Object {
         				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
         				if ($ip -match '\.') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
@@ -94,7 +101,7 @@ $data = @(
 		Name = "office"
 		Code = {
 			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
-			Expand-Archive -ErrorAction SilentlyContinue -Force '.\Office.zip' '.\'
+			Expand-Archive -ErrorAction 0 -Force '.\Office.zip' '.\'
 			pushd '.\Office'
 			(gc '.\Default.xml').replace('Display Level="Full"', 'Display Level="None"') | sc '.\Default.xml'
 			iex '.\Download.ps1 -Branch O365ProPlusRetail -Channel Current -Components Word, Excel, PowerPoint'
@@ -119,8 +126,8 @@ $data = @(
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "goodbyedpi.*.zip$" | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile '.\goodbyedpi.zip'
-			Expand-Archive -ErrorAction SilentlyContinue -Force '.\goodbyedpi.zip' $Env:Programfiles
-			dir -Path $Env:Programfiles -ErrorAction SilentlyContinue -Force | where {$_ -match 'goodbyedpi*'} | where {$dir = $_.FullName}
+			Expand-Archive -ErrorAction 0 -Force '.\goodbyedpi.zip' $Env:Programfiles
+			dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match 'goodbyedpi*'} | where {$dir = $_.FullName}
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
 			(iwr "https://reestr.rublacklist.net/api/v3/domains" -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"
 		}
@@ -233,7 +240,7 @@ $data = @(
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "SophiApp.zip" | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile ".\SophiApp.zip"
-			Expand-Archive -ErrorAction SilentlyContinue -Force ".\SophiApp.zip" ([Environment]::GetFolderPath("Desktop"))
+			Expand-Archive -ErrorAction 0 -Force ".\SophiApp.zip" ([Environment]::GetFolderPath("Desktop"))
 		}
 	}
 	@{
@@ -245,20 +252,20 @@ $data = @(
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
 			$id = ((irm "https://uup.rg-adguard.net/api/GetVersion?id=1").versions | where name -eq $os).UpdateId
 			iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile '.\UUP.zip'
-			Expand-Archive -ErrorAction SilentlyContinue -Force '.\UUP.zip' '.\'
+			Expand-Archive -ErrorAction 0 -Force '.\UUP.zip' '.\'
 			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
 			foreach ($option in $options) {
 				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
 			}
 			start-job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
-			while (!(dir -errorAction SilentlyContinue "CustomAppsList.txt")) {start-sleep 1}
+			while (!(dir -errorAction 0 "CustomAppsList.txt")) {start-sleep 1}
 			(gc ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | sc ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
 				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
 				((gc '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | sc '.\CustomAppsList.txt'
 			}
-			get-job -errorAction SilentlyContinue -name UUP | wait-job
-			dir -ErrorAction SilentlyContinue -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
+			get-job -errorAction 0 -name UUP | wait-job
+			dir -ErrorAction 0 -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
 		}
 	}
 )
@@ -330,5 +337,5 @@ cleaner
 "Bye, $Env:UserName"
 start-sleep 5
 cd \
-ri -Recurse -Force -ErrorAction SilentlyContinue ([System.IO.Path]::GetTempPath())
+ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
 (get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
