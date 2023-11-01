@@ -3,6 +3,7 @@
 param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
+function error () {$e = [char]27; "$e[1F" + "$e[2K" + "[ERROR]"; [Console]::Beep(); start-sleep 1}
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 [console]::CursorVisible = $false
 cleaner
@@ -289,10 +290,15 @@ while ($status -ne "install") {
 	switch ([console]::ReadKey($true)) {
 		{$_.Key -match "[1-9]"} {
 			(New-Object -com "Wscript.Shell").sendkeys($_.KeyChar)
-			write-host -nonewline "`r[ENTER] Switch "
-			$status = read-host
-			if ([int]$status -gt 0 -and [int]$status -le $data.count) {if ($data[$status-1].Name -in $apps) {$apps.Remove($data[$status-1].Name)} else {$apps.Add($data[$status-1].Name)}}
-			if ($status -eq 0) {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+			write-host -nonewline "`r[ENTER] Select "
+			try {$status = [int](read-host)}
+			catch {$status = $null}
+			switch ($status) {
+				{$_ -gt 0 -and $_ -le $data.count} {if ($data[$_-1].Name -in $apps) {$apps.Remove($data[$_-1].Name)} else {$apps.Add($data[$_-1].Name)}}
+				0 {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+				{$_ -gt $data.count} {error}
+				$null {error}
+			}
 		}
 		{$_.Key -eq "D0"} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 		{$_.Key -eq "Enter"} {$status = "install"}
