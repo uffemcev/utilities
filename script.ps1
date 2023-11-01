@@ -296,8 +296,7 @@ while ($status -ne "install") {
 			switch ($status) {
 				{$_ -gt 0 -and $_ -le $data.count} {if ($data[$_-1].Name -in $apps) {$apps.Remove($data[$_-1].Name)} else {$apps.Add($data[$_-1].Name)}}
 				0 {if ($apps) {$apps = @()} else {$apps = $data.Name}}
-				{$_ -gt $data.count} {error}
-				$null {error}
+				DEFAULT {error}
 			}
 		}
 		{$_.Key -eq "D0"} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
