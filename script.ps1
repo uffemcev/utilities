@@ -244,26 +244,20 @@ $data = @(
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
 			$id = ((irm "https://uup.rg-adguard.net/api/GetVersion?id=1").versions | where name -eq $os).UpdateId
-			[string]$link = (iwr -Useb -Uri "https://uup.rg-adguard.net/api/GetFiles?id=$id&lang=ru-ru&edition=core&pack=ru&down_aria2=yes").Links.href | where {$_ -match ".cmd"}
-			iwr $link -Useb -OutFile '.\download-UUP.cmd'
-			iwr 'https://www.7-zip.org/a/7zr.exe' -Useb -OutFile '.\7zr.exe'
-			$uri = "https://api.github.com/repos/abbodi1406/WHD/contents/scripts"
-			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-			$data = $get | Where-Object name -match "uup-converter-wimlib" | select -last 1
-			iwr $data.download_url -Useb -OutFile .\$($data.name)
-			.\7zr.exe x *.7z
-			(gc ".\download-UUP.cmd") -replace ('^set "destDir.*$'), ('set "destDir=UUPs"') -replace ('pause'), ('') | sc ".\download-UUP.cmd"
+			iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile '.\UUP.zip'
+			Expand-Archive -ErrorAction SilentlyContinue -Force '.\UUP.zip' '.\'
 			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
+			foreach ($option in $options) {
+				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
+			}
+			start-job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
+			while (!(dir -errorAction SilentlyContinue "CustomAppsList.txt")) {start-sleep 1}
 			(gc ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | sc ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
 				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
 				((gc '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | sc '.\CustomAppsList.txt'
 			}
-			foreach ($option in $options) {
-				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
-			}
-			iex ".\download-UUP.cmd"
-			iex ".\convert-UUP.cmd"
+			get-job -errorAction SilentlyContinue -name UUP | wait-job
 			dir -ErrorAction SilentlyContinue -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
 		}
 	}
