@@ -4,6 +4,7 @@ param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayLis
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function error () {$e = [char]27; "$e[1F" + "$e[2K" + "[ERROR]"; [Console]::Beep(); start-sleep 1}
+$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 [console]::CursorVisible = $false
 cleaner
@@ -27,6 +28,7 @@ if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Win
 			reg add "HKCU\$terminal" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
 			reg add "HKCU\$terminal" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f
 		}
+		start-sleep 5
 	} | out-null
 }
 
@@ -55,29 +57,50 @@ if ((Get-AppxPackage Microsoft.WindowsTerminal).Version -lt [System.Version]"1.1
 			}
 		} else {
 			Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
+			start-sleep 5
 		}
 	} | out-null
 }
 
 #ОЖИДАНИЕ ПРОВЕРОК
 if (get-job | where State -eq "Running") {
-	$host.ui.RawUI.WindowTitle = 'initialization'
-	"Please stand by"
-	get-job | wait-job | out-null
-	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
- 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
-	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
-} else {
-	winget settings --enable InstallerHashOverride | out-null
- 	ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
-	$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
-	cd ([System.IO.Path]::GetTempPath())
-	get-job | remove-job | out-null
+	for ($i = 0; $i -lt (get-job).count+1; $i++) {
+		cleaner
+		"Preparing for work"
+		$Jobs = (get-job | where State -eq "Running").count
+		$Processed = [Math]::Round(($i) / (get-job).count * 49,0)
+		$Remaining = 49 - $Processed
+		$Percent = "{0:P0}" -f ($i / (get-job).count) -ireplace '^(?<Percentage>\d{1}\%)$','  ${Percentage}' -ireplace '^(?<Percentage>\d{2}\%)$',' ${Percentage}'
+		"`n" + (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
+		if ($Jobs -eq 0) {break}
+		while (($Jobs -eq (get-job | where State -eq "Running").count)) {start-sleep 1}
+	}
+ 	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal") {
+		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+	} else {
+		try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
+		catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
+		(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+	}
 }
 
-#ПРИЛОЖЕНИЯ
+#ЗАГРУЗКА ПРИЛОЖЕНИЙ
 $data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ini)))
+for ($i = 0; $i -lt $data.count+1; $i++) {
+	cleaner
+	$Processed = [Math]::Round(($i) / $data.count * 49,0)
+	$Remaining = 49 - $Processed
+	$Percent = "{0:P0}" -f ($i / $data.count) -ireplace '^(?<Percentage>\d{1}\%)$','  ${Percentage}' -ireplace '^(?<Percentage>\d{2}\%)$',' ${Percentage}'
+	"Loading apps list"
+	"`n" + (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
+	start-sleep -Milliseconds 100
+}
+
+#НАЧАЛО РАБОТЫ
+winget settings --enable InstallerHashOverride | out-null
+ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
+cd ([System.IO.Path]::GetTempPath())
+get-job | remove-job | out-null
 
 #ПРОВЕРКА НА АРГУМЕНТЫ
 if ($apps -contains "all") {$apps = $data.Name; $status = "install"} elseif ($apps) {$status = "install"}
@@ -126,7 +149,7 @@ while ($status -ne "finish") {
 		#ПОДСЧЁТ
 		$Processed = [Math]::Round(($i) / $apps.Count * 49,0)
 		$Remaining = 49 - $Processed
-		$PercentProcessed = [Math]::Round(($i) / $apps.Count * 100,0)
+		$Percent = "{0:P0}" -f ($i / $apps.count) -ireplace '^(?<Percentage>\d{1}\%)$','  ${Percentage}' -ireplace '^(?<Percentage>\d{2}\%)$',' ${Percentage}'
 		$table = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
 			switch ((get-job -name $_).State) {
 				"Running" {'Running'}
@@ -139,7 +162,7 @@ while ($status -ne "finish") {
 		#ВЫВОД
 		cleaner
 		($table | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim() + "`n"
-		(color -text (" " * $Processed) -number 7) + (color -text ("$PercentProcessed%") -number 7) + (" " * $Remaining)
+		(color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 	}
 	start-sleep 5
 	$status = "finish"
