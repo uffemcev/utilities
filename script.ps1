@@ -124,11 +124,11 @@ while ($status -ne "install") {
 		{$_.Key -match "[1-9]"} {
 			(New-Object -com "Wscript.Shell").sendkeys($_.KeyChar)
 			write-host -nonewline "`r[ENTER] Select "
-			try {$status = [int](read-host)}
-			catch {$status = $null}
+			$status = read-host
+			try {[int]$status | out-null} catch {$status = $null}
 			switch ($status) {
-				{$_ -gt 0 -and $_ -le $data.count} {if ($data[$_-1].Name -in $apps) {$apps.Remove($data[$_-1].Name)} else {$apps.Add($data[$_-1].Name)}}
-				0 {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+				{[int]$_ -gt 0 -and [int]$_ -le $data.count} {if ($data[$_-1].Name -in $apps) {$apps.Remove($data[$_-1].Name)} else {$apps.Add($data[$_-1].Name)}}
+				{[string]$_ -eq 0} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 				DEFAULT {error}
 			}
 		}
