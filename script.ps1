@@ -70,7 +70,8 @@ if (get-job | where State -eq "Running") {
 		$Jobs = (get-job | where State -eq "Running").count
 		$Processed = [Math]::Round(($i) / (get-job).count * 49,0)
 		$Remaining = 49 - $Processed
-		$Percent = "{0:P0}" -f ($i / (get-job).count) -ireplace '^(?<Percentage>\d{1}\%)$','  ${Percentage}' -ireplace '^(?<Percentage>\d{2}\%)$',' ${Percentage}'
+		$PercentProcessed = [Math]::Round(($i) / (get-job).count * 100,0)
+		$Percent = $PercentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
 		"`n" + (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 		if ($Jobs -eq 0) {break}
 		while (($Jobs -eq (get-job | where State -eq "Running").count)) {start-sleep 1}
@@ -90,7 +91,8 @@ for ($i = 0; $i -lt $data.count+1; $i++) {
 	cleaner
 	$Processed = [Math]::Round(($i) / $data.count * 49,0)
 	$Remaining = 49 - $Processed
-	$Percent = "{0:P0}" -f ($i / $data.count) -ireplace '^(?<Percentage>\d{1}\%)$','  ${Percentage}' -ireplace '^(?<Percentage>\d{2}\%)$',' ${Percentage}'
+	$PercentProcessed = [Math]::Round(($i) / $data.count * 100,0)
+	$Percent = $PercentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
 	"Loading apps list"
 	"`n" + (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 	start-sleep -Milliseconds 100
@@ -147,9 +149,10 @@ while ($status -ne "finish") {
 		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {throw} | out-null}
 		
 		#ПОДСЧЁТ
-		$Processed = [Math]::Round(($i) / $apps.Count * 49,0)
+		$Processed = [Math]::Round(($i) / $apps.count * 49,0)
 		$Remaining = 49 - $Processed
-		$Percent = "{0:P0}" -f ($i / $apps.count) -ireplace '^(?<Percentage>\d{1}\%)$','  ${Percentage}' -ireplace '^(?<Percentage>\d{2}\%)$',' ${Percentage}'
+		$PercentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
+		$Percent = $PercentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
 		$table = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
 			switch ((get-job -name $_).State) {
 				"Running" {'Running'}
