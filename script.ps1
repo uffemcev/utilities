@@ -13,7 +13,7 @@ cleaner
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
+	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
 #ПРОВЕРКА REGEDIT
@@ -36,7 +36,7 @@ if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Win
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
 	if ((get-process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)) -match "Terminal") {
  		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
-        	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
+        	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 	} else {
  		start-job {&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose} | out-null
 	}
@@ -81,7 +81,7 @@ if (get-job | where State -eq "Running") {
 	} else {
 		try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 		catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-		(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
+		(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 	}
 }
 
@@ -177,4 +177,4 @@ cleaner
 start-sleep 5
 cd \
 ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
-(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
+(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
