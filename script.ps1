@@ -13,7 +13,7 @@ cleaner
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
 }
 
 #ПРОВЕРКА REGEDIT
@@ -34,9 +34,9 @@ if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Win
 
 #ПРОВЕРКА WINGET
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
-	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal") {
+	if ((get-process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)) -match "Terminal") {
  		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
-        	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+        	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
 	} else {
  		start-job {&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose} | out-null
 	}
@@ -76,12 +76,12 @@ if (get-job | where State -eq "Running") {
 		if ($Jobs -eq 0) {break}
 		while (($Jobs -eq (get-job | where State -eq "Running").count)) {start-sleep 1}
 	}
- 	if ((tasklist /fi "WINDOWTITLE eq $($host.ui.RawUI.WindowTitle)") -match "Terminal") {
+ 	if ((get-process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)) -match "Terminal") {
 		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	} else {
 		try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 		catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-		(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+		(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
 	}
 }
 
@@ -177,4 +177,4 @@ cleaner
 start-sleep 5
 cd \
 ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
-(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {stop-process -id $_}
