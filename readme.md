@@ -53,7 +53,7 @@
 				<td>chrome</td>
 				<td>Google Chrome</td>
 				<td>nvidia</td>
-				<td>NVCleanstall, ручная установка</td>
+				<td>NVCleanstall</td>
 			</tr>
 			<tr>
 				<td>discord</td>
