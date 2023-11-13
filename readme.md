@@ -6,6 +6,7 @@
 	<table>
 		<thead>
 			<tr>
+				<th align="center">Тег</th>
 				<th align="center">Компонент</th>
 				<th align="center" width="400px">Описание</th>
 				<th align="center">Компонент</th>
