@@ -1,6 +1,6 @@
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
-param([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
+param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function error () {$e = [char]27; "$e[1F" + "$e[2K" + "[ERROR]"; [Console]::Beep(); start-sleep 1}
@@ -16,18 +16,19 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 }
 
+#ПРОВЕРКА PWSH
+if ($PSStyle) {
+	start-job {
+		$PSStyle.OutputRendering = "Ansi"
+		start-sleep 5
+	} | out-null
+}
+
 #ПРОВЕРКА REGEDIT
-if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations) -or !(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Console\%%Startup)) {
+if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
 	start-job {
 		$policies = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
-		$terminal = "Console\%%Startup"
-		if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\$policies)) {
-			reg add "HKCU\$policies" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
-		}
-		if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\$terminal)) {
-			reg add "HKCU\$terminal" /v "DelegationConsole" /t REG_SZ /d "{2EACA947-7F5F-4CFA-BA87-8F7FBEEFBE69}" /f
-			reg add "HKCU\$terminal" /v "DelegationTerminal" /t REG_SZ /d "{E12CFF52-A866-4C77-9A90-F570A7AA2C6B}" /f
-		}
+		reg add "HKCU\$policies" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
 		start-sleep 5
 	} | out-null
 }
@@ -36,30 +37,10 @@ if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Win
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
 	if ((get-process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)) -match "Terminal") {
  		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
-        	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+        (get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
 	} else {
  		start-job {&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose} | out-null
 	}
-}
-
-#ПРОВЕРКА TERMINAL
-if ((Get-AppxPackage Microsoft.WindowsTerminal).Version -lt [System.Version]"1.16.10261.0") {
-	start-job {
-		$id = "Microsoft.WindowsTerminal"
-		if (!(Get-Appxpackage -allusers $id)) {
-			while ((Get-AppxPackage -allusers Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {start-sleep 1}
-			$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-   			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
-			if (!((winget list) -match $id)) {
-   				winget settings --enable InstallerHashOverride
-   				runas /trustlevel:0x20000 /machine:amd64 "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-				while (!(Get-Appxpackage -allusers $id)) {start-sleep 1}
-			}
-		} else {
-			Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.WindowsTerminal_8wekyb3d8bbwe
-			start-sleep 5
-		}
-	} | out-null
 }
 
 #ОЖИДАНИЕ ПРОВЕРОК
@@ -103,45 +84,93 @@ winget settings --enable InstallerHashOverride | out-null
 ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
 cd ([System.IO.Path]::GetTempPath())
 get-job | remove-job | out-null
-
-#ПРОВЕРКА НА АРГУМЕНТЫ
-if ($apps -contains "all") {$apps = $data.Name; $status = "install"} elseif ($apps) {$status = "install"}
+$tagItems = [array]'All' + ($data.tag | select -Unique) + [array]'Confirm'
+$ypos = -1
+$xpos = 0
 
 #МЕНЮ
-while ($status -ne "install") {
-	#ВЫВОД
+:menu while ($true) {
+	
+	#ПРОВЕРКА НА АРГУМЕНТЫ
+	$compare = Compare $apps $tagItems -Exclude -Include
+	if ($compare) {
+		foreach ($tag in ($data.tag | Select -Unique))  {
+			if ($apps -contains $tag) {($data | where tag -eq $tag).Name | foreach {$apps.add($_)}}
+			($apps | where {$_ -eq $tag}) | foreach {$apps.Remove($_)}
+		}
+		if ($apps -contains "all") {$apps = $data.Name}
+		cleaner
+		break menu
+	}
+	
+	#ПОДСЧЕТ
 	cleaner
-	if ($apps) {"[0] Reset"} else {"[0] All"}
-	$table = $data | Select @{Name="Description"; Expression= {
-		if ($_.Name -in $apps) {(color -text ("[" + ($data.indexof($_)+1) + "]") -number 7) + " " + $_.Description}
-		else {"[" + ($data.indexof($_)+1) + "] " + $_.Description}
-	}}
-	($table | ft -HideTableHeaders | Out-String).Trim()
-	if ($apps) {write-host -nonewline "`n[ENTER] Confirm "} else {write-host -nonewline "`n[ENTER] Exit "}
-		
-	#ПОДСЧЁТ	
-	switch ([console]::ReadKey($true)) {
-		{$_.Key -match "[1-9]"} {
-			(New-Object -com "Wscript.Shell").sendkeys($_.KeyChar)
-			write-host -nonewline "`r[ENTER] Select "
-			$status = read-host
-			try {[int]$status | out-null} catch {$status = $null}
-			switch ($status) {
-				{[int]$_ -gt 0 -and [int]$_ -le $data.count} {if ($data[$_-1].Name -in $apps) {$apps.Remove($data[$_-1].Name)} else {$apps.Add($data[$_-1].Name)}}
-				{[string]$_ -eq 0} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
-				DEFAULT {error}
+	$menu = $tagItems | Select @{Name="Tag"; Expression={
+		$tag = $_
+		if (($tagItems.IndexOf($tag) -eq $xpos) -and ($ypos -eq -1)) {color -text $tag -number 7}
+		else {$tag}	
+	}}, @{Name="App"; Expression={
+		$tag = $_
+		if ($tagItems.IndexOf($tag) -eq $xpos) {
+			switch ($tag) {
+				{$_ -in $data.tag} {[array]$result = $data | where Tag -eq $tag}
+				'All' {[array]$result = $data}
+				'Confirm' {[array]$result = $data | where Name -in $apps}
+			}
+
+			$result | foreach {
+				$element = $_
+				$index = $result.IndexOf($element)
+				if (($element.Name -in $apps) -and ($index -eq $ypos)) {$description = (color "[$($index+1)]" 7) + " " + (color $element.Description 7)}
+				elseif ($element.Name -in $apps) {$description = (color "[$($index+1)]" 7) + " " + $element.Description}
+				elseif ($index -eq $ypos) {$description = "[$($index+1)]" + " " + (color $element.Description 7)}
+				else {$description = "[$($index+1)]" + " " + $element.Description}
+				@{Description = $Description; Name = $element.Name}
 			}
 		}
-		{$_.Key -eq "D0"} {if ($apps) {$apps = @()} else {$apps = $data.Name}}
-		{$_.Key -eq "Enter"} {$status = "install"}
+	}}
+	
+	#ОТРИСОВКА
+	[string]($menu.Tag) + "`n"
+	$menu.App.Description
+	[array]$appItems = $menu.App.Name
+	
+	#УПРАВЛЕНИЕ
+	switch ([console]::ReadKey($true).key) {
+		"UpArrow" {if ($appItems[$ypos] -ne $null) {$ypos--}}
+		"DownArrow" {if ($appItems[$ypos] -ne $null) {$ypos++}}
+		"RightArrow" {$ypos = -1; $xpos++}
+		"LeftArrow" {$ypos = -1; $xpos--}
+		"Enter" {
+			if ($ypos -ge 0) {
+				if ($appItems[$ypos] -in $apps) {$apps.Remove($appItems[$ypos])}
+				else {$apps.Add($appItems[$ypos])}
+			} else {
+				switch ($tagItems[$xpos]) {
+					"All" {if ($apps) {$apps = @()} else {$apps = $data.Name}}
+					"Confirm" {cleaner; break menu}
+					DEFAULT {
+						$names = ($data | where Tag -eq $tagItems[$xpos]).name
+						$compare = Compare $apps $names -Exclude -Include
+						if ($compare) {$names | foreach {$apps.remove($_)}}
+						else {$names | foreach {$apps.add($_)}}
+					}
+				}
+			}
+		}
 	}
+	if ($xpos -lt 0) {$xpos = $tagItems.count -1}
+	if ($xpos -ge $tagItems.count) {$xpos = 0}
+	if ($ypos -lt -1) {$ypos = $appItems.count -1}
+	if (($ypos -lt 0) -or ($ypos -ge $appItems.count)) {$ypos = -1}
 }
 
-#ПРОВЕРКА ВЫХОДА
-if ($apps.count -eq 0) {$status = "finish"}
-
 #УСТАНОВКА
-while ($status -ne "finish") {
+:install while ($true) {
+
+	#ПРОВЕРКА ВЫХОДА
+	if ($apps.count -eq 0) {break install}
+
 	for ($i = 0; $i -lt $apps.count+1; $i++) {
 		#ЗАПУСК
 		Get-job | Wait-Job | out-null
@@ -168,7 +197,7 @@ while ($status -ne "finish") {
 		(color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 	}
 	start-sleep 5
-	$status = "finish"
+	break install
 }
 
 #ЗАВЕРШЕНИЕ РАБОТЫ
