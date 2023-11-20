@@ -41,7 +41,7 @@
 			<tr>
 				<td></td>
 				<td>office</td>
-				<td>Office, Word, Excel 365 licensed</td>
+				<td>Office, Word, Excel licensed</td>
 				<td>qbit</td>
 				<td>qBittorrent</td>
 			</tr>
