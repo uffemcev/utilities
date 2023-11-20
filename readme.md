@@ -15,7 +15,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td></td>
+				<td>All</td>
 				<td>all</td>
 				<td>Установить всё</td>
 				<td></td>
