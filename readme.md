@@ -41,7 +41,7 @@
 			<tr>
 				<td></td>
 				<td>office</td>
-				<td>Office, Word, Excel 365 mondo volume license</td>
+				<td>Office, Word, Excel 365 licensed</td>
 				<td>qbit</td>
 				<td>qBittorrent</td>
 			</tr>
@@ -65,7 +65,7 @@
 			<tr>
 				<td></td>
 				<td>dpi</td>
-				<td>GoodbyeDPI, режим 5 + обновление blacklist</td>
+				<td>GoodbyeDPI, режим 5</td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
 			</tr>
