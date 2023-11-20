@@ -104,7 +104,7 @@
 ```
 Автоматическая установка указанных компонентов:
 ```powershell
-&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) steam office chrome
+&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) drivers office chrome
 ```
 
 ## Ссылки
