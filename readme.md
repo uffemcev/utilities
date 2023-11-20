@@ -67,7 +67,7 @@
 				<td>dpi</td>
 				<td>GoodbyeDPI, режим 5 + обновление blacklist</td>
 				<td>codec</td>
-				<td>K-Lite Codec Pack Full, ручная установка</td>
+				<td>K-Lite Codec Pack Full</td>
 			</tr>
 			<tr></tr>
 			<tr>
