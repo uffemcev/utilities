@@ -76,7 +76,7 @@ $xpos = 0
 #МЕНЮ
 :menu while ($true) {
 	
-	#ПРОВЕРКА НА АРГУМЕНТЫ
+	#ПРОВЕРКА ПАРАМЕТРОВ
 	$compare = Compare $apps $tagItems -Exclude -Include
 	if ($compare) {
 		foreach ($tag in ($data.tag | Select -Unique))  {
@@ -115,7 +115,7 @@ $xpos = 0
 		}
 	}}
 	
-	#ОТРИСОВКА
+	#ВЫВОД
 	[string]($menu.Tag) + "`n"
 	$menu.App.Description
 	[array]$appItems = $menu.App.Name
@@ -162,7 +162,7 @@ $xpos = 0
 		try {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock $(($data | Where Name -eq $apps[$i]).Code) | out-null}
 		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {throw} | out-null}
 		
-		#ПОДСЧЁТ
+		#ПОДСЧЕТ
 		$Processed = [Math]::Round(($i) / $apps.count * 49,0)
 		$Remaining = 49 - $Processed
 		$PercentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
