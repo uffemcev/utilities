@@ -3,7 +3,6 @@
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
-function error () {$e = [char]27; "$e[1F" + "$e[2K" + "[ERROR]"; [Console]::Beep(); start-sleep 1}
 $host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 [console]::CursorVisible = $false
@@ -14,14 +13,6 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
-}
-
-#ПРОВЕРКА PWSH
-if ($PSStyle) {
-	start-job {
-		$PSStyle.OutputRendering = "Ansi"
-		start-sleep 5
-	} | out-null
 }
 
 #ПРОВЕРКА REGEDIT
