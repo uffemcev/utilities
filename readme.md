@@ -25,7 +25,7 @@
 			<tr>
 				<td>Tweaks</td>
 				<td>dns</td>
-				<td>Cloudflare DNS-over-HTTPS</td>
+				<td>Cloudflare DOH</td>
 				<td>sophia</td>
 				<td>SophiApp Tweaker portable</td>
 			</tr>
