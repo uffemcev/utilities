@@ -65,7 +65,7 @@
 			<tr>
 				<td></td>
 				<td>dpi</td>
-				<td>GoodbyeDPI, режим 5</td>
+				<td>GoodbyeDPI режим 5</td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
 			</tr>
