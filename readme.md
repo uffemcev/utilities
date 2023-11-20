@@ -49,7 +49,7 @@
 			<tr>
 				<td></td>
 				<td>spotx</td>
-				<td>Spotify мод</td>
+				<td>SpotX</td>
 				<td>signal</td>
 				<td>SignalRGB</td>
 			</tr>
