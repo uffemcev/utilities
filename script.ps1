@@ -52,7 +52,7 @@ if (get-job | where State -eq "Running") {
 }
 
 #ЗАГРУЗКА ПРИЛОЖЕНИЙ
-$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ini)))
+$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
 for ($i = 0; $i -lt $data.count+1; $i++) {
 	cleaner
 	$Processed = [Math]::Round(($i) / $data.count * 49,0)
