@@ -20,7 +20,7 @@
 		}
 	}
 	[pscustomobject]@{
-		Description = "Office, Word, Excel 365 licensed"
+		Description = "Office, Word, Excel licensed"
 		Name = "office"
 		Tag = "Programs"
 		Code = {
