@@ -46,7 +46,7 @@
 	[pscustomobject]@{
 		Description = "GoodbyeDPI mode 5"
 		Name = "dpi"
-		Tag = "Programs"
+		Tag = "Tweaks"
 		Code = {
 			$uri = "https://api.github.com/repos/ValdikSS/GoodbyeDPI/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
