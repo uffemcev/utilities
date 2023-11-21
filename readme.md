@@ -26,8 +26,16 @@
 				<td>Tweaks</td>
 				<td>dns</td>
 				<td>Cloudflare DOH</td>
-				<td>sophia</td>
+				<td>dpi</td>
+				<td>GoodbyeDPI режим 5</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td></td>
+    				<td>sophia</td>
 				<td>SophiApp Tweaker portable</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr><td></td><td></td><td></td><td></td><td></td></tr>
 			<tr>
@@ -64,18 +72,18 @@
 			<tr></tr>
 			<tr>
 				<td></td>
-				<td>dpi</td>
-				<td>GoodbyeDPI режим 5</td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
+				<td>discord</td>
+				<td>Discord</td>
 			</tr>
 			<tr></tr>
 			<tr>
 				<td></td>
 				<td>chrome</td>
 				<td>Google Chrome</td>
-				<td>discord</td>
-				<td>Discord</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr><td></td><td></td><td></td><td></td><td></td></tr>
 			<tr>
