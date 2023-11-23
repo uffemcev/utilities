@@ -83,6 +83,7 @@ cd ([System.IO.Path]::GetTempPath())
 $tagItems = [array]'All' + ($data.tag | select -Unique) + [array]'Confirm'
 $ypos = -1
 $xpos = 0
+$zpos = 0
 
 #МЕНЮ
 while ($menu -ne $true) {
@@ -96,12 +97,12 @@ while ($menu -ne $true) {
 	}}, @{Name="App"; Expression={
 		$tag = $_
 		if ($tagItems.IndexOf($tag) -eq $xpos) {
-			switch ($tag) {
-				{$_ -in $data.tag} {[array]$result = $data | where Tag -eq $tag}
-				'All' {[array]$result = $data}
-				'Confirm' {[array]$result = $data | where Name -in $apps}
+			[array]$result = switch ($tag) {
+				{$_ -in $data.tag} {$data | where Tag -eq $tag}
+				'All' {$data}
+				'Confirm' {$data | where Name -in $apps}
 			}
-
+			
 			$result | foreach {
 				$element = $_
 				$index = $result.IndexOf($element)
@@ -115,16 +116,20 @@ while ($menu -ne $true) {
 	}}
 	
 	#ВЫВОД
-	[string]($menu.Tag) + "`n"
-	$menu.App.Description
 	[array]$appItems = $menu.App.Name
+	$page = " " + ([int]($zpos -replace ".$", "$1")+1) + "/" + ([int]($appItems.count -replace ".$", "$1")+1) + " "
+	[string]($menu.Tag) + "`n"
+	if ($menu.App.Description) {
+		([array]$menu.App.Description)[$zpos..($zpos+9)]
+		"`n" + [char]::ConvertFromUtf32(0x0001F4C4) + $page
+	}
 	
 	#УПРАВЛЕНИЕ
 	switch ([console]::ReadKey($true).key) {
-		"UpArrow" {if ($appItems[$ypos] -ne $null) {$ypos--}}
-		"DownArrow" {if ($appItems[$ypos] -ne $null) {$ypos++}}
-		"RightArrow" {$ypos = -1; $xpos++}
-		"LeftArrow" {$ypos = -1; $xpos--}
+		"UpArrow" {$ypos--; if ($ypos -lt $zpos) {$zpos -= 10}}
+		"DownArrow" {$ypos++; if ($ypos -gt $zpos+9) {$zpos += 10}}
+		"RightArrow" {$ypos = -1; $zpos = 0; $xpos++}
+		"LeftArrow" {$ypos = -1; $zpos = 0; $xpos--}
 		"Enter" {
 			if ($ypos -ge 0) {
 				if ($appItems[$ypos] -in $apps) {$apps.Remove($appItems[$ypos])}
@@ -145,8 +150,9 @@ while ($menu -ne $true) {
 	}
 	if ($xpos -lt 0) {$xpos = $tagItems.count -1}
 	if ($xpos -ge $tagItems.count) {$xpos = 0}
-	if ($ypos -lt -1) {$ypos = $appItems.count -1}
-	if (($ypos -lt 0) -or ($ypos -ge $appItems.count)) {$ypos = -1}
+	if ($ypos -lt -1) {$ypos = $appItems.count -1; $zpos = $appItems.count -replace ".$", "0$_"}
+	if ($ypos -ge $appItems.count) {$ypos = -1; $zpos = 0}
+	if ($zpos -lt 0) {$zpos = 0}
 }
 
 #ПРОВЕРКА ВЫХОДА
@@ -176,8 +182,8 @@ while ($install -ne $true) {
 
 		#ВЫВОД
 		cleaner
-		if (($i -gt 9) -and ($i -lt $apps.count)) {$pos++}
-		($menu[$pos..($pos+9)] | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim()
+		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
+		($menu[$zpos..($zpos+9)] | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim()
 		"`n" + (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 	}
 	start-sleep 5
