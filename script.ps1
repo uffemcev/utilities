@@ -118,7 +118,7 @@ while ($menu -ne $true) {
 	
 	#ВЫВОД
 	[array]$appItems = $menu.App.Name
-	$page = " " + ([int]($zpos -replace ".$", "$1")+1) + "/" + ([int]($appItems.count -replace ".$", "$1")+1) + " "
+	$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($appItems.count/10)) + " "
 	[string]($menu.Tag) + "`n"
 	if ($menu.App.Description) {
 		([array]$menu.App.Description)[$zpos..($zpos+9)]
@@ -151,7 +151,7 @@ while ($menu -ne $true) {
 	}
 	if ($xpos -lt 0) {$xpos = $tagItems.count -1}
 	if ($xpos -ge $tagItems.count) {$xpos = 0}
-	if ($ypos -lt -1) {$ypos = $appItems.count -1; $zpos = $appItems.count -replace ".$", "0$_"}
+	if ($ypos -lt -1) {$ypos = $appItems.count -1; $zpos = [math]::Floor(($appItems.count-1)/10)*10}
 	if ($ypos -ge $appItems.count) {$ypos = -1; $zpos = 0}
 	if ($zpos -lt 0) {$zpos = 0}
 }
