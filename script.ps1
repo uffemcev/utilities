@@ -90,7 +90,7 @@ while ($menu -ne $true) {
 	
 	#ПОДСЧЕТ
 	cleaner
-	$menu = $tagItems | Select @{Name="Tag"; Expression={
+	[array]$menu = $tagItems | Select @{Name="Tag"; Expression={
 		$tag = $_
 		if (($tagItems.IndexOf($tag) -eq $xpos) -and ($ypos -eq -1)) {color -text $tag -number 7}
 		else {$tag}	
