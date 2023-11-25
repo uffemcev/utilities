@@ -93,6 +93,7 @@ while ($menu -ne $true) {
 	[array]$menu = $tagItems | Select @{Name="Tag"; Expression={
 		$tag = $_
 		if (($tagItems.IndexOf($tag) -eq $xpos) -and ($ypos -eq -1)) {color -text $tag -number 7}
+		elseif ($tagItems.IndexOf($tag) -eq $xpos) {color -text $tag -number 4}
 		else {$tag}	
 	}}, @{Name="App"; Expression={
 		$tag = $_
