@@ -44,6 +44,7 @@ if (!$data) {
 		start-sleep 5
 	} | out-null
 	$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
+ 	$data | foreach {if (($_.Tag -eq '') -or ($_.Tag -eq $null)) {$_ | add-member -force 'Tag' 'Other'}}
 }
 
 #ПРОВЕРКА ПАРАМЕТРОВ
