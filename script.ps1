@@ -138,15 +138,20 @@ while ($menu -ne $true) {
 		"RightArrow" {$ypos = -1; $zpos = 0; $xpos++}
 		"LeftArrow" {$ypos = -1; $zpos = 0; $xpos--}
 		"Enter" {
+			$app = $names[$ypos]
+			$tag = $tagsList[$xpos]			
 			if ($ypos -ge 0) {
-				if ($names[$ypos] -in $apps) {$apps.Remove($names[$ypos])}
-				else {$apps.Add($names[$ypos])}
+				if ($app -in $apps) {$apps.Remove($app)} else {$apps.Add($app)}
+				if (($app -eq $names[-1]) -and ($tag -eq 'Confirm')) {
+					$ypos--
+					$zpos = [math]::Floor(($names.count-2)/10)*10
+				}
 			} else {
-				switch ($tagsList[$xpos]) {
+				switch ($tag) {
 					"All" {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 					"Confirm" {cleaner; $menu = $true}
 					DEFAULT {
-						$names = ($data | where Tag -eq $tagsList[$xpos]).name
+						$names = ($data | where Tag -eq $tag).name
 						$compare = Compare $apps $names -Exclude -Include
 						if ($compare) {$names | foreach {$apps.remove($_)}}
 						else {$names | foreach {$apps.add($_)}}
