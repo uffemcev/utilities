@@ -1,7 +1,7 @@
 #НАЧАЛЬНЫЕ ПАРАМЕТРЫ
 [CmdletBinding()]
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
-function cleaner () {$e = [char]27; "$e[H$e[J" + "`nhttps://uffemcev.github.io/utilities`n"}
+function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + "`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 $host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
@@ -20,7 +20,7 @@ if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Win
 	start-job -Name "Checking policies" {
 		$policies = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
 		reg add "HKCU\$policies" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
-		start-sleep 5
+		start-sleep 3
 	} | out-null
 }
 
@@ -41,7 +41,7 @@ if (!$data) {
 	Start-Job -Name "Loading apps" {
 		try {$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))}
 		catch {throw}
-		start-sleep 5
+		start-sleep 3
 	} | out-null
 	$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
  	$data | foreach {if (($_.Tag -eq '') -or ($_.Tag -eq $null)) {$_ | add-member -force 'Tag' 'Other'}}
@@ -57,7 +57,7 @@ if ($apps) {
 	$apps = [array]($apps | Sort-Object -unique)
 	cleaner
 	$menu = $true
-}
+} else {[System.Collections.ArrayList]$apps = @()}
 
 #ОЖИДАНИЕ ПРОВЕРОК
 if (get-job) {
@@ -81,7 +81,7 @@ if (get-job) {
 winget settings --enable InstallerHashOverride | out-null
 ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
 cd ([System.IO.Path]::GetTempPath())
-$tagItems = [array]'All' + ($data.tag | select -Unique) + [array]'Confirm'
+$tagsList = [array]'All' + ($data.tag | select -Unique) + [array]'Confirm'
 $ypos = -1
 $xpos = 0
 $zpos = 0
@@ -91,38 +91,43 @@ while ($menu -ne $true) {
 	
 	#ПОДСЧЕТ
 	cleaner
-	[array]$menu = $tagItems | Select @{Name="Tag"; Expression={
-		$tag = $_
-		if (($tagItems.IndexOf($tag) -eq $xpos) -and ($ypos -eq -1)) {color -text $tag -number 7}
-		elseif ($tagItems.IndexOf($tag) -eq $xpos) {color -text $tag -number 4}
-		else {$tag}	
-	}}, @{Name="App"; Expression={
-		$tag = $_
-		if ($tagItems.IndexOf($tag) -eq $xpos) {
-			[array]$result = switch ($tag) {
+	[array]$pattern = for ($i = 0; $i -lt $tagsList.count; $i++) {
+		$tag = $tagsList[$i]
+		if ($i -eq $xpos) {
+			switch ($tag) {
 				{$_ -in $data.tag} {$data | where Tag -eq $tag}
 				'All' {$data}
 				'Confirm' {$data | where Name -in $apps}
 			}
-			
-			$result | foreach {
-				$element = $_
-				$index = $result.IndexOf($element)
-				if (($element.Name -in $apps) -and ($index -eq $ypos)) {$description = (color "[$($index+1)]" 7) + " " + (color $element.Description 7)}
-				elseif ($element.Name -in $apps) {$description = (color "[$($index+1)]" 7) + " " + $element.Description}
-				elseif ($index -eq $ypos) {$description = "[$($index+1)]" + " " + (color $element.Description 7)}
-				else {$description = "[$($index+1)]" + " " + $element.Description}
-				@{Description = $Description; Name = $element.Name}
-			}
 		}
-	}}
+	}
+
+	[string]$tags = for ($i = 0; $i -lt $tagsList.count; $i++) {
+		$tag = $tagsList[$i]
+		if (($i -eq $xpos) -and ($ypos -eq -1)) {color -text $tag -number 7}
+		elseif ($i -eq $xpos) {color -text $tag -number 4}
+		else {$tag}
+	}
+
+	[array]$descriptions = for ($i = 0; $i -lt $pattern.count; $i++) {
+		$element = $pattern[$i]
+		if (($element.Name -in $apps) -and ($i -eq $ypos)) {(color "[$($i+1)]" 7) + " " + (color $element.Description 7)}
+		elseif ($element.Name -in $apps) {(color "[$($i+1)]" 7) + " " + $element.Description}
+		elseif ($i -eq $ypos) {"[$($i+1)]" + " " + (color $element.Description 7)}
+		else {"[$($i+1)]" + " " + $element.Description}
+	}
+
+	[array]$names = for ($i = 0; $i -lt $pattern.count; $i++) {
+		$element = $pattern[$i]
+		$element.Name
+	}
+	
+	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($names.count/10)) + " "
 	
 	#ВЫВОД
-	[array]$appItems = $menu.App.Name
-	$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($appItems.count/10)) + " "
-	[string]($menu.Tag) + "`n"
-	if ($menu.App.Description) {
-		([array]$menu.App.Description)[$zpos..($zpos+9)]
+	$tags + "`n"
+	if ($descriptions) {
+		$descriptions[$zpos..($zpos+9)]
 		"`n" + [char]::ConvertFromUtf32(0x0001F4C4) + $page
 	}
 	
@@ -134,14 +139,14 @@ while ($menu -ne $true) {
 		"LeftArrow" {$ypos = -1; $zpos = 0; $xpos--}
 		"Enter" {
 			if ($ypos -ge 0) {
-				if ($appItems[$ypos] -in $apps) {$apps.Remove($appItems[$ypos])}
-				else {$apps.Add($appItems[$ypos])}
+				if ($names[$ypos] -in $apps) {$apps.Remove($names[$ypos])}
+				else {$apps.Add($names[$ypos])}
 			} else {
-				switch ($tagItems[$xpos]) {
+				switch ($tagsList[$xpos]) {
 					"All" {if ($apps) {$apps = @()} else {$apps = $data.Name}}
 					"Confirm" {cleaner; $menu = $true}
 					DEFAULT {
-						$names = ($data | where Tag -eq $tagItems[$xpos]).name
+						$names = ($data | where Tag -eq $tagsList[$xpos]).name
 						$compare = Compare $apps $names -Exclude -Include
 						if ($compare) {$names | foreach {$apps.remove($_)}}
 						else {$names | foreach {$apps.add($_)}}
@@ -150,10 +155,10 @@ while ($menu -ne $true) {
 			}
 		}
 	}
-	if ($xpos -lt 0) {$xpos = $tagItems.count -1}
-	if ($xpos -ge $tagItems.count) {$xpos = 0}
-	if ($ypos -lt -1) {$ypos = $appItems.count -1; $zpos = [math]::Floor(($appItems.count-1)/10)*10}
-	if ($ypos -ge $appItems.count) {$ypos = -1; $zpos = 0}
+	if ($xpos -lt 0) {$xpos = $tagsList.count -1}
+	if ($xpos -ge $tagsList.count) {$xpos = 0}
+	if ($ypos -lt -1) {$ypos = $names.count -1; $zpos = [math]::Floor(($names.count-1)/10)*10}
+	if ($ypos -ge $names.count) {$ypos = -1; $zpos = 0}
 	if ($zpos -lt 0) {$zpos = 0}
 }
 
