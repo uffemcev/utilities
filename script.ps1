@@ -91,7 +91,7 @@ while ($menu -ne $true) {
 	
 	#ПОДСЧЕТ
 	cleaner
-	[array]$pattern = for ($i = 0; $i -lt $tagsList.count; $i++) {
+	[array]$elements = for ($i = 0; $i -lt $tagsList.count; $i++) {
 		$tag = $tagsList[$i]
 		if ($i -eq $xpos) {
 			switch ($tag) {
@@ -109,20 +109,15 @@ while ($menu -ne $true) {
 		else {$tag}
 	}
 
-	[array]$descriptions = for ($i = 0; $i -lt $pattern.count; $i++) {
-		$element = $pattern[$i]
+	[array]$descriptions = for ($i = 0; $i -lt $elements.count; $i++) {
+		$element = $elements[$i]
 		if (($element.Name -in $apps) -and ($i -eq $ypos)) {(color "[$($i+1)]" 7) + " " + (color $element.Description 7)}
 		elseif ($element.Name -in $apps) {(color "[$($i+1)]" 7) + " " + $element.Description}
 		elseif ($i -eq $ypos) {"[$($i+1)]" + " " + (color $element.Description 7)}
 		else {"[$($i+1)]" + " " + $element.Description}
 	}
-
-	[array]$names = for ($i = 0; $i -lt $pattern.count; $i++) {
-		$element = $pattern[$i]
-		$element.Name
-	}
 	
-	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($names.count/10)) + " "
+	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
 	
 	#ВЫВОД
 	$tags + "`n"
@@ -138,13 +133,13 @@ while ($menu -ne $true) {
 		"RightArrow" {$ypos = -1; $zpos = 0; $xpos++}
 		"LeftArrow" {$ypos = -1; $zpos = 0; $xpos--}
 		"Enter" {
-			$app = $names[$ypos]
-			$tag = $tagsList[$xpos]			
+			$app = $elements[$ypos].name
+			$tag = $tagsList[$xpos]
 			if ($ypos -ge 0) {
 				if ($app -in $apps) {$apps.Remove($app)} else {$apps.Add($app)}
-				if (($app -eq $names[-1]) -and ($tag -eq 'Confirm')) {
+				if (($app -eq $elements[-1].Name) -and ($tag -eq 'Confirm')) {
 					$ypos--
-					$zpos = [math]::Floor(($names.count-2)/10)*10
+					$zpos = [math]::Floor(($elements.count-2)/10)*10
 				}
 			} else {
 				switch ($tag) {
@@ -162,8 +157,8 @@ while ($menu -ne $true) {
 	}
 	if ($xpos -lt 0) {$xpos = $tagsList.count -1}
 	if ($xpos -ge $tagsList.count) {$xpos = 0}
-	if ($ypos -lt -1) {$ypos = $names.count -1; $zpos = [math]::Floor(($names.count-1)/10)*10}
-	if ($ypos -ge $names.count) {$ypos = -1; $zpos = 0}
+	if ($ypos -lt -1) {$ypos = $elements.count -1; $zpos = [math]::Floor(($elements.count-1)/10)*10}
+	if ($ypos -ge $elements.count) {$ypos = -1; $zpos = 0}
 	if ($zpos -lt 0) {$zpos = 0}
 }
 
