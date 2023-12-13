@@ -74,8 +74,8 @@
 				<td></td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
-				<td>vesktop</td>
-				<td>Vesktop - discord modified client</td>
+				<td>vencord</td>
+				<td>Vencord - discord modified client</td>
 			</tr>
 			<tr></tr>
 			<tr>
