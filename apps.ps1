@@ -151,7 +151,7 @@
 	[pscustomobject]@{
 		Description = "NVCleanstall"
 		Name = "nvidia"
-		Tag = "Drivers"
+		Tag = "System"
 		Code = {
 			$id = "TechPowerUp.NVCleanstall"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
