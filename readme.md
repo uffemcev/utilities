@@ -87,7 +87,7 @@
 			</tr>
 			<tr><td></td><td></td><td></td><td></td><td></td></tr>
 			<tr>
-				<td>Drivers</td>
+				<td>System</td>
 				<td>nvidia</td>
 				<td>NVCleanstall</td>
 				<td></td>
