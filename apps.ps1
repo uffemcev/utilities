@@ -40,7 +40,7 @@
 		Tag = "Programs"
 		Code = {
 			[Net.ServicePointManager]::SecurityProtocol = 3072
-   			iex "& { $(iwr -useb 'https://spotx-official.github.io/run.ps1') } -premium -new_theme -podcasts_on -block_update_on"
+      			iex "& { $(iwr -useb 'https://spotx-official.github.io/run.ps1') } -premium -new_theme -podcasts_on -block_update_on -EnhanceSongs -sp-uninstall"
 		}
 	}
 	[pscustomobject]@{
