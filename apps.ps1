@@ -35,7 +35,7 @@
 		}
 	}
 	[pscustomobject]@{
-		Description = "SpotX - spotify modified client"
+		Description = "SpotX - modified Spotify app"
 		Name = "spotx"
 		Tag = "Programs"
 		Code = {
@@ -70,7 +70,7 @@
 		}
 	}
 	[pscustomobject]@{
-		Description = "Vencord - discord modified client"
+		Description = "Vencord - modified Discord app"
 		Name = "vencord"
 		Tag = "Programs"
 		Code = {
