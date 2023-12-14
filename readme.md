@@ -112,7 +112,7 @@
 ```
 Автоматическая установка указанных компонентов по тегам и именам:
 ```powershell
-&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) drivers office chrome
+&([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) system other office chrome
 ```
 
 ## Ссылки
