@@ -53,9 +53,10 @@
 			$data = $get.assets | Where-Object name -match "goodbyedpi.*.zip$" | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile '.\goodbyedpi.zip'
 			Expand-Archive -ErrorAction 0 -Force '.\goodbyedpi.zip' $Env:Programfiles
-			dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match 'goodbyedpi*'} | where {$dir = $_.FullName}
-			"`n" |& "$dir\service_install_russia_blacklist.cmd"
-			(iwr "https://reestr.rublacklist.net/api/v3/domains" -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"
+   			$dir =  (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match 'goodbyedpi*'}).FullName
+			try {iwr "https://antizapret.prostovpn.org:8443/domains-export.txt" -Useb | sc "$dir\russia-blacklist.txt"}
+   			catch {(iwr "https://reestr.rublacklist.net/api/v3/domains" -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"}
+   			"`n" |& "$dir\service_install_russia_blacklist_dnsredir.cmd"
 		}
 	}
 	[pscustomobject]@{
