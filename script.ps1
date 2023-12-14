@@ -1,90 +1,74 @@
-#НАЧАЛЬНЫЕ ПАРАМЕТРЫ
+#ПАРАМЕТРЫ
 [CmdletBinding()]
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
+
+#ФУНКЦИИ
 function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + "`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
-$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-[console]::CursorVisible = $false
+function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
+
+#ЗНАЧЕНИЯ
 cleaner
+"Please wait, $Env:UserName"
+[console]::CursorVisible = $false
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
+[array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
+[array]$tagsList = [array]'All' + ($data.tag | select -Unique) + [array]'Confirm'
+[string]$path = [System.IO.Path]::GetTempPath() + "utilities"
+[bool]$install = $false
+[bool]$menu = $false
+[int]$ypos = -1
+[int]$xpos = 0
+[int]$zpos = 0
 
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-	(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
-}
-
-#ПРОВЕРКА REGEDIT
-if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
-	start-job -Name "Checking policies" {
-		$policies = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
-		reg add "HKCU\$policies" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
-		start-sleep 3
-	} | out-null
+	close
 }
 
 #ПРОВЕРКА WINGET
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
 	if ((get-process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)) -match "Terminal") {
 		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
-		(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+		close
 	} else {
-		start-job -Name "Installing winget" {
-			&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose
-		} | out-null
+		powershell "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose" | out-null
+		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	}
 }
 
-#ПРОВЕРКА ПРИЛОЖЕНИЙ
-if (!$data) {
-	Start-Job -Name "Loading apps" {
-		try {$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))}
-		catch {throw}
-		start-sleep 3
-	} | out-null
-	$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
- 	$data | foreach {if (($_.Tag -eq '') -or ($_.Tag -eq $null)) {$_ | add-member -force 'Tag' 'Other'}}
+#ПРОВЕРКА REGEDIT
+if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
+	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
 }
+
+#ПРОВЕРКА ПРИЛОЖЕНИЙ
+if ($data) {
+	$data | foreach {
+		if (($_.Tag -eq '') -or ($_.Tag -eq $null)) {$_ | add-member -force 'Tag' 'Other'}
+		cleaner
+	}
+} else {throw}
 
 #ПРОВЕРКА ПАРАМЕТРОВ
 if ($apps) {
 	foreach ($tag in ($data.tag | Select -Unique))  {
 		if ($tag -in $apps) {($data | where tag -eq $tag).Name | foreach {$apps.add($_)}}
 		($apps | where {$_ -eq $tag}) | foreach {$apps.Remove($_)}
+		cleaner
 	}
 	if ($apps -contains "all") {$apps = $data.Name}
 	$apps = [array]($apps | Sort-Object -unique)
-	cleaner
 	$menu = $true
 } else {[System.Collections.ArrayList]$apps = @()}
 
-#ОЖИДАНИЕ ПРОВЕРОК
-if (get-job) {
-	$job = get-job
-	for ($i = 0; $i -le $job.count; $i++) {
-		cleaner
-		if ($i -lt $job.count) {$job[$i].Name} else {$job[$i-1].Name}
-		$processed = [Math]::Round(($i) / $job.count * 49,0)
-		$remaining = 49 - $processed
-		$percentProcessed = [Math]::Round(($i) / $job.count * 100,0)
-		$percent = $percentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
-		"`n" + (color -text (" " * $processed) -number 7) + (color -text ("$percent") -number 7) + (color -text (" " * $remaining) -number 100)
-		$job[$i] | wait-job -ErrorAction 0 | out-null
-	}
-	$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-	get-job | remove-job | out-null
-	start-sleep 1
-}
-
 #НАЧАЛО РАБОТЫ
 winget settings --enable InstallerHashOverride | out-null
-ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
-cd ([System.IO.Path]::GetTempPath())
-$tagsList = [array]'All' + ($data.tag | select -Unique) + [array]'Confirm'
-$ypos = -1
-$xpos = 0
-$zpos = 0
+ri -Recurse -Force -ErrorAction 0 $path
+cd (ni -Path $path -ItemType "directory")
 
 #МЕНЮ
 while ($menu -ne $true) {
@@ -106,6 +90,7 @@ while ($menu -ne $true) {
 		$tag = $tagsList[$i]
 		if (($i -eq $xpos) -and ($ypos -eq -1)) {color -text $tag -number 7}
 		elseif ($i -eq $xpos) {color -text $tag -number 4}
+		elseif (($apps) -and ($tag -eq 'Confirm')) {color -text $tag -number 5}
 		else {$tag}
 	}
 
@@ -202,5 +187,5 @@ cleaner
 "Bye, $Env:UserName"
 start-sleep 5
 cd \
-ri -Recurse -Force -ErrorAction 0 ([System.IO.Path]::GetTempPath())
-(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}
+ri -Recurse -Force -ErrorAction 0 $path
+close
