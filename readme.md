@@ -123,3 +123,4 @@
 * [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
 * [SpotX](https://github.com/amd64fox/SpotX)
 * [Office](https://github.com/farag2/Office)
+* [Vencord](https://github.com/Vendicated/Vencord)
