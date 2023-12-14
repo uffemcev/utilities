@@ -56,7 +56,7 @@
    			$dir =  (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match 'goodbyedpi*'}).FullName
 			try {iwr "https://antizapret.prostovpn.org:8443/domains-export.txt" -Useb | sc "$dir\russia-blacklist.txt"}
    			catch {(iwr "https://reestr.rublacklist.net/api/v3/domains" -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"}
-   			"`n" |& "$dir\service_install_russia_blacklist_dnsredir.cmd"
+   			"`n" |& "$dir\service_install_russia_blacklist.cmd"
 		}
 	}
 	[pscustomobject]@{
