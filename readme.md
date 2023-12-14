@@ -110,7 +110,7 @@
 ```powershell
 &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1)))
 ```
-Автоматическая установка указанных компонентов по тегам и именам:
+Автоматическая установка компонентов по тегам и именам:
 ```powershell
 &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) system other office chrome
 ```
