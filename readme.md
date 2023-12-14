@@ -57,7 +57,7 @@
 			<tr>
 				<td></td>
 				<td>spotx</td>
-				<td>SpotX - spotify modified client</td>
+				<td>SpotX - modified Spotify app</td>
 				<td>signal</td>
 				<td>SignalRGB</td>
 			</tr>
@@ -75,7 +75,7 @@
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
 				<td>vencord</td>
-				<td>Vencord - discord modified client</td>
+				<td>Vencord - modified Discord app</td>
 			</tr>
 			<tr></tr>
 			<tr>
