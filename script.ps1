@@ -14,7 +14,6 @@ cleaner
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 $host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
-[array]$tagsList = [array]'All' + ($data.tag | select -Unique) + [array]'Confirm'
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
 [bool]$install = $false
 [bool]$menu = $false
@@ -75,13 +74,16 @@ while ($menu -ne $true) {
 	
 	#ПОДСЧЕТ
 	cleaner
+	
+	[array]$tagsList = [array]'All' + [array]$($data.tag | select -Unique) + [array]$(if ($apps) {'Confirm'} else {'Exit'})
+	
 	[array]$elements = for ($i = 0; $i -lt $tagsList.count; $i++) {
 		$tag = $tagsList[$i]
 		if ($i -eq $xpos) {
 			switch ($tag) {
-				{$_ -in $data.tag} {$data | where Tag -eq $tag}
 				'All' {$data}
-				'Confirm' {$data | where Name -in $apps}
+				{$_ -in $data.tag} {$data | where Tag -eq $tag}
+				DEFAULT {$data | where Name -in $apps}
 			}
 		}
 	}
@@ -129,13 +131,13 @@ while ($menu -ne $true) {
 			} else {
 				switch ($tag) {
 					"All" {if ($apps) {$apps = @()} else {$apps = $data.Name}}
-					"Confirm" {cleaner; $menu = $true}
-					DEFAULT {
+					{$_ -in $data.tag} {
 						$names = ($data | where Tag -eq $tag).name
 						$compare = Compare $apps $names -Exclude -Include
 						if ($compare) {$names | foreach {$apps.remove($_)}}
 						else {$names | foreach {$apps.add($_)}}
 					}
+					DEFAULT {cleaner; $menu = $true}
 				}
 			}
 		}
