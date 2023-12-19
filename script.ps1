@@ -3,7 +3,7 @@
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
 #ФУНКЦИИ
-function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + "`n"}
+function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + $tip + "`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
@@ -17,9 +17,11 @@ $host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
 [bool]$install = $false
 [bool]$menu = $false
+[bool]$select = $false
 [int]$ypos = -1
 [int]$xpos = 0
 [int]$zpos = 0
+[int]$kpos = 0
 
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
@@ -68,14 +70,16 @@ if ($apps) {
 winget settings --enable InstallerHashOverride | out-null
 ri -Recurse -Force -ErrorAction 0 $path
 cd (ni -Path $path -ItemType "directory")
+cleaner
 
 #МЕНЮ
 while ($menu -ne $true) {
 	
 	#ПОДСЧЕТ
-	cleaner
-	
-	[array]$tagsList = [array]'All' + [array]$($data.tag | select -Unique) + [array]$(if ($apps) {'Confirm'} else {'Exit'})
+	[array]$category = [array]'All' + [array]$($data.tag | select -Unique)
+	[array]$reset = 'Reset'
+	[array]$confirm = if ($apps) {'Confirm'} else {'Exit'}
+	[array]$tagsList = if ($select -eq $true) {[array]$category} else {[array]$category[$kpos] + [array]$reset + [array]$confirm}
 	
 	[array]$elements = for ($i = 0; $i -lt $tagsList.count; $i++) {
 		$tag = $tagsList[$i]
@@ -83,16 +87,16 @@ while ($menu -ne $true) {
 			switch ($tag) {
 				'All' {$data}
 				{$_ -in $data.tag} {$data | where Tag -eq $tag}
-				DEFAULT {$data | where Name -in $apps}
+				$confirm {$data | where Name -in $apps}
+				$reset {}
 			}
 		}
 	}
 
-	[string]$tags = for ($i = 0; $i -lt $tagsList.count; $i++) {
+	[array]$tags = for ($i = 0; $i -lt $tagsList.count; $i++) {
 		$tag = $tagsList[$i]
-		if (($i -eq $xpos) -and ($ypos -eq -1)) {color -text $tag -number 7}
-		elseif ($i -eq $xpos) {color -text $tag -number 4}
-		elseif (($apps) -and ($tag -eq 'Confirm')) {color -text $tag -number 5}
+		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7}
+		elseif ($i -eq $xpos) {color $tag 4}
 		else {$tag}
 	}
 
@@ -104,10 +108,23 @@ while ($menu -ne $true) {
 		else {"[$($i+1)]" + " " + $element.Description}
 	}
 	
+	[array]$tip = for ($i = 0; $i -lt $tagsList.count; $i++) {
+		$tag = $tagsList[$i]
+		if (($i -eq $xpos) -and ($ypos -eq -1)) {
+			switch ($tag) {
+				DEFAULT {'/change_category'}
+				$reset {'/full_reset'}
+				'Exit' {'/exit_from_script'}
+				'Confirm' {'/confirm_your_choice'}
+			}
+		}
+	}
+	
 	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
 	
 	#ВЫВОД
-	$tags + "`n"
+	cleaner
+	if ($select -eq $true) {'< ' + $tags[$xpos] + ' >' + "`n"} else {[string]$tags + "`n"}
 	if ($descriptions) {
 		$descriptions[$zpos..($zpos+9)]
 		"`n" + [char]::ConvertFromUtf32(0x0001F4C4) + $page
@@ -115,10 +132,26 @@ while ($menu -ne $true) {
 	
 	#УПРАВЛЕНИЕ
 	switch ([console]::ReadKey($true).key) {
-		"UpArrow" {$ypos--; if ($ypos -lt $zpos) {$zpos -= 10}}
-		"DownArrow" {$ypos++; if ($ypos -gt $zpos+9) {$zpos += 10}}
-		"RightArrow" {$ypos = -1; $zpos = 0; $xpos++}
-		"LeftArrow" {$ypos = -1; $zpos = 0; $xpos--}
+		"UpArrow" {
+			$ypos--
+			if ($ypos -lt $zpos) {$zpos -= 10}
+			if ($select -eq $true) {$select = $false; $kpos = $xpos; $xpos = 0; [array]$tagsList = [array]$category}
+		}
+		"DownArrow" {
+			$ypos++
+			if ($ypos -gt $zpos+9) {$zpos += 10}
+			if ($select -eq $true) {$select = $false; $kpos = $xpos; $xpos = 0; [array]$tagsList = [array]$category}
+		}
+		"RightArrow" {
+			$ypos = -1
+			$zpos = 0
+			$xpos++
+		}
+		"LeftArrow" {
+			$ypos = -1
+			$zpos = 0
+			$xpos--
+		}
 		"Enter" {
 			$app = $elements[$ypos].name
 			$tag = $tagsList[$xpos]
@@ -130,14 +163,22 @@ while ($menu -ne $true) {
 				}
 			} else {
 				switch ($tag) {
-					"All" {if ($apps) {$apps = @()} else {$apps = $data.Name}}
-					{$_ -in $data.tag} {
-						$names = ($data | where Tag -eq $tag).name
-						$compare = Compare $apps $names -Exclude -Include
-						if ($compare) {$names | foreach {$apps.remove($_)}}
-						else {$names | foreach {$apps.add($_)}}
+					DEFAULT {
+						if ($select -eq $true) {$select = $false; $kpos = $xpos; $xpos = 0}
+						else {$select = $true; $xpos = $kpos; [array]$tagsList = [array]$category}
 					}
-					DEFAULT {cleaner; $menu = $true}
+					$confirm {
+						cleaner
+						$menu = $true
+					}
+					$reset {
+						[System.Collections.ArrayList]$apps = @()
+						[bool]$select = $false
+						[int]$ypos = -1
+						[int]$xpos = 0
+						[int]$zpos = 0
+						[int]$kpos = 0
+					}
 				}
 			}
 		}
