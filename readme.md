@@ -8,8 +8,8 @@
 			<tr>
 				<th align="center">Тег</th>
 				<th align="center">Имя</th>
-				<th align="center" width="450px">Описание</th>
-				<th align="center" width="450px">Ссылка</th>
+				<th align="center" width="400px">Описание</th>
+				<th align="center" width="500px">Ссылка</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -23,7 +23,7 @@
 				<td>Tweaks</td>
 				<td>dns</td>
 				<td>Cloudflare DOH</td>
-				<td></td>
+				<td>https://one.one.one.one/dns</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -47,13 +47,13 @@
 				<td>Programs</td>
 				<td>gdrive</td>
 				<td>Google Drive</td>
-				<td></td>
+				<td>https://drive.google.com</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>adguard</td>
 				<td>AdGuard</td>
-				<td></td>
+				<td>https://adguard.info</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -65,7 +65,7 @@
 				<td></td>
 				<td>qbit</td>
 				<td>qBittorrent</td>
-				<td></td>
+				<td>https://www.qbittorrent.org</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -77,25 +77,25 @@
 				<td></td>
 				<td>signal</td>
 				<td>SignalRGB</td>				
-				<td></td>
+				<td>https://signalrgb.com</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>zip</td>
 				<td>7-zip</td>
-				<td></td>
+				<td>https://www.7-zip.org</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>steam</td>
 				<td>Steam</td>				
-				<td></td>
+				<td>https://store.steampowered.com</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
-				<td></td>
+				<td>https://codecguide.com/download_k-lite_codec_pack_full.htm</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -107,19 +107,19 @@
 				<td></td>
 				<td>chrome</td>
 				<td>Google Chrome</td>
-				<td></td>
+				<td>https://www.google.com/chrome</td>
 			</tr>
 			<tr>
 				<td>System</td>
 				<td>nvidia</td>
 				<td>NVCleanstall</td>
-				<td></td>
+				<td>https://www.techpowerup.com/nvcleanstall/</td>
 			</tr>
 			<tr>
 				<td>Other</td>
 				<td>win</td>
 				<td>Win 11 23H2 iso folder</td>
-				<td></td>
+				<td>https://uupdump.net</td>
 			</tr>
 			<tr>
 				<td></td>
