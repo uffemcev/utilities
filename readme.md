@@ -8,8 +8,8 @@
 			<tr>
 				<th align="center">Тег</th>
 				<th align="center">Имя</th>
-				<th align="center" width="450px">Описание</th>
-				<th align="center" width="450px">Источник</th>
+				<th align="center" width="400px">Описание</th>
+				<th align="center" width="500px">Источник</th>
 			</tr>
 		</thead>
 		<tbody>
