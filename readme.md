@@ -8,8 +8,8 @@
 			<tr>
 				<th align="center">Тег</th>
 				<th align="center">Имя</th>
-				<th align="center" width="400px">Описание</th>
-				<th align="center" width="500px">Ссылка</th>
+				<th align="center" width="450px">Описание</th>
+				<th align="center" width="450px">Источник</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -23,109 +23,109 @@
 				<td>Tweaks</td>
 				<td>dns</td>
 				<td>Cloudflare DOH</td>
-				<td>https://one.one.one.one/dns</td>
+				<td>one.one.one.one/dns</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>dpi</td>
 				<td>GoodbyeDPI режим 5</td>
-				<td>https://github.com/ValdikSS/GoodbyeDPI</td>
+				<td>github.com/ValdikSS/GoodbyeDPI</td>
 			</tr>
 			<tr>
 				<td></td>
     				<td>sophia</td>
 				<td>SophiApp Tweaker portable</td>
-				<td>https://github.com/Sophia-Community/SophiApp</td>
+				<td>github.com/Sophia-Community/SophiApp</td>
 			</tr>
 			<tr>
 				<td></td>
     				<td>redirect</td>
 				<td>MSEdgeRedirect</td>
-   				<td>https://github.com/rcmaehl/MSEdgeRedirect</td>
+   				<td>github.com/rcmaehl/MSEdgeRedirect</td>
 			</tr>
 			<tr>
 				<td>Programs</td>
 				<td>gdrive</td>
 				<td>Google Drive</td>
-				<td>https://drive.google.com</td>
+				<td>drive.google.com</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>adguard</td>
 				<td>AdGuard</td>
-				<td>https://adguard.info</td>
+				<td>adguard.info</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>office</td>
 				<td>Office, Word, Excel licensed</td>
-				<td>https://github.com/farag2/Office</td>
+				<td>github.com/farag2/Office</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>qbit</td>
 				<td>qBittorrent</td>
-				<td>https://www.qbittorrent.org</td>
+				<td>qbittorrent.org</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>spotx</td>
 				<td>SpotX - modified Spotify app</td>
-				<td>https://github.com/amd64fox/SpotX</td>
+				<td>github.com/amd64fox/SpotX</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>signal</td>
 				<td>SignalRGB</td>				
-				<td>https://signalrgb.com</td>
+				<td>signalrgb.com</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>zip</td>
 				<td>7-zip</td>
-				<td>https://www.7-zip.org</td>
+				<td>7-zip.org</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>steam</td>
 				<td>Steam</td>				
-				<td>https://store.steampowered.com</td>
+				<td>store.steampowered.com</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
-				<td>https://codecguide.com/download_k-lite_codec_pack_full.htm</td>
+				<td>codecguide.com/download_k-lite_codec_pack_full.htm</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>vencord</td>
 				<td>Vencord - modified Discord app</td>				
-				<td>https://github.com/Vendicated/Vencord</td>
+				<td>github.com/Vendicated/Vencord</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>chrome</td>
 				<td>Google Chrome</td>
-				<td>https://www.google.com/chrome</td>
+				<td>google.com/chrome</td>
 			</tr>
 			<tr>
 				<td>System</td>
 				<td>nvidia</td>
 				<td>NVCleanstall</td>
-				<td>https://www.techpowerup.com/nvcleanstall</td>
+				<td>techpowerup.com/nvcleanstall</td>
 			</tr>
 			<tr>
 				<td>Other</td>
 				<td>win</td>
 				<td>Win 11 23H2 iso folder</td>
-				<td>https://uupdump.net</td>
+				<td>uupdump.net</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>rufus</td>
 				<td>Rufus portable</td>				
-				<td>https://github.com/pbatard/rufus</td>
+				<td>github.com/pbatard/rufus</td>
 			</tr>
 		</tbody>
 	</table>
