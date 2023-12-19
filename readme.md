@@ -8,8 +8,8 @@
 			<tr>
 				<th align="center">Тег</th>
 				<th align="center">Имя</th>
-				<th align="center" width="400px">Описание</th>
-				<th align="center" width="500px">Источник</th>
+				<th align="center" width="450px">Описание</th>
+				<th align="center" width="450px">Источник</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -95,7 +95,7 @@
 				<td>Video</td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
-				<td>codecguide.com/download_k-lite_codec_pack_full.htm</td>
+				<td>https://codecguide.com/download_kl.htm</td>
 			</tr>
 			<tr>
 				<td>System</td>
