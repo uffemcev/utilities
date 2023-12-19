@@ -113,7 +113,7 @@
 				<td>System</td>
 				<td>nvidia</td>
 				<td>NVCleanstall</td>
-				<td>https://www.techpowerup.com/nvcleanstall/</td>
+				<td>https://www.techpowerup.com/nvcleanstall</td>
 			</tr>
 			<tr>
 				<td>Other</td>
