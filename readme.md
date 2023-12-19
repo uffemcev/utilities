@@ -6,8 +6,8 @@
 	<table>
 		<thead>
 			<tr>
-				<th align="center">Тег</th>
-				<th align="center">Имя</th>
+				<th align="center" width="100px">Тег</th>
+				<th align="center" width="100px">Имя</th>
 				<th align="center" width="450px">Описание</th>
 				<th align="center" width="450px">Источник</th>
 			</tr>
