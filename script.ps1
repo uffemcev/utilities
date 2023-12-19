@@ -3,7 +3,7 @@
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
 #ФУНКЦИИ
-function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + $tip + "`n"}
+function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + $tips + "`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
@@ -108,17 +108,29 @@ while ($menu -ne $true) {
 		else {"[$($i+1)]" + " " + $element.Description}
 	}
 	
-	[array]$tip = for ($i = 0; $i -lt $tagsList.count; $i++) {
+	[array]$tagsTips = for ($i = 0; $i -lt $tagsList.count; $i++) {
 		$tag = $tagsList[$i]
 		if (($i -eq $xpos) -and ($ypos -eq -1)) {
 			switch ($tag) {
-				DEFAULT {'/change_category'}
-				$reset {'/full_reset'}
-				'Exit' {'/exit_from_script'}
-				'Confirm' {'/confirm_your_choice'}
+				DEFAULT {"/change_category"}
+				'Reset' {"/full_reset"}
+				'Exit' {"/exit_from_script"}
+				'Confirm' {"/confirm_your_choice"}
 			}
 		}
 	}
+	
+	[array]$descriptionsTips = for ($i = 0; $i -lt $elements.count; $i++) {
+		$app = $elements[$i].name
+		if ($i -eq $ypos) {
+			switch ($app) {
+				{$_ -notin $apps} {"/select_$($app)"}
+				{$_ -in $apps} {"/unselect_$($app)"}
+			}
+		}
+	}
+	
+	[array]$tips = [array]$tagsTips + [array]$descriptionsTips
 	
 	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
 	
