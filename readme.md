@@ -44,10 +44,22 @@
    				<td>github.com/rcmaehl/MSEdgeRedirect</td>
 			</tr>
 			<tr>
-				<td>Programs</td>
-				<td>gdrive</td>
-				<td>Google Drive</td>
-				<td>drive.google.com</td>
+				<td>Audio</td>
+				<td>spotx</td>
+				<td>SpotX - modified Spotify app</td>
+				<td>github.com/amd64fox/SpotX</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>vencord</td>
+				<td>Vencord - modified Discord app</td>				
+				<td>github.com/Vendicated/Vencord</td>
+			</tr>
+			<tr>
+				<td>Web</td>
+				<td>chrome</td>
+				<td>Google Chrome</td>
+				<td>google.com/chrome</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -56,28 +68,40 @@
 				<td>adguard.info</td>
 			</tr>
 			<tr>
-				<td></td>
-				<td>office</td>
-				<td>Office, Word, Excel licensed</td>
-				<td>github.com/farag2/Office</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>qbit</td>
-				<td>qBittorrent</td>
-				<td>qbittorrent.org</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>spotx</td>
-				<td>SpotX - modified Spotify app</td>
-				<td>github.com/amd64fox/SpotX</td>
+				<td>Games</td>
+				<td>steam</td>
+				<td>Steam</td>				
+				<td>store.steampowered.com</td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>signal</td>
 				<td>SignalRGB</td>				
 				<td>signalrgb.com</td>
+			</tr>
+			<tr>
+				<td>Storage</td>
+				<td>qbit</td>
+				<td>qBittorrent</td>
+				<td>qbittorrent.org</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>gdrive</td>
+				<td>Google Drive</td>
+				<td>drive.google.com</td>
+			</tr>
+			<tr>
+				<td>Video</td>
+				<td>codec</td>
+				<td>K-Lite Codec Pack Full</td>
+				<td>codecguide.com/download_k-lite_codec_pack_full.htm</td>
+			</tr>
+			<tr>
+				<td>System</td>
+				<td>nvidia</td>
+				<td>NVCleanstall</td>
+				<td>techpowerup.com/nvcleanstall</td>
 			</tr>
 			<tr>
 				<td></td>
@@ -87,33 +111,9 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td>steam</td>
-				<td>Steam</td>				
-				<td>store.steampowered.com</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>codec</td>
-				<td>K-Lite Codec Pack Full</td>
-				<td>codecguide.com/download_k-lite_codec_pack_full.htm</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>vencord</td>
-				<td>Vencord - modified Discord app</td>				
-				<td>github.com/Vendicated/Vencord</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>chrome</td>
-				<td>Google Chrome</td>
-				<td>google.com/chrome</td>
-			</tr>
-			<tr>
-				<td>System</td>
-				<td>nvidia</td>
-				<td>NVCleanstall</td>
-				<td>techpowerup.com/nvcleanstall</td>
+				<td>office</td>
+				<td>Office, Word, Excel licensed</td>
+				<td>github.com/farag2/Office</td>
 			</tr>
 			<tr>
 				<td>Other</td>
