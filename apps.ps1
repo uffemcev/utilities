@@ -22,7 +22,7 @@
 	[pscustomobject]@{
 		Description = "Office, Word, Excel licensed"
 		Name = "office"
-		Tag = "Programs"
+		Tag = "System"
 		Code = {
 			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
 			Expand-Archive -ErrorAction 0 -Force '.\Office.zip' '.\'
@@ -37,7 +37,7 @@
 	[pscustomobject]@{
 		Description = "SpotX - modified Spotify app"
 		Name = "spotx"
-		Tag = "Programs"
+		Tag = "Audio"
 		Code = {
 			[Net.ServicePointManager]::SecurityProtocol = 3072
       			iex "& { $(iwr -useb 'https://spotx-official.github.io/run.ps1') } -premium -new_theme -podcasts_on -block_update_on -EnhanceSongs -sp-uninstall"
@@ -62,7 +62,7 @@
 	[pscustomobject]@{
 		Description = "Google Chrome"
 		Name = "chrome"
-		Tag = "Programs"
+		Tag = "Web"
 		Code = {
 			$id = "Google.Chrome"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -72,7 +72,7 @@
 	[pscustomobject]@{
 		Description = "Vencord - modified Discord app"
 		Name = "vencord"
-		Tag = "Programs"
+		Tag = "Audio"
 		Code = {
 			$id = "Vendicated.Vencord"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -82,7 +82,7 @@
 	[pscustomobject]@{
 		Description = "Steam"
 		Name = "steam"
-		Tag = "Programs"
+		Tag = "Games"
 		Code = {
 			$id = "Valve.Steam"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -92,7 +92,7 @@
 	[pscustomobject]@{
 		Description = "qBittorrent"
 		Name = "qbit"
-		Tag = "Programs"
+		Tag = "Storage"
 		Code = {
 			$id = "qBittorrent.qBittorrent"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -102,7 +102,7 @@
 	[pscustomobject]@{
 		Description = "7-Zip"
 		Name = "zip"
-		Tag = "Programs"
+		Tag = "System"
 		Code = {
 			$id = "7zip.7zip"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -112,7 +112,7 @@
 	[pscustomobject]@{
 		Description = "Google Drive"
 		Name = "gdrive"
-		Tag = "Programs"
+		Tag = "Storage"
 		Code = {
 			$id = "Google.GoogleDrive"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -122,7 +122,7 @@
 	[pscustomobject]@{
 		Description = "Adguard"
 		Name = "adguard"
-		Tag = "Programs"
+		Tag = "Web"
 		Code = {
 			$id = "AdGuard.AdGuard"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -132,7 +132,7 @@
 	[pscustomobject]@{
 		Description = "SignalRGB"
 		Name = "signal"
-		Tag = "Programs"
+		Tag = "Games"
 		Code = {
 			$id = "WhirlwindFX.SignalRgb"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -142,7 +142,7 @@
 	[pscustomobject]@{
 		Description = "K-Lite Codec Pack Full"
 		Name = "codec"
-		Tag = "Programs"
+		Tag = "Video"
 		Code = {
 			$id = "CodecGuide.K-LiteCodecPack.Full"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
