@@ -12,7 +12,7 @@ cleaner
 "Please wait, $Env:UserName"
 [console]::CursorVisible = $false
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
-$host.ui.RawUI.WindowTitle = 'utilities ' + [char]::ConvertFromUtf32(0x1F916)
+$host.ui.RawUI.WindowTitle = [char]::ConvertFromUtf32(0x1F916) + ' utilities'
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
 [bool]$install = $false
