@@ -95,7 +95,7 @@
 				<td>Video</td>
 				<td>codec</td>
 				<td>K-Lite Codec Pack Full</td>
-				<td>https://codecguide.com/download_kl.htm</td>
+				<td>codecguide.com/download_kl.htm</td>
 			</tr>
 			<tr>
 				<td>System</td>
