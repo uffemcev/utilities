@@ -3,7 +3,7 @@
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
 #ФУНКЦИИ
-function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + $tips + "`n"}
+function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + $tip + "`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
@@ -15,9 +15,8 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 $host.ui.RawUI.WindowTitle = [char]::ConvertFromUtf32(0x1F916) + ' utilities'
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
-[bool]$install = $false
-[bool]$menu = $false
-[bool]$select = $false
+[string]$stage = 'menu'
+[string]$mode = 'disable'
 [int]$ypos = -1
 [int]$xpos = 0
 [int]$zpos = 0
@@ -63,7 +62,7 @@ if ($apps) {
 	}
 	if ($apps -contains "all") {$apps = $data.Name}
 	$apps = [array]($apps | Sort-Object -unique)
-	$menu = $true
+	$stage = 'install'
 } else {[System.Collections.ArrayList]$apps = @()}
 
 #НАЧАЛО РАБОТЫ
@@ -73,31 +72,23 @@ cd (ni -Path $path -ItemType "directory")
 cleaner
 
 #МЕНЮ
-while ($menu -ne $true) {
+while ($stage -eq 'menu') {
 	
 	#ПОДСЧЕТ
-	[array]$category = [array]'All' + [array]$($data.tag | select -Unique)
-	[array]$reset = 'Reset'
-	[array]$confirm = if ($apps) {'Confirm'} else {'Exit'}
-	[array]$tagsList = if ($select -eq $true) {[array]$category} else {[array]$category[$kpos] + [array]$reset + [array]$confirm}
+	[array]$category = @('All') + $($data.tag | select -Unique)
+	[string]$confirm = if ($apps) {'Confirm'} else {'Exit'}
+	[array]$tagList = if ($mode -eq 'select') {$category} else {'Apps', 'Group', $confirm}
 	
-	[array]$elements = for ($i = 0; $i -lt $tagsList.count; $i++) {
-		$tag = $tagsList[$i]
-		if ($i -eq $xpos) {
-			switch ($tag) {
-				'All' {$data}
-				{$_ -in $data.tag} {$data | where Tag -eq $tag}
-				$confirm {$data | where Name -in $apps}
-				$reset {}
-			}
-		}
+	[array]$elements = switch ($tagList[$xpos]) {
+		'Apps' {if ($category[$kpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$kpos]}}
+		'All' {$data}
+		{$_ -in $data.tag} {$data | where Tag -eq $tagList[$xpos]}
+		$confirm {$data | where Name -in $apps}
 	}
 
-	[array]$tags = for ($i = 0; $i -lt $tagsList.count; $i++) {
-		$tag = $tagsList[$i]
-		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7}
-		elseif ($i -eq $xpos) {color $tag 4}
-		else {$tag}
+	[array]$tags = for ($i = 0; $i -lt $tagList.count; $i++) {
+		$tag = $tagList[$i]
+		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7} else {$tag}
 	}
 
 	[array]$descriptions = for ($i = 0; $i -lt $elements.count; $i++) {
@@ -108,35 +99,35 @@ while ($menu -ne $true) {
 		else {"[$($i+1)]" + " " + $element.Description}
 	}
 	
-	[array]$tagsTips = for ($i = 0; $i -lt $tagsList.count; $i++) {
-		$tag = $tagsList[$i]
-		if (($i -eq $xpos) -and ($ypos -eq -1)) {
-			switch ($tag) {
-				DEFAULT {"/change_category"}
-				'Reset' {"/full_reset"}
-				'Exit' {"/exit_from_script"}
-				'Confirm' {"/confirm_your_choice"}
+	[array]$tagTip = if ($ypos -eq -1) {
+		switch ($tagList[$xpos]) {
+			'Apps' {
+				$name = $category[$kpos]
+				$names = if ($name -eq 'All') {$data.Name} else {($data | where Tag -eq $name).name}
+				$compare = Compare $apps $names -Exclude -Include
+				if ($compare) {"/unselect_$($category[$kpos].ToLower())"} else {"/select_$($category[$kpos].ToLower())"}
 			}
+			$category[$xpos] {"/group_by_$($category[$xpos].ToLower())"}
+			'Group' {"/group_by_category"}
+			'Exit' {"/exit_from_script"}
+			'Confirm' {"/confirm_your_choice"}
 		}
 	}
 	
-	[array]$descriptionsTips = for ($i = 0; $i -lt $elements.count; $i++) {
-		$app = $elements[$i].name
-		if ($i -eq $ypos) {
-			switch ($app) {
-				{$_ -notin $apps} {"/select_$($app)"}
-				{$_ -in $apps} {"/unselect_$($app)"}
-			}
+	[array]$descriptionTip = if ($ypos -ge 0) {
+		switch ($elements[$ypos].name) {
+			{$_ -notin $apps} {"/select_$($elements[$ypos].name)"}
+			{$_ -in $apps} {"/unselect_$($elements[$ypos].name)"}
 		}
 	}
 	
-	[array]$tips = [array]$tagsTips + [array]$descriptionsTips
+	[array]$tip = $tagTip + $descriptionTip
 	
 	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
 	
 	#ВЫВОД
 	cleaner
-	if ($select -eq $true) {'< ' + $tags[$xpos] + ' >' + "`n"} else {[string]$tags + "`n"}
+	if ($mode -eq 'select') {'< ' + $tags[$xpos] + ' >' + "`n"} else {[string]$tags + "`n"}
 	if ($descriptions) {
 		$descriptions[$zpos..($zpos+9)]
 		"`n" + [char]::ConvertFromUtf32(0x0001F4C4) + $page
@@ -147,12 +138,12 @@ while ($menu -ne $true) {
 		"UpArrow" {
 			$ypos--
 			if ($ypos -lt $zpos) {$zpos -= 10}
-			if ($select -eq $true) {$select = $false; $kpos = $xpos; $xpos = 0; [array]$tagsList = [array]$category}
+			if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
 		}
 		"DownArrow" {
 			$ypos++
 			if ($ypos -gt $zpos+9) {$zpos += 10}
-			if ($select -eq $true) {$select = $false; $kpos = $xpos; $xpos = 0; [array]$tagsList = [array]$category}
+			if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
 		}
 		"RightArrow" {
 			$ypos = -1
@@ -166,7 +157,7 @@ while ($menu -ne $true) {
 		}
 		"Enter" {
 			$app = $elements[$ypos].name
-			$tag = $tagsList[$xpos]
+			$tag = $tagList[$xpos]
 			if ($ypos -ge 0) {
 				if ($app -in $apps) {$apps.Remove($app)} else {$apps.Add($app)}
 				if (($app -eq $elements[-1].Name) -and ($tag -eq 'Confirm')) {
@@ -175,38 +166,41 @@ while ($menu -ne $true) {
 				}
 			} else {
 				switch ($tag) {
-					DEFAULT {
-						if ($select -eq $true) {$select = $false; $kpos = $xpos; $xpos = 0}
-						else {$select = $true; $xpos = $kpos; [array]$tagsList = [array]$category}
+					'Apps' {
+						$name = $category[$kpos]
+						$names = if ($name -eq 'All') {$data.Name} else {($data | where Tag -eq $name).name}
+						$compare = Compare $apps $names -Exclude -Include
+						if ($compare) {$names | foreach {$apps.remove($_)}}
+						else {$names | foreach {$apps.add($_) | out-null}}
+					}
+					$category[$xpos] {
+						if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
+					}					
+					'Group' {
+						$mode = 'select'
+						$xpos = $kpos
+						$tagList = $category
 					}
 					$confirm {
 						cleaner
-						$menu = $true
-					}
-					$reset {
-						[System.Collections.ArrayList]$apps = @()
-						[bool]$select = $false
-						[int]$ypos = -1
-						[int]$xpos = 0
-						[int]$zpos = 0
-						[int]$kpos = 0
+						$stage = 'install'
 					}
 				}
 			}
 		}
 	}
-	if ($xpos -lt 0) {$xpos = $tagsList.count -1}
-	if ($xpos -ge $tagsList.count) {$xpos = 0}
+	if ($xpos -lt 0) {$xpos = $tagList.count -1}
+	if ($xpos -ge $tagList.count) {$xpos = 0}
 	if ($ypos -lt -1) {$ypos = $elements.count -1; $zpos = [math]::Floor(($elements.count-1)/10)*10}
 	if ($ypos -ge $elements.count) {$ypos = -1; $zpos = 0}
 	if ($zpos -lt 0) {$zpos = 0}
 }
 
 #ПРОВЕРКА ВЫХОДА
-if ($apps.count -eq 0) {$install = $true}
+if ($apps.count -eq 0) {$stage = 'exit'}
 
 #УСТАНОВКА
-while ($install -ne $true) {
+while ($stage -eq 'install') {
 	for ($i = 0; $i -le $apps.count; $i++) {
 		#ЗАПУСК
 		Get-job | Wait-Job | out-null
@@ -234,7 +228,7 @@ while ($install -ne $true) {
 		"`n" + (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 	}
 	start-sleep 5
-	$install = $true
+	$stage = 'exit'
 }
 
 #ЗАВЕРШЕНИЕ РАБОТЫ
