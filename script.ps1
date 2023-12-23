@@ -77,17 +77,18 @@ while ($stage -eq 'menu') {
 	#ПОДСЧЕТ
 	[array]$category = @('All') + $($data.tag | select -Unique)
 	[string]$confirm = if ($apps) {'Confirm'} else {'Exit'}
-	[array]$tagList = if ($mode -eq 'select') {$category} else {'Apps', 'Group', $confirm}
+	[array]$tagList = if ($mode -eq 'select') {$category} else {'Apps', 'Tags', 'Search', $confirm}
 	
 	[array]$elements = switch ($tagList[$xpos]) {
 		'Apps' {if ($category[$kpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$kpos]}}
+		'Search' {if ($mode -eq 'search' -and ($search)) {$data | where description -match $search}}
 		'All' {$data}
 		{$_ -in $data.tag} {$data | where Tag -eq $tagList[$xpos]}
 		$confirm {$data | where Name -in $apps}
 	}
 
 	[array]$tags = for ($i = 0; $i -lt $tagList.count; $i++) {
-		$tag = $tagList[$i]
+		$tag = ($tagList[$i]).ToUpper()
 		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7} else {$tag}
 	}
 
@@ -99,29 +100,21 @@ while ($stage -eq 'menu') {
 		else {"[$($i+1)]" + " " + $element.Description}
 	}
 	
-	[array]$tagTip = if ($ypos -eq -1) {
+	[array]$tip = if ($ypos -eq -1) {
 		switch ($tagList[$xpos]) {
-			'Apps' {
-				$name = $category[$kpos]
-				$names = if ($name -eq 'All') {$data.Name} else {($data | where Tag -eq $name).name}
-				$compare = Compare $apps $names -Exclude -Include
-				if ($compare) {"/unselect_$($category[$kpos].ToLower())"} else {"/select_$($category[$kpos].ToLower())"}
-			}
-			$category[$xpos] {"/group_by_$($category[$xpos].ToLower())"}
-			'Group' {"/group_by_category"}
-			'Exit' {"/exit_from_script"}
-			'Confirm' {"/confirm_your_choice"}
+			$category[$xpos] {"/$($category[$xpos].ToLower())"}
+			'Apps' {"/$($category[$kpos].ToLower())"}
+			'Tags' {"/tags"}
+			'Search' {if ($mode -eq 'search' -and ($search)) {"/$($search.ToLower())"} else {"/search"}}
+			'Exit' {"/exit"}
+			'Confirm' {"/confirm"}
+		}
+	} else {
+		switch ($mode) {
+			'search' {"/$($search.ToLower())/$($elements[$ypos].name)"}
+			'disable' {"/$($category[$kpos].ToLower())/$($elements[$ypos].name)"}
 		}
 	}
-	
-	[array]$descriptionTip = if ($ypos -ge 0) {
-		switch ($elements[$ypos].name) {
-			{$_ -notin $apps} {"/select_$($elements[$ypos].name)"}
-			{$_ -in $apps} {"/unselect_$($elements[$ypos].name)"}
-		}
-	}
-	
-	[array]$tip = $tagTip + $descriptionTip
 	
 	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
 	
@@ -149,11 +142,13 @@ while ($stage -eq 'menu') {
 			$ypos = -1
 			$zpos = 0
 			$xpos++
+			if ($mode -eq 'search') {$mode = 'disable'}
 		}
 		"LeftArrow" {
 			$ypos = -1
 			$zpos = 0
 			$xpos--
+			if ($mode -eq 'search') {$mode = 'disable'}
 		}
 		"Enter" {
 			$app = $elements[$ypos].name
@@ -166,6 +161,9 @@ while ($stage -eq 'menu') {
 				}
 			} else {
 				switch ($tag) {
+					$category[$xpos] {
+						if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
+					}
 					'Apps' {
 						$name = $category[$kpos]
 						$names = if ($name -eq 'All') {$data.Name} else {($data | where Tag -eq $name).name}
@@ -173,17 +171,21 @@ while ($stage -eq 'menu') {
 						if ($compare) {$names | foreach {$apps.remove($_)}}
 						else {$names | foreach {$apps.add($_) | out-null}}
 					}
-					$category[$xpos] {
-						if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
-					}					
-					'Group' {
+					'Tags' {
 						$mode = 'select'
 						$xpos = $kpos
 						$tagList = $category
 					}
-					$confirm {
+					'Search' {
+						$mode = 'search'
 						cleaner
+						[console]::CursorVisible = $true
+						[string]$search = read-host
+						[console]::CursorVisible = $false
+					}
+					$confirm {
 						$stage = 'install'
+						cleaner
 					}
 				}
 			}
