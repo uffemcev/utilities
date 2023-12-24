@@ -104,7 +104,7 @@ while ($stage -eq 'menu') {
 		switch ($tagList[$xpos]) {
 			$category[$xpos] {"/$($category[$xpos].ToLower())"}
 			'Apps' {"/apps"}
-			'Tags' {if ($mode -eq 'select') {"/$($category[$kpos].ToLower())"} else {"/tags"}}
+			'Tags' {if ($mode -eq 'tags') {"/$($category[$kpos].ToLower())"} else {"/tags"}}
 			'Search' {if ($mode -eq 'search' -and ($search)) {"/$($search.ToLower())"} else {"/search"}}
 			'Exit' {"/exit"}
 			'Confirm' {"/confirm"}
