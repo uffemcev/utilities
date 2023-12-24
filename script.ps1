@@ -75,14 +75,14 @@ cleaner
 while ($stage -eq 'menu') {
 	
 	#ПОДСЧЕТ
-	[array]$category = @('All') + $($data.tag | select -Unique)
+	[array]$category = $data.tag | select -Unique
 	[string]$confirm = if ($apps) {'Confirm'} else {'Exit'}
 	[array]$tagList = if ($mode -eq 'select') {$category} else {'Apps', 'Tags', 'Search', $confirm}
 	
 	[array]$elements = switch ($tagList[$xpos]) {
-		'Apps' {if ($category[$kpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$kpos]}}
+		'Apps' {$data}
+		'Tags' {if ($mode -eq 'tags') {$data | where Tag -eq $category[$kpos]}}
 		'Search' {if ($mode -eq 'search' -and ($search)) {$data | where description -match $search}}
-		'All' {$data}
 		{$_ -in $data.tag} {$data | where Tag -eq $tagList[$xpos]}
 		$confirm {$data | where Name -in $apps}
 	}
@@ -103,8 +103,8 @@ while ($stage -eq 'menu') {
 	[array]$tip = if ($ypos -eq -1) {
 		switch ($tagList[$xpos]) {
 			$category[$xpos] {"/$($category[$xpos].ToLower())"}
-			'Apps' {"/$($category[$kpos].ToLower())"}
-			'Tags' {"/tags"}
+			'Apps' {"/apps"}
+			'Tags' {if ($mode -eq 'select') {"/$($category[$kpos].ToLower())"} else {"/tags"}}
 			'Search' {if ($mode -eq 'search' -and ($search)) {"/$($search.ToLower())"} else {"/search"}}
 			'Exit' {"/exit"}
 			'Confirm' {"/confirm"}
@@ -112,7 +112,8 @@ while ($stage -eq 'menu') {
 	} else {
 		switch ($mode) {
 			'search' {"/$($search.ToLower())/$($elements[$ypos].name)"}
-			'disable' {"/$($category[$kpos].ToLower())/$($elements[$ypos].name)"}
+			'tags' {"/$($category[$kpos].ToLower())/$($elements[$ypos].name)"}
+			'disable' {"/$($elements[$ypos].name)"}
 		}
 	}
 	
@@ -131,24 +132,24 @@ while ($stage -eq 'menu') {
 		"UpArrow" {
 			$ypos--
 			if ($ypos -lt $zpos) {$zpos -= 10}
-			if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
+			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 1}
 		}
 		"DownArrow" {
 			$ypos++
 			if ($ypos -gt $zpos+9) {$zpos += 10}
-			if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
+			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 1}
 		}
 		"RightArrow" {
 			$ypos = -1
 			$zpos = 0
 			$xpos++
-			if ($mode -eq 'search') {$mode = 'disable'}
+			if ($mode -ne 'select') {$mode = 'disable'}
 		}
 		"LeftArrow" {
 			$ypos = -1
 			$zpos = 0
 			$xpos--
-			if ($mode -eq 'search') {$mode = 'disable'}
+			if ($mode -ne 'select') {$mode = 'disable'}
 		}
 		"Enter" {
 			$app = $elements[$ypos].name
@@ -162,14 +163,10 @@ while ($stage -eq 'menu') {
 			} else {
 				switch ($tag) {
 					$category[$xpos] {
-						if ($mode -eq 'select') {$mode = 'disable'; $kpos = $xpos; $xpos = 0}
+						if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 1}
 					}
 					'Apps' {
-						$name = $category[$kpos]
-						$names = if ($name -eq 'All') {$data.Name} else {($data | where Tag -eq $name).name}
-						$compare = Compare $apps $names -Exclude -Include
-						if ($compare) {$names | foreach {$apps.remove($_)}}
-						else {$names | foreach {$apps.add($_) | out-null}}
+						if ($apps) {[System.Collections.ArrayList]$apps = @()} else {$apps = $data.name}
 					}
 					'Tags' {
 						$mode = 'select'
