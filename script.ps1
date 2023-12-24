@@ -3,7 +3,7 @@
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
 #ФУНКЦИИ
-function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + $(if ($stage -eq 'menu') {$tip}) + "`n"}
+function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + "`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
@@ -89,7 +89,9 @@ while ($stage -eq 'menu') {
 
 	[array]$tags = for ($i = 0; $i -lt $tagList.count; $i++) {
 		$tag = ($tagList[$i]).ToUpper()
-		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7} else {$tag}
+		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7}
+		elseif ($i -eq $xpos) {color -text $tag -number 4}
+		else {$tag}
 	}
 
 	[array]$descriptions = for ($i = 0; $i -lt $elements.count; $i++) {
@@ -98,23 +100,6 @@ while ($stage -eq 'menu') {
 		elseif ($element.Name -in $apps) {(color "[$($i+1)]" 7) + " " + $element.Description}
 		elseif ($i -eq $ypos) {"[$($i+1)]" + " " + (color $element.Description 7)}
 		else {"[$($i+1)]" + " " + $element.Description}
-	}
-	
-	[array]$tip = if ($ypos -eq -1) {
-		switch ($tagList[$xpos]) {
-			$category[$xpos] {"/$($category[$xpos].ToLower())"}
-			'Apps' {"/apps"}
-			'Tags' {if ($mode -eq 'tags') {"/$($category[$kpos].ToLower())"} else {"/tags"}}
-			'Search' {if ($mode -eq 'search' -and ($search)) {"/$($search.ToLower())"} else {"/search"}}
-			'Exit' {"/exit"}
-			'Confirm' {"/confirm"}
-		}
-	} else {
-		switch ($mode) {
-			'search' {"/$($search.ToLower())/$($elements[$ypos].name)"}
-			'tags' {"/$($category[$kpos].ToLower())/$($elements[$ypos].name)"}
-			'disable' {"/$($elements[$ypos].name)"}
-		}
 	}
 	
 	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
@@ -163,7 +148,9 @@ while ($stage -eq 'menu') {
 			} else {
 				switch ($tag) {
 					$category[$xpos] {
-						if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 1}
+						$mode = 'tags'
+						$kpos = $xpos
+						$xpos = 1
 					}
 					'Apps' {
 						if ($apps) {[System.Collections.ArrayList]$apps = @()} else {$apps = $data.name}
