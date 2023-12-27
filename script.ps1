@@ -96,10 +96,10 @@ while ($stage -eq 'menu') {
 
 	[array]$descriptions = for ($i = 0; $i -lt $elements.count; $i++) {
 		$element = $elements[$i]
-		if (($element.Name -in $apps) -and ($i -eq $ypos)) {(color "[$($i+1)]" 7) + " " + (color $element.Description 7)}
-		elseif ($element.Name -in $apps) {(color "[$($i+1)]" 7) + " " + $element.Description}
-		elseif ($i -eq $ypos) {"[$($i+1)]" + " " + (color $element.Description 7)}
-		else {"[$($i+1)]" + " " + $element.Description}
+		if (($element.Name -in $apps) -and ($i -eq $ypos)) {(color " " 7) + " " + (color $element.Description 7)}
+		elseif ($element.Name -in $apps) {(color " " 7) + " " + $element.Description}
+		elseif ($i -eq $ypos) {(color " " 100) + " " + (color $element.Description 7)}
+		else {(color " " 100) + " " + $element.Description}
 	}
 	
 	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
