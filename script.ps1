@@ -75,15 +75,14 @@ cleaner
 while ($stage -eq 'menu') {
 	
 	#ПОДСЧЕТ
-	[array]$category = $data.tag | select -Unique
+	[array]$category = [array]'All' + $($data.tag | select -Unique)
 	[string]$confirm = if ($apps) {'Confirm'} else {'Exit'}
-	[array]$tagList = if ($mode -eq 'select') {$category} else {'Apps', 'Tags', 'Search', $confirm}
+	[array]$tagList = if ($mode -eq 'select') {$category} else {'Menu', 'Search', $confirm}
 	
 	[array]$elements = switch ($tagList[$xpos]) {
-		'Apps' {$data}
-		'Tags' {if ($mode -eq 'tags') {$data | where Tag -eq $category[$kpos]}}
+		'Menu' {if ($category[$kpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$kpos]}}
 		'Search' {if ($mode -eq 'search' -and ($search)) {$data | where description -match $search}}
-		{$_ -in $data.tag} {$data | where Tag -eq $tagList[$xpos]}
+		{$_ -in $category} {if ($category[$xpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$xpos]}}
 		$confirm {$data | where Name -in $apps}
 	}
 
@@ -117,12 +116,12 @@ while ($stage -eq 'menu') {
 		"UpArrow" {
 			$ypos--
 			if ($ypos -lt $zpos) {$zpos -= 10}
-			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 1}
+			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 0}
 		}
 		"DownArrow" {
 			$ypos++
 			if ($ypos -gt $zpos+9) {$zpos += 10}
-			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 1}
+			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 0}
 		}
 		"RightArrow" {
 			$ypos = -1
@@ -151,12 +150,9 @@ while ($stage -eq 'menu') {
 					$category[$xpos] {
 						$mode = 'tags'
 						$kpos = $xpos
-						$xpos = 1
+						$xpos = 0
 					}
-					'Apps' {
-						if ($apps) {[System.Collections.ArrayList]$apps = @()} else {$apps = $data.name}
-					}
-					'Tags' {
+					'Menu' {
 						$mode = 'select'
 						$xpos = $kpos
 						$tagList = $category
