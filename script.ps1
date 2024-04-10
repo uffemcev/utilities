@@ -3,7 +3,7 @@
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
 #ФУНКЦИИ
-function cleaner () {$e = [char]27; "$e[H$e[J" + "`n" + "uffemcev.github.io/utilities" + "`n"}
+function cleaner () {$e = [char]27; [Console]::SetCursorPosition(0, 0); "$e[J" + "`n" + "uffemcev.github.io/utilities" + "`n"}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
