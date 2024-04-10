@@ -137,15 +137,16 @@ while ($stage -eq 'menu') {
 			if ($mode -ne 'select') {$mode = 'disable'}
 		}
 		"Enter" {
-			$app = $elements[$ypos].name
-			$tag = $tagList[$xpos]
 			if ($ypos -ge 0) {
-				if ($app -in $apps) {$apps.Remove($app)} else {$apps.Add($app)}
+				$app = $elements[$ypos].name
+				$tag = $tagList[$xpos]
+				if ($app -in $apps) {[void]$apps.Remove($app)} else {[void]$apps.Add($app)}
 				if (($app -eq $elements[-1].Name) -and ($tag -eq 'Confirm')) {
 					$ypos--
 					$zpos = [math]::Floor(($elements.count-2)/10)*10
 				}
 			} else {
+				$tag = $tagList[$xpos]
 				switch ($tag) {
 					$category[$xpos] {
 						$mode = 'tags'
