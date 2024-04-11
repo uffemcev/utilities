@@ -76,12 +76,14 @@ while ($stage -eq 'menu') {
 	
 	#ПОДСЧЕТ
 	[array]$category = [array]'All' + $($data.tag | select -Unique)
-	[string]$confirm = if ($apps) {'Confirm'} else {'Exit'}
-	[array]$tagList = if ($mode -eq 'select') {$category} else {'Menu', 'Search', $confirm}
+	[string]$confirm = if ($apps) {[char]::ConvertFromUtf32(0x2705) + ' Confirm'} else {[char]::ConvertFromUtf32(0x01F480) + ' Exit'}
+	[array]$menu = [char]::ConvertFromUtf32(0x01F4DF) + ' Menu'
+	[array]$search = [char]::ConvertFromUtf32(0x1F50D) + ' Search'
+	[array]$tagList = if ($mode -eq 'select') {$category} else {$menu, $search, $confirm}
 	
 	[array]$elements = switch ($tagList[$xpos]) {
-		'Menu' {if ($category[$kpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$kpos]}}
-		'Search' {if ($mode -eq 'search' -and ($search)) {$data | where description -match $search}}
+		$menu {if ($category[$kpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$kpos]}}
+		$search {if ($mode -eq 'search' -and ($text)) {$data | where description -match $text}}
 		{$_ -in $category} {if ($category[$xpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$xpos]}}
 		$confirm {$data | where Name -in $apps}
 	}
@@ -89,7 +91,6 @@ while ($stage -eq 'menu') {
 	[array]$tags = for ($i = 0; $i -lt $tagList.count; $i++) {
 		$tag = ($tagList[$i]).ToUpper()
 		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7}
-		elseif ($i -eq $xpos) {color -text $tag -number 4}
 		else {$tag}
 	}
 
@@ -140,7 +141,7 @@ while ($stage -eq 'menu') {
 				$app = $elements[$ypos].name
 				$tag = $tagList[$xpos]
 				if ($app -in $apps) {[void]$apps.Remove($app)} else {[void]$apps.Add($app)}
-				if (($app -eq $elements[-1].Name) -and ($tag -eq 'Confirm')) {
+				if (($app -eq $elements[-1].Name) -and ($tag -eq $confirm)) {
 					$ypos--
 					$zpos = [math]::Floor(($elements.count-2)/10)*10
 				}
@@ -152,16 +153,16 @@ while ($stage -eq 'menu') {
 						$kpos = $xpos
 						$xpos = 0
 					}
-					'Menu' {
+					$menu {
 						$mode = 'select'
 						$xpos = $kpos
 						$tagList = $category
 					}
-					'Search' {
+					$search {
 						$mode = 'search'
 						cleaner
 						[console]::CursorVisible = $true
-						[string]$search = read-host
+						[string]$text = read-host
 						[console]::CursorVisible = $false
 					}
 					$confirm {
@@ -195,7 +196,7 @@ while ($stage -eq 'install') {
 		$remaining = 49 - $Processed
 		$percentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
 		$percent = $percentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
-		[array]$menu = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
+		[array]$install = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
 			switch ((get-job -name $_).State) {
 				"Running" {'Running'}
 				"Completed" {'Completed'}
@@ -207,7 +208,7 @@ while ($stage -eq 'install') {
 		#ВЫВОД
 		cleaner
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
-		($menu[$zpos..($zpos+9)] | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim()
+		($install[$zpos..($zpos+9)] | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String).Trim()
 		"`n" + (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 	}
 	start-sleep 5
