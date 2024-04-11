@@ -75,10 +75,10 @@ cleaner
 while ($stage -eq 'menu') {
 	
 	#ПОДСЧЕТ
-	[array]$category = [array]'All' + $($data.tag | select -Unique)
-	[string]$confirm = if ($apps) {[char]::ConvertFromUtf32(0x2705) + ' Confirm'} else {[char]::ConvertFromUtf32(0x01F480) + ' Exit'}
-	[array]$menu = [char]::ConvertFromUtf32(0x01F4DF) + ' Menu'
-	[array]$search = [char]::ConvertFromUtf32(0x1F50D) + ' Search'
+	[array]$category = [array]'All' + [array]$($data.tag | select -Unique)
+	[string]$confirm = if ($apps) {'Confirm'} else {'Exit'}
+	[string]$menu = 'Menu'
+	[string]$search = 'Search'
 	[array]$tagList = if ($mode -eq 'select') {$category} else {$menu, $search, $confirm}
 	
 	[array]$elements = switch ($tagList[$xpos]) {
@@ -91,6 +91,7 @@ while ($stage -eq 'menu') {
 	[array]$tags = for ($i = 0; $i -lt $tagList.count; $i++) {
 		$tag = ($tagList[$i]).ToUpper()
 		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7}
+  		elseif ($i -eq $xpos) {color -text $tag -number 4}
 		else {$tag}
 	}
 
