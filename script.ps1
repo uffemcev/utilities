@@ -1,16 +1,17 @@
+#ПАРАМЕТРЫ
 [CmdletBinding()]
 param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayList]$apps = @())
 
 #ФУНКЦИИ
 function char ($char) {[char]::ConvertFromUtf32("0x$char")}
 function pos ($x, $y) {[Console]::SetCursorPosition($x, $y)}
-function drawer ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char 250C) + ((char 2500) * $length) + (char 2510) + (("`n" + (char 2502) + (" " * $length) + (char 2502)) * $height) + "`n" + (char 2514) + ((char 2500) * $length) + (char 2518)}
-function cleaner () {$e = [char]27; pos 0 0; "$e[J"; drawer 0 55 1; pos 2 1; (" " * 25) + (color "uffemcev.github.io/utilities" 90)}
+function draw ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char 250C) + ((char 2500) * $length) + (char 2510) + (("`n" + (char 2502) + (" " * $length) + (char 2502)) * $height) + "`n" + (char 2514) + ((char 2500) * $length) + (char 2518)}
+function clean () {$e = [char]27; pos 0 0; "$e[J"; draw 0 55 1; pos 2 1; (" " * 25) + (color "uffemcev.github.io/utilities" 90)}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
 #ЗНАЧЕНИЯ
-cleaner
+clean
 pos 2 1
 "Please wait, $Env:UserName"
 [console]::CursorVisible = $false
@@ -52,7 +53,7 @@ if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Win
 if ($data) {
 	$data | foreach {
 		if (($_.Tag -eq '') -or ($_.Tag -eq $null)) {$_ | add-member -force 'Tag' 'Other'}
-		cleaner
+		clean
 	}
 } else {throw}
 
@@ -61,7 +62,7 @@ if ($apps) {
 	foreach ($tag in ($data.tag | Select -Unique))  {
 		if ($tag -in $apps) {($data | where tag -eq $tag).Name | foreach {$apps.add($_)}}
 		($apps | where {$_ -eq $tag}) | foreach {$apps.Remove($_)}
-		cleaner
+		clean
 	}
 	if ($apps -contains "all") {$apps = $data.Name}
 	$apps = [array]($apps | Sort-Object -unique)
@@ -72,7 +73,7 @@ if ($apps) {
 winget settings --enable InstallerHashOverride | out-null
 ri -Recurse -Force -ErrorAction 0 $path
 cd (ni -Path $path -ItemType "directory")
-cleaner
+clean
 
 #МЕНЮ
 while ($stage -eq 'menu') {
@@ -109,11 +110,11 @@ while ($stage -eq 'menu') {
 	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
 	
 	#ВЫВОД
-	cleaner
+	clean
 	pos 2 1
 	if ($mode -eq 'select') {'< ' + $tags[$xpos] + ' >'} else {[string]$tags}
 	if ($descriptions) {
-		drawer 3 55 ($descriptions[$zpos..($zpos+9)].count)
+		draw 3 55 ($descriptions[$zpos..($zpos+9)].count)
 		$descriptions[$zpos..($zpos+9)] | foreach {pos 2 ($descriptions[$zpos..($zpos+9)].indexof($_) + 4); $_}
 		"`n" + [char]::ConvertFromUtf32(0x0001F4C4) + $page
 	}
@@ -166,7 +167,7 @@ while ($stage -eq 'menu') {
 					}
 					$search {
 						$mode = 'search'
-						cleaner
+						clean
 						pos 2 1
 						[console]::CursorVisible = $true
 						[string]$text = read-host
@@ -174,7 +175,7 @@ while ($stage -eq 'menu') {
 					}
 					$confirm {
 						$stage = 'install'
-						cleaner
+						clean
 					}
 				}
 			}
@@ -215,10 +216,10 @@ while ($stage -eq 'install') {
 		$install = ($install | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -stream).Trim() | where {$_}
 
 		#ВЫВОД
-		cleaner
+		clean
 		pos 2 1
 		'Installation process'
-		drawer 3 55 ($install[$zpos..($zpos+9)].count + 2)
+		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 		pos 2 4
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
 		$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
@@ -226,10 +227,10 @@ while ($stage -eq 'install') {
 		$progress
 		
 	}
-	cleaner
+	clean
 	pos 2 1
 	'Installation complete'
-	drawer 3 55 ($install[$zpos..($zpos+9)].count + 2)
+	draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 	$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
 	pos 2 ($install[$zpos..($zpos+9)].count + 5)
 	$progress
@@ -238,7 +239,7 @@ while ($stage -eq 'install') {
 }
 
 #ЗАВЕРШЕНИЕ РАБОТЫ
-cleaner
+clean
 pos 2 1
 "Bye, $Env:UserName"
 start-sleep 5
