@@ -36,6 +36,8 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 if ($PSVersionTable.PSVersion.Major -gt 5) {
 	import-module microsoft.powershell.security
 	if ((get-ExecutionPolicy) -ne 'bypass') {Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force}
+ 	get-ExecutionPolicy
+  	pause
 }
 
 #ПРОВЕРКА WINGET
