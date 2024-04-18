@@ -34,6 +34,11 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 
 #ПРОВЕРКА ПОЛИТИК
 if ((get-ExecutionPolicy) -ne 'bypass') {
+	write-host $PSHome
+	Get-Module
+	
+	pause
+	
 	if ($PSVersionTable.PSVersion.Major -gt 5) {import-module microsoft.powershell.security}
 	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 }
