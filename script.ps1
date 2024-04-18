@@ -33,14 +33,16 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 
 #ПРОВЕРКА ПОЛИТИК
-#if ($PSVersionTable.PSVersion.Major -gt 5) {
-	get-ExecutionPolicy
-	pause
-	import-module microsoft.powershell.security
+if ($PSVersionTable.PSVersion.Major -gt 5) {
+	import-module -Name 'Microsoft.PowerShell.Security' -RequiredVersion 3.0.0.0
 	if ((get-ExecutionPolicy) -ne 'bypass') {Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force}
 	get-ExecutionPolicy
 	pause
-#}
+} else {
+	if ((get-ExecutionPolicy) -ne 'bypass') {Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force}
+	get-ExecutionPolicy
+	pause
+}
 
 #ПРОВЕРКА WINGET
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
