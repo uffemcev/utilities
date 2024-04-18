@@ -15,7 +15,6 @@ clean
 pos 2 1
 "Please wait, $Env:UserName"
 [console]::CursorVisible = $false
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 $host.ui.RawUI.WindowTitle = (char 1F916) + ' utilities'
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
@@ -31,6 +30,12 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
 	close
+}
+
+#ПРОВЕРКА ПОЛИТИК
+if ((get-ExecutionPolicy) -ne 'bypass') {
+	if ($PSVersionTable.PSVersion.Major -gt 5) {import-module microsoft.powershell.security}
+	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 }
 
 #ПРОВЕРКА WINGET
