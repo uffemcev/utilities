@@ -224,22 +224,14 @@ while ($stage -eq 'install') {
 		#ВЫВОД
 		clean
 		pos 2 1
-		'Installation process'
+		if ($i -eq $apps.count) {'Installation complete'} else {'Installation process'}
 		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 		pos 2 4
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
 		$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
 		pos 2 ($install[$zpos..($zpos+9)].count + 5)
 		$progress
-		
 	}
-	clean
-	pos 2 1
-	'Installation complete'
-	draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
-	$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
-	pos 2 ($install[$zpos..($zpos+9)].count + 5)
-	$progress
 	start-sleep 5
 	$stage = 'exit'
 }
