@@ -35,9 +35,9 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 #ПРОВЕРКА ПОЛИТИК
 try {get-ExecutionPolicy | out-null}
 catch {import-module -Name 'Microsoft.PowerShell.Security' -RequiredVersion 3.0.0.0}
-if ((get-ExecutionPolicy) -ne 'bypass') {Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force}
-get-ExecutionPolicy
-pause
+if ((get-ExecutionPolicy) -ne 'bypass') {
+	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+}
 
 #ПРОВЕРКА WINGET
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
