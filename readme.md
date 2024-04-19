@@ -143,6 +143,5 @@
 &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) system other office chrome
 ```
 
-## Ссылки
-* [Winget install](https://github.com/asheroto/winget-install)
-* [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)
+## Поддержка
+* UQD8pIEa7_6RwQMihBs-nq7jA4lQoKpEGRbXjK4xMIJtzheo / uffemcev.ton
