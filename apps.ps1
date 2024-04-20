@@ -189,7 +189,7 @@
 		Code = {
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
-			$id = (irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=22631.1").response.updateArray.foundBuild | Sort -Descending | Select -First 1
+			$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=22631.1").response.updateArray | Sort -Descending -Property $_.foundBuild | Select -First 1).updateId
 			iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile '.\UUP.zip'
 			Expand-Archive -ErrorAction 0 -Force '.\UUP.zip' '.\'
 			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
