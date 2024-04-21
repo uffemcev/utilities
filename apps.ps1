@@ -1,11 +1,51 @@
 @(
-	[pscustomobject]@{
+  	[pscustomobject]@{
+		Description = "Adguard DOH"
+		Name = "adns"
+		Tag = "tweaks"
+		Code = {
+			$ips = '94.140.14.14', '94.140.15.15', '2a10:50c0::ad1:ff', '2a10:50c0::ad2:ff'
+			$doh = "https://dns.adguard-dns.com/dns-query/"
+			foreach ($ip in $ips) {
+    				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
+    				Get-NetAdapter -Physical | ForEach-Object {
+        				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
+        				if ($ip -match '\.') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
+        				if ($ip -match ':') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
+        				New-Item -Path $path -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+    				}
+			}
+			New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters' -Name 'EnableAutoDoh' -Value 2 -PropertyType DWord -Force
+			Clear-DnsClientCache
+		}
+	}		
+  	[pscustomobject]@{
 		Description = "Cloudflare DOH"
-		Name = "dns"
-		Tag = "Tweaks"
+		Name = "cdns"
+		Tag = "tweaks"
 		Code = {
 			$ips = '1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001'
-			$doh = "https://cloudflare-dns.com/dns-query"
+			$doh = "https://cloudflare-dns.com/dns-query/"
+			foreach ($ip in $ips) {
+    				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
+    				Get-NetAdapter -Physical | ForEach-Object {
+        				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
+        				if ($ip -match '\.') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
+        				if ($ip -match ':') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
+        				New-Item -Path $path -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
+    				}
+			}
+			New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters' -Name 'EnableAutoDoh' -Value 2 -PropertyType DWord -Force
+			Clear-DnsClientCache
+		}
+	}	
+ 	[pscustomobject]@{
+		Description = "Yandex DOH"
+		Name = "ydns"
+		Tag = "tweaks"
+		Code = {
+			$ips = '77.88.8.88', '77.88.8.2', '2a02:6b8::feed:bad', '2a02:6b8:0:1::feed:bad'
+			$doh = "https://safe.dot.dns.yandex.net/"
 			foreach ($ip in $ips) {
     				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
     				Get-NetAdapter -Physical | ForEach-Object {
@@ -22,7 +62,7 @@
 	[pscustomobject]@{
 		Description = "Office, Word, Excel licensed"
 		Name = "office"
-		Tag = "System"
+		Tag = "system"
 		Code = {
 			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
 			Expand-Archive -ErrorAction 0 -Force '.\Office.zip' '.\'
@@ -37,7 +77,7 @@
 	[pscustomobject]@{
 		Description = "SpotX - modified Spotify app"
 		Name = "spotx"
-		Tag = "Audio"
+		Tag = "audio"
 		Code = {
 			[Net.ServicePointManager]::SecurityProtocol = 3072
       			iex "& { $(iwr -useb 'https://spotx-official.github.io/run.ps1') } -premium -new_theme -podcasts_on -block_update_on -EnhanceSongs -sp-uninstall"
@@ -46,7 +86,7 @@
 	[pscustomobject]@{
 		Description = "GoodbyeDPI mode 5"
 		Name = "dpi"
-		Tag = "Tweaks"
+		Tag = "tweaks"
 		Code = {
 			$uri = "https://api.github.com/repos/ValdikSS/GoodbyeDPI/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
@@ -62,7 +102,7 @@
 	[pscustomobject]@{
 		Description = "Google Chrome"
 		Name = "chrome"
-		Tag = "Web"
+		Tag = "web"
 		Code = {
 			$id = "Google.Chrome"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -72,7 +112,7 @@
 	[pscustomobject]@{
 		Description = "Vencord - modified Discord app"
 		Name = "vencord"
-		Tag = "Audio"
+		Tag = "audio"
 		Code = {
 			$id = "Vendicated.Vencord"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -82,7 +122,7 @@
 	[pscustomobject]@{
 		Description = "Steam"
 		Name = "steam"
-		Tag = "Games"
+		Tag = "games"
 		Code = {
 			$id = "Valve.Steam"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -92,7 +132,7 @@
 	[pscustomobject]@{
 		Description = "qBittorrent"
 		Name = "qbit"
-		Tag = "Storage"
+		Tag = "storage"
 		Code = {
 			$id = "qBittorrent.qBittorrent"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -102,7 +142,7 @@
 	[pscustomobject]@{
 		Description = "7-Zip"
 		Name = "zip"
-		Tag = "System"
+		Tag = "system"
 		Code = {
 			$id = "7zip.7zip"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -112,7 +152,7 @@
 	[pscustomobject]@{
 		Description = "Google Drive"
 		Name = "gdrive"
-		Tag = "Storage"
+		Tag = "storage"
 		Code = {
 			$id = "Google.GoogleDrive"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -122,7 +162,7 @@
 	[pscustomobject]@{
 		Description = "Adguard"
 		Name = "adguard"
-		Tag = "Web"
+		Tag = "web"
 		Code = {
 			$id = "AdGuard.AdGuard"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -132,7 +172,7 @@
 	[pscustomobject]@{
 		Description = "SignalRGB"
 		Name = "signal"
-		Tag = "Games"
+		Tag = "games"
 		Code = {
 			$id = "WhirlwindFX.SignalRgb"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -142,7 +182,7 @@
 	[pscustomobject]@{
 		Description = "K-Lite Codec Pack Full"
 		Name = "codec"
-		Tag = "Video"
+		Tag = "video"
 		Code = {
 			$id = "CodecGuide.K-LiteCodecPack.Full"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -152,7 +192,7 @@
 	[pscustomobject]@{
 		Description = "NVCleanstall"
 		Name = "nvidia"
-		Tag = "System"
+		Tag = "system"
 		Code = {
 			$id = "TechPowerUp.NVCleanstall"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
@@ -162,7 +202,7 @@
 	[pscustomobject]@{
 		Description = "Rufus portable"
 		Name = "rufus"
-		Tag = "Other"
+		Tag = "other"
 		Code = {
 			$uri = "https://api.github.com/repos/pbatard/rufus/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
@@ -173,7 +213,7 @@
 	[pscustomobject]@{
 		Description = "SophiApp Tweaker portable"
 		Name = "sophia"
-		Tag = "Tweaks"
+		Tag = "tweaks"
 		Code = {
 			$uri = "https://api.github.com/repos/Sophia-Community/SophiApp/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
@@ -185,7 +225,7 @@
 	[pscustomobject]@{
 		Description = "Win 11 23H2 iso folder"
 		Name = "win"
-		Tag = "Other"
+		Tag = "other"
 		Code = {
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
@@ -210,7 +250,7 @@
 	[pscustomobject]@{
 		Description = "MSEdgeRedirect"
 		Name = "redirect"
-		Tag = "Tweaks"
+		Tag = "tweaks"
 		Code = {
 			$id = "rcmaehl.MSEdgeRedirect"
 			winget install --id=$id --accept-package-agreements --accept-source-agreements --exact --silent
