@@ -39,26 +39,6 @@
 			Clear-DnsClientCache
 		}
 	}	
- 	[pscustomobject]@{
-		Description = "Yandex DOH"
-		Name = "ydns"
-		Tag = "tweaks"
-		Code = {
-			$ips = '77.88.8.8', '77.88.8.1', '2a02:6b8::feed:0ff', '2a02:6b8:0:1::feed:0ff'
-			$doh = "https://common.dot.dns.yandex.net/"
-			foreach ($ip in $ips) {
-    				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
-    				Get-NetAdapter -Physical | ForEach-Object {
-        				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
-        				if ($ip -match '\.') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
-        				if ($ip -match ':') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
-        				New-Item -Path $path -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
-    				}
-			}
-			New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters' -Name 'EnableAutoDoh' -Value 2 -PropertyType DWord -Force
-			Clear-DnsClientCache
-		}
-	}
 	[pscustomobject]@{
 		Description = "Office, Word, Excel licensed"
 		Name = "office"
