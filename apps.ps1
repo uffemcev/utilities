@@ -44,8 +44,8 @@
 		Name = "ydns"
 		Tag = "tweaks"
 		Code = {
-			$ips = '77.88.8.88', '77.88.8.2', '2a02:6b8::feed:bad', '2a02:6b8:0:1::feed:bad'
-			$doh = "https://safe.dot.dns.yandex.net/"
+			$ips = '77.88.8.8', '77.88.8.1', '2a02:6b8::feed:0ff', '2a02:6b8:0:1::feed:0ff'
+			$doh = "https://common.dot.dns.yandex.net/"
 			foreach ($ip in $ips) {
     				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
     				Get-NetAdapter -Physical | ForEach-Object {
