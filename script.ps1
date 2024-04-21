@@ -5,7 +5,7 @@ param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayLi
 #ФУНКЦИИ
 function char ($char) {[char]::ConvertFromUtf32("0x$char")}
 function pos ($x, $y) {[Console]::SetCursorPosition($x, $y)}
-function draw ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char 250C) + ((char 2500) * $length) + (char 2510) + (("`n" + (char 2502) + (" " * $length) + (char 2502)) * $height) + "`n" + (char 2514) + ((char 2500) * $length) + (char 2518)}
+function draw ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char "256D") + ((char 2500) * $length) + (char 256E) + (("`n" + (char 2502) + (" " * $length) + (char 2502)) * $height) + "`n" + (char 2570) + ((char 2500) * $length) + (char 256F)}
 function clean () {$e = [char]27; pos 0 0; "$e[J"; draw 0 55 1; pos 2 1; (" " * 25) + (color "uffemcev.github.io/utilities" 90)}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
