@@ -64,7 +64,7 @@
 		}
 	}
 	[pscustomobject]@{
-		Description = "GoodbyeDPI mode 5"
+		Description = "GoodbyeDPI"
 		Name = "dpi"
 		Tag = "tweaks"
 		Code = {
@@ -89,6 +89,37 @@
 				}
 			}
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
+		}
+	}
+ 	[pscustomobject]@{
+		Description = "Zapret"
+		Name = "zapret"
+		Tag = "tweaks"
+		Code = {
+			iwr -Useb -Uri "https://github.com/bol-van/zapret-win-bundle/archive/refs/heads/master.zip" -OutFile '.\zapret.zip'
+			while (!(dir -errorAction 0 "zapret.zip")) {start-sleep 1}
+			Expand-Archive -ErrorAction 0 -Force '.\zapret.zip' $Env:Programfiles
+			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match 'zapret*'}).FullName + '\zapret-winws'
+			$urls = @(
+				"https://antizapret.prostovpn.org:8443/domains-export.txt",
+				"https://p.thenewone.lol:8443/domains-export.txt",
+				"https://reestr.rublacklist.net/api/v3/domains"
+			)
+			foreach ($url in $urls) {
+				if ($url -match "txt") {
+					try {iwr $url -useb | sc "$dir\russia-blacklist.txt"; break}
+					catch {start-sleep 1}
+				} else {
+					try {(iwr $url3 -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"; break}
+					catch {start-sleep 1}
+				}
+			}
+			$strings = (gc "$dir\service_create.cmd") | Select-String -Pattern "ARGS="
+			foreach ($string in $strings) {
+				(gc "$dir\service_create.cmd") -replace ($string), ([string]$string + ' --hostlist=\"%~dp0russia-blacklist.txt\"') | sc "$dir\service_create.cmd"
+				(gc "$dir\service_create.cmd") -replace ('  '), (' ') | sc "$dir\service_create.cmd"
+			}
+			& "$dir\service_create.cmd"
 		}
 	}
 	[pscustomobject]@{
