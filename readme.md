@@ -36,8 +36,14 @@
 			<tr>
 				<td></td>
 				<td>dpi</td>
-				<td>GoodbyeDPI режим 5</td>
+				<td>GoodbyeDPI</td>
 				<td>github.com/ValdikSS/GoodbyeDPI</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>zapret</td>
+				<td>Zapret</td>
+				<td>github.com/bol-van/zapret-win-bundle</td>
 			</tr>
 			<tr>
 				<td></td>
