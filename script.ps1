@@ -8,18 +8,18 @@ function pos ($x, $y) {[Console]::SetCursorPosition($x, $y)}
 function draw ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char "256D") + ((char 2500) * $length) + (char 256E) + (("`n" + (char 2502) + (" " * $length) + (char 2502)) * $height) + "`n" + (char 2570) + ((char 2500) * $length) + (char 256F)}
 function clean () {$e = [char]27; pos 0 0; "$e[J"; draw 0 55 1; pos 2 1; (" " * 25) + (color "uffemcev.github.io/utilities" 90)}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
-function close () {(get-process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
+function close () {(Get-Process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
 #ЗНАЧЕНИЯ
 clean
 pos 2 1
 "Please wait, $Env:UserName"
 [console]::CursorVisible = $false
-$host.ui.RawUI.WindowTitle = (char 1F916) + ' utilities'
+$host.ui.RawUI.WindowTitle = (char 1F916) + " utilities"
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
-[string]$stage = 'menu'
-[string]$mode = 'disable'
+[string]$stage = "menu"
+[string]$mode = "disable"
 [int]$ypos = -1
 [int]$xpos = 0
 [int]$zpos = 0
@@ -33,32 +33,36 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 
 #ПРОВЕРКА ПОЛИТИК
-try {get-ExecutionPolicy | out-null}
-catch {import-module -Name 'Microsoft.PowerShell.Security' -RequiredVersion 3.0.0.0}
-if ((get-ExecutionPolicy) -ne 'bypass') {
+try {Get-ExecutionPolicy | Out-Null}
+catch {Import-Module -Name "Microsoft.PowerShell.Security" -RequiredVersion 3.0.0.0}
+if ((Get-ExecutionPolicy) -ne "bypass") {
 	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 }
 
 #ПРОВЕРКА WINGET
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
-	if ((get-process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)).ProcessName -match "Terminal") {
+	if ((Get-Process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)).ProcessName -match "Terminal") {
 		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
 		close
 	} else {
-		powershell "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose" | out-null
+		powershell "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose" | Out-Null
 		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 	}
 }
 
 #ПРОВЕРКА REGEDIT
-if (!(gp -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
+if (!(Get-ItemProperty -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations)) {
+	$reg = $null
+	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
+} else {
+	$reg = (Get-ItemProperty -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations).LowRiskFileTypes
 	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f
 }
 
 #ПРОВЕРКА ПРИЛОЖЕНИЙ
 if ($data) {
 	$data | foreach {
-		if (($_.Tag -eq '') -or ($_.Tag -eq $null)) {$_ | add-member -force 'Tag' 'Other'}
+		if (($_.Tag -eq "") -or ($_.Tag -eq $null)) {$_ | add-member -force "Tag" "Other"}
 		clean
 	}
 } else {throw}
@@ -72,29 +76,29 @@ if ($apps) {
 	}
 	if ($apps -contains "all") {$apps = $data.Name}
 	$apps = [array]($apps | Sort-Object -unique)
-	$stage = 'install'
+	$stage = "install"
 } else {[System.Collections.ArrayList]$apps = @()}
 
 #НАЧАЛО РАБОТЫ
-winget settings --enable InstallerHashOverride | out-null
-ri -Recurse -Force -ErrorAction 0 $path
-cd (ni -Path $path -ItemType "directory")
+winget settings --enable InstallerHashOverride | Out-Null
+Remove-Item -Recurse -Force -ErrorAction 0 $path
+cd (New-Item -Path $path -ItemType "directory")
 clean
 
 #МЕНЮ
-while ($stage -eq 'menu') {
+while ($stage -eq "menu") {
 	
 	#ПОДСЧЕТ
-	[array]$category = [array]'All' + [array]$($data.tag | select -Unique)
-	[string]$confirm = if ($apps) {'Confirm'} else {'Exit'}
-	[string]$menu = 'Menu'
-	[string]$search = 'Search'
-	[array]$tagList = if ($mode -eq 'select') {$category} else {$menu, $search, $confirm}
+	[array]$category = [array]"All" + [array]$($data.tag | select -Unique)
+	[string]$confirm = if ($apps) {"Confirm"} else {"Exit"}
+	[string]$menu = "Menu"
+	[string]$search = "Search"
+	[array]$tagList = if ($mode -eq "select") {$category} else {$menu, $search, $confirm}
 	
 	[array]$elements = switch ($tagList[$xpos]) {
-		$menu {if ($category[$kpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$kpos]}}
-		$search {if ($mode -eq 'search' -and ($text)) {$data | where description -match $text}}
-		{$_ -in $category} {if ($category[$xpos] -eq 'All') {$data} else {$data | where Tag -eq $category[$xpos]}}
+		$menu {if ($category[$kpos] -eq "All") {$data} else {$data | where Tag -eq $category[$kpos]}}
+		$search {if ($mode -eq "search" -and ($text)) {$data | where description -match $text}}
+		{$_ -in $category} {if ($category[$xpos] -eq "All") {$data} else {$data | where Tag -eq $category[$xpos]}}
 		$confirm {$data | where Name -in $apps}
 	}
 
@@ -118,7 +122,7 @@ while ($stage -eq 'menu') {
 	#ВЫВОД
 	clean
 	pos 2 1
-	if ($mode -eq 'select') {'< ' + $tags[$xpos] + ' >'} else {[string]$tags}
+	if ($mode -eq "select") {"< " + $tags[$xpos] + " >"} else {[string]$tags}
 	if ($descriptions) {
 		draw 3 55 ($descriptions[$zpos..($zpos+9)].count)
 		$descriptions[$zpos..($zpos+9)] | foreach {pos 2 ($descriptions[$zpos..($zpos+9)].indexof($_) + 4); $_}
@@ -130,24 +134,24 @@ while ($stage -eq 'menu') {
 		"UpArrow" {
 			$ypos--
 			if ($ypos -lt $zpos) {$zpos -= 10}
-			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 0}
+			if ($mode -eq "select") {$mode = "tags"; $kpos = $xpos; $xpos = 0}
 		}
 		"DownArrow" {
 			$ypos++
 			if ($ypos -gt $zpos+9) {$zpos += 10}
-			if ($mode -eq 'select') {$mode = 'tags'; $kpos = $xpos; $xpos = 0}
+			if ($mode -eq "select") {$mode = "tags"; $kpos = $xpos; $xpos = 0}
 		}
 		"RightArrow" {
 			$ypos = -1
 			$zpos = 0
 			$xpos++
-			if ($mode -ne 'select') {$mode = 'disable'}
+			if ($mode -ne "select") {$mode = "disable"}
 		}
 		"LeftArrow" {
 			$ypos = -1
 			$zpos = 0
 			$xpos--
-			if ($mode -ne 'select') {$mode = 'disable'}
+			if ($mode -ne "select") {$mode = "disable"}
 		}
 		"Enter" {
 			if ($ypos -ge 0) {
@@ -162,17 +166,17 @@ while ($stage -eq 'menu') {
 				$tag = $tagList[$xpos]
 				switch ($tag) {
 					$category[$xpos] {
-						$mode = 'tags'
+						$mode = "tags"
 						$kpos = $xpos
 						$xpos = 0
 					}
 					$menu {
-						$mode = 'select'
+						$mode = "select"
 						$xpos = $kpos
 						$tagList = $category
 					}
 					$search {
-						$mode = 'search'
+						$mode = "search"
 						clean
 						pos 2 1
 						[console]::CursorVisible = $true
@@ -180,7 +184,7 @@ while ($stage -eq 'menu') {
 						[console]::CursorVisible = $false
 					}
 					$confirm {
-						$stage = 'install'
+						$stage = "install"
 						clean
 					}
 				}
@@ -195,28 +199,28 @@ while ($stage -eq 'menu') {
 }
 
 #ПРОВЕРКА ВЫХОДА
-if ($apps.count -eq 0) {$stage = 'exit'}
+if ($apps.count -eq 0) {$stage = "exit"}
 
 #УСТАНОВКА
-while ($stage -eq 'install') {
+while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
 		#ЗАПУСК
-		Get-job | Wait-Job | out-null
-		try {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock $(($data | Where Name -eq $apps[$i]).Code) | out-null}
-		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {start-sleep 1; throw} | out-null}
+		Get-job | Wait-Job | Out-Null
+		try {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock $(($data | Where Name -eq $apps[$i]).Code) | Out-Null}
+		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {Start-Sleep 1; throw} | Out-Null}
 		
 		#ПОДСЧЕТ
 		$processed = [Math]::Round(($i) / $apps.count * 49,0)
 		$remaining = 49 - $Processed
 		$percentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
-		$percent = $percentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
+		$percent = $percentProcessed -replace ("^(\d{1})$"), ("  $_%") -replace ("^(\d{2})$"), (" $_%") -replace ("^(\d{3})$"), ("$_%")
 		$progress = (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 		[array]$install = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
-			switch ((get-job -name $_).State) {
-				"Running" {'Running'}
-				"Completed" {'Completed'}
-				"Failed" {'Failed'}
-				DEFAULT {'Waiting'}
+			switch ((Get-Job -name $_).State) {
+				"Running" {"Running"}
+				"Completed" {"Completed"}
+				"Failed" {"Failed"}
+				DEFAULT {"Waiting"}
 			}
 		}}
 		$install = ($install | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -stream).Trim() | where {$_}
@@ -224,7 +228,7 @@ while ($stage -eq 'install') {
 		#ВЫВОД
 		clean
 		pos 2 1
-		if ($i -eq $apps.count) {'Installation complete'} else {'Installation process'}
+		if ($i -eq $apps.count) {"Installation complete"} else {"Installation process"}
 		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 		pos 2 4
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
@@ -232,15 +236,20 @@ while ($stage -eq 'install') {
 		pos 2 ($install[$zpos..($zpos+9)].count + 5)
 		$progress
 	}
-	start-sleep 5
-	$stage = 'exit'
+	Start-Sleep 5
+	$stage = "exit"
 }
 
 #ЗАВЕРШЕНИЕ РАБОТЫ
 clean
 pos 2 1
 "Bye, $Env:UserName"
-start-sleep 5
+Start-Sleep 5
 cd \
-ri -Recurse -Force -ErrorAction 0 $path
+Remove-Item -Recurse -Force -ErrorAction 0 $path
+if ($reg) {
+	reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /t REG_SZ /d $reg /f
+} else {
+	reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Associations" /v "LowRiskFileTypes" /f
+}
 close
