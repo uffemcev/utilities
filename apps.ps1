@@ -4,18 +4,18 @@
 		Name = "adns"
 		Tag = "tweaks"
 		Code = {
-			$ips = '94.140.14.14', '94.140.15.15', '2a10:50c0::ad1:ff', '2a10:50c0::ad2:ff'
+			$ips = "94.140.14.14", "94.140.15.15", "2a10:50c0::ad1:ff", "2a10:50c0::ad2:ff"
 			$doh = "https://dns.adguard-dns.com/dns-query/"
 			foreach ($ip in $ips) {
     				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
     				Get-NetAdapter -Physical | ForEach-Object {
         				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
-        				if ($ip -match '\.') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
-        				if ($ip -match ':') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
+        				if ($ip -match "\.") {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
+        				if ($ip -match ":") {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
         				New-Item -Path $path -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
     				}
 			}
-			New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters' -Name 'EnableAutoDoh' -Value 2 -PropertyType DWord -Force
+			New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" -Name "EnableAutoDoh" -Value 2 -PropertyType DWord -Force
 			Clear-DnsClientCache
 		}
 	}		
@@ -24,18 +24,18 @@
 		Name = "cdns"
 		Tag = "tweaks"
 		Code = {
-			$ips = '1.1.1.1', '1.0.0.1', '2606:4700:4700::1111', '2606:4700:4700::1001'
+			$ips = "1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001"
 			$doh = "https://cloudflare-dns.com/dns-query/"
 			foreach ($ip in $ips) {
     				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
     				Get-NetAdapter -Physical | ForEach-Object {
         				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
-        				if ($ip -match '\.') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
-        				if ($ip -match ':') {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
+        				if ($ip -match "\.") {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
+        				if ($ip -match ":") {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
         				New-Item -Path $path -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
     				}
 			}
-			New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters' -Name 'EnableAutoDoh' -Value 2 -PropertyType DWord -Force
+			New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" -Name "EnableAutoDoh" -Value 2 -PropertyType DWord -Force
 			Clear-DnsClientCache
 		}
 	}	
@@ -44,8 +44,8 @@
 		Name = "office"
 		Tag = "system"
 		Code = {
-			iwr 'https://github.com/farag2/Office/releases/latest/download/Office.zip' -Useb -OutFile '.\Office.zip'
-			Expand-Archive -ErrorAction 0 -Force '.\Office.zip' '.\'
+			iwr "https://github.com/farag2/Office/releases/latest/download/Office.zip" -Useb -OutFile ".\Office.zip"
+			Expand-Archive -ErrorAction 0 -Force ".\Office.zip" ".\"
 			$dir = "$pwd\Office"
 			[xml]$Config = Get-Content -Path "$dir\Default.xml" -Encoding Default -Force
    			$Config.Configuration.Display.Level = "None"
@@ -271,15 +271,15 @@
 			foreach ($option in $options) {
 				((Get-Content '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | Set-Content '.\ConvertConfig.ini'
 			}
-			start-job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
+			Start-Job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
 			while (!(dir -errorAction 0 "CustomAppsList.txt")) {start-sleep 1}
 			(Get-Content ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | Set-Content ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
 				$file = (Get-Content ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
 				((Get-Content '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | Set-Content '.\CustomAppsList.txt'
 			}
-			get-job -errorAction 0 -name UUP | wait-job
-			dir -ErrorAction 0 -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
+			Get-Job -errorAction 0 -name UUP | Wait-Job
+			dir -ErrorAction 0 -Force | where {$_ -match '^*.X64.*$'} | Move-Item -Destination ([Environment]::GetFolderPath("Desktop"))
 		}
 	}
 	[pscustomobject]@{
