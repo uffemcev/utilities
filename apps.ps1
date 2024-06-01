@@ -72,9 +72,9 @@
 			$uri = "https://api.github.com/repos/ValdikSS/GoodbyeDPI/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
 			$data = $get.assets | Where-Object name -match "goodbyedpi.*.zip$" | select -first 1
-			iwr $data.browser_download_url -Useb -OutFile '.\goodbyedpi.zip'
-			Expand-Archive -ErrorAction 0 -Force '.\goodbyedpi.zip' $Env:Programfiles
-			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match 'goodbyedpi*'}).FullName
+			iwr $data.browser_download_url -Useb -OutFile ".\goodbyedpi.zip"
+			Expand-Archive -ErrorAction 0 -Force ".\goodbyedpi.zip" $Env:Programfiles
+			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "goodbyedpi*"}).FullName
 			$urls = @(
 				"https://antizapret.prostovpn.org:8443/domains-export.txt",
 				"https://p.thenewone.lol:8443/domains-export.txt",
@@ -97,10 +97,10 @@
 		Name = "zapret"
 		Tag = "tweaks"
 		Code = {
-			iwr -Useb -Uri "https://github.com/bol-van/zapret-win-bundle/archive/refs/heads/master.zip" -OutFile '.\zapret.zip'
+			iwr -Useb -Uri "https://github.com/bol-van/zapret-win-bundle/archive/refs/heads/master.zip" -OutFile ".\zapret.zip"
 			while (!(dir -errorAction 0 "zapret.zip")) {start-sleep 1}
-			Expand-Archive -ErrorAction 0 -Force '.\zapret.zip' $Env:Programfiles
-			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match 'zapret*'}).FullName + '\zapret-winws'
+			Expand-Archive -ErrorAction 0 -Force ".\zapret.zip" $Env:Programfiles
+			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "zapret*"}).FullName + "\zapret-winws"
 			$urls = @(
 				"https://antizapret.prostovpn.org:8443/domains-export.txt",
 				"https://p.thenewone.lol:8443/domains-export.txt",
@@ -118,7 +118,7 @@
 			$strings = (Get-Content "$dir\service_create.cmd") | Select-String -Pattern "ARGS="
 			foreach ($string in $strings) {
 				(Get-Content "$dir\service_create.cmd") -replace ($string), ([string]$string + ' --hostlist=\"%~dp0russia-blacklist.txt\"') | Set-Content "$dir\service_create.cmd"
-				(Get-Content "$dir\service_create.cmd") -replace ('  '), (' ') | Set-Content "$dir\service_create.cmd"
+				(Get-Content "$dir\service_create.cmd") -replace ("  "), (" ") | Set-Content "$dir\service_create.cmd"
 			}
 			& "$dir\service_create.cmd"
 		}
@@ -264,22 +264,22 @@
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
 			$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=22631.1").response.updateArray | Sort -Descending -Property $_.foundBuild | Select -First 1).updateId
-			iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile '.\UUP.zip'
+			iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile ".\UUP.zip"
    			while (!(dir -errorAction 0 "UUP.zip")) {start-sleep 1}
-			Expand-Archive -ErrorAction 0 -Force '.\UUP.zip' '.\'
-			(Get-Content ".\ConvertConfig.ini") -replace (' '), ('') | Set-Content ".\ConvertConfig.ini"
+			Expand-Archive -ErrorAction 0 -Force ".\UUP.zip" ".\"
+			(Get-Content ".\ConvertConfig.ini") -replace (" "), ("") | Set-Content ".\ConvertConfig.ini"
 			foreach ($option in $options) {
-				((Get-Content '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | Set-Content '.\ConvertConfig.ini'
+				((Get-Content ".\ConvertConfig.ini") -replace ("^" + $option + "=0"), ($option + "=1")) | Set-Content ".\ConvertConfig.ini"
 			}
 			Start-Job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
 			while (!(dir -errorAction 0 "CustomAppsList.txt")) {start-sleep 1}
-			(Get-Content ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | Set-Content ".\CustomAppsList.txt"
+			(Get-Content ".\CustomAppsList.txt") -replace ("^\w"), ("# $&") | Set-Content ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
 				$file = (Get-Content ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
-				((Get-Content '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | Set-Content '.\CustomAppsList.txt'
+				((Get-Content ".\CustomAppsList.txt") -replace ("# " + $file), ($file)) | Set-Content ".\CustomAppsList.txt"
 			}
 			Get-Job -errorAction 0 -name UUP | Wait-Job
-			dir -ErrorAction 0 -Force | where {$_ -match '^*.X64.*$'} | Move-Item -Destination ([Environment]::GetFolderPath("Desktop"))
+			dir -ErrorAction 0 -Force | where {$_ -match "^*.X64.*$"} | Move-Item -Destination ([Environment]::GetFolderPath("Desktop"))
 		}
 	}
 	[pscustomobject]@{
