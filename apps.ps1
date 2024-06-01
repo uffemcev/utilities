@@ -82,10 +82,10 @@
 			)
 			foreach ($url in $urls) {
 				if ($url -match "txt") {
-					try {iwr $url -useb | sc "$dir\russia-blacklist.txt"; break}
+					try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
 					catch {start-sleep 1}
 				} else {
-					try {(iwr $url3 -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"; break}
+					try {(iwr $url -Useb) -split '", "' -replace ('[\[\]"]'), ('') | Set-Content "$dir\russia-blacklist.txt"; break}
 					catch {start-sleep 1}
 				}
 			}
@@ -108,17 +108,17 @@
 			)
 			foreach ($url in $urls) {
 				if ($url -match "txt") {
-					try {iwr $url -useb | sc "$dir\russia-blacklist.txt"; break}
+					try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
 					catch {start-sleep 1}
 				} else {
-					try {(iwr $url3 -Useb) -split '", "' -replace ('[\[\]"]'), ('') | sc "$dir\russia-blacklist.txt"; break}
+					try {(iwr $url -Useb) -split '", "' -replace ('[\[\]"]'), ('') | Set-Content "$dir\russia-blacklist.txt"; break}
 					catch {start-sleep 1}
 				}
 			}
-			$strings = (gc "$dir\service_create.cmd") | Select-String -Pattern "ARGS="
+			$strings = (Get-Content "$dir\service_create.cmd") | Select-String -Pattern "ARGS="
 			foreach ($string in $strings) {
-				(gc "$dir\service_create.cmd") -replace ($string), ([string]$string + ' --hostlist=\"%~dp0russia-blacklist.txt\"') | sc "$dir\service_create.cmd"
-				(gc "$dir\service_create.cmd") -replace ('  '), (' ') | sc "$dir\service_create.cmd"
+				(Get-Content "$dir\service_create.cmd") -replace ($string), ([string]$string + ' --hostlist=\"%~dp0russia-blacklist.txt\"') | Set-Content "$dir\service_create.cmd"
+				(Get-Content "$dir\service_create.cmd") -replace ('  '), (' ') | Set-Content "$dir\service_create.cmd"
 			}
 			& "$dir\service_create.cmd"
 		}
@@ -267,16 +267,16 @@
 			iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile '.\UUP.zip'
    			while (!(dir -errorAction 0 "UUP.zip")) {start-sleep 1}
 			Expand-Archive -ErrorAction 0 -Force '.\UUP.zip' '.\'
-			(gc ".\ConvertConfig.ini") -replace (' '), ('') | sc ".\ConvertConfig.ini"
+			(Get-Content ".\ConvertConfig.ini") -replace (' '), ('') | Set-Content ".\ConvertConfig.ini"
 			foreach ($option in $options) {
-				((gc '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | sc '.\ConvertConfig.ini'
+				((Get-Content '.\ConvertConfig.ini') -replace ("^" + $option + "=0"), ($option + "=1")) | Set-Content '.\ConvertConfig.ini'
 			}
 			start-job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
 			while (!(dir -errorAction 0 "CustomAppsList.txt")) {start-sleep 1}
-			(gc ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | sc ".\CustomAppsList.txt"
+			(Get-Content ".\CustomAppsList.txt") -replace ('^\w'), ('# $&') | Set-Content ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
-				$file = (gc ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
-				((gc '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | sc '.\CustomAppsList.txt'
+				$file = (Get-Content ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
+				((Get-Content '.\CustomAppsList.txt') -replace ("# " + $file), ($file)) | Set-Content '.\CustomAppsList.txt'
 			}
 			get-job -errorAction 0 -name UUP | wait-job
 			dir -ErrorAction 0 -Force | where {$_ -match '^*.X64.*$'} | mi -Destination ([Environment]::GetFolderPath("Desktop"))
