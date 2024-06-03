@@ -94,20 +94,20 @@ while ($stage -eq "menu") {
 	[string]$confirm = if ($apps) {"Confirm"} else {"Exit"}
 	[string]$menu = "Menu"
 	[string]$search = "Search"
-	[array]$tagList = if ($mode -eq "select") {$category} else {$menu, $search, $confirm}
+	[array]$optionList = if ($mode -eq "select") {$category} else {$menu, $search, $confirm}
 	
-	[array]$elements = switch ($tagList[$xpos]) {
+	[array]$elements = switch ($optionList[$xpos]) {
 		$menu {if ($category[$kpos] -eq "All") {$data} else {$data | where Tag -eq $category[$kpos]}}
 		$search {if ($mode -eq "search" -and ($text)) {$data | where description -match $text}}
 		{$_ -in $category} {if ($category[$xpos] -eq "All") {$data} else {$data | where Tag -eq $category[$xpos]}}
 		$confirm {$data | where Name -in $apps}
 	}
 
-	[array]$tags = for ($i = 0; $i -lt $tagList.count; $i++) {
-		$tag = ($tagList[$i]).ToUpper()
-		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $tag 7}
-  		elseif ($i -eq $xpos) {color -text $tag -number 4}
-		else {$tag}
+	[array]$options = for ($i = 0; $i -lt $optionList.count; $i++) {
+		$option = (Get-Culture).TextInfo.ToTitleCase($optionList[$i])
+		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $option 7}
+  		elseif ($i -eq $xpos) {color -text $option -number 4}
+		else {$option}
 	}
 
 	[array]$descriptions = for ($i = 0; $i -lt $elements.count; $i++) {
@@ -123,7 +123,7 @@ while ($stage -eq "menu") {
 	#ВЫВОД
 	clean
 	pos 2 1
-	if ($mode -eq "select") {"< " + $tags[$xpos] + " >"} else {[string]$tags}
+	if ($mode -eq "select") {"< " + $options[$xpos] + " >"} else {[string]$options}
 	if ($descriptions) {
 		draw 3 55 ($descriptions[$zpos..($zpos+9)].count)
 		$descriptions[$zpos..($zpos+9)] | foreach {pos 2 ($descriptions[$zpos..($zpos+9)].indexof($_) + 4); $_}
@@ -157,15 +157,15 @@ while ($stage -eq "menu") {
 		"Enter" {
 			if ($ypos -ge 0) {
 				$app = $elements[$ypos].name
-				$tag = $tagList[$xpos]
+				$option = $optionList[$xpos]
 				if ($app -in $apps) {[void]$apps.Remove($app)} else {[void]$apps.Add($app)}
-				if (($app -eq $elements[-1].Name) -and ($tag -eq $confirm)) {
+				if (($app -eq $elements[-1].Name) -and ($option -eq $confirm)) {
 					$ypos--
 					$zpos = [math]::Floor(($elements.count-2)/10)*10
 				}
 			} else {
-				$tag = $tagList[$xpos]
-				switch ($tag) {
+				$option = $optionList[$xpos]
+				switch ($option) {
 					$category[$xpos] {
 						$mode = "tags"
 						$kpos = $xpos
@@ -174,7 +174,7 @@ while ($stage -eq "menu") {
 					$menu {
 						$mode = "select"
 						$xpos = $kpos
-						$tagList = $category
+						$optionList = $category
 					}
 					$search {
 						$mode = "search"
@@ -192,8 +192,8 @@ while ($stage -eq "menu") {
 			}
 		}
 	}
-	if ($xpos -lt 0) {$xpos = $tagList.count -1}
-	if ($xpos -ge $tagList.count) {$xpos = 0}
+	if ($xpos -lt 0) {$xpos = $optionList.count -1}
+	if ($xpos -ge $optionList.count) {$xpos = 0}
 	if ($ypos -lt -1) {$ypos = $elements.count -1; $zpos = [math]::Floor(($elements.count-1)/10)*10}
 	if ($ypos -ge $elements.count) {$ypos = -1; $zpos = 0}
 	if ($zpos -lt 0) {$zpos = 0}
