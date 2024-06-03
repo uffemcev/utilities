@@ -5,7 +5,7 @@ param ([Parameter(ValueFromRemainingArguments=$true)][System.Collections.ArrayLi
 #ФУНКЦИИ
 function char ($char) {[char]::ConvertFromUtf32("0x$char")}
 function pos ($x, $y) {[Console]::SetCursorPosition($x, $y)}
-function draw ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char "256D") + ((char 2500) * $length) + (char 256E) + (("`n" + (char 2502) + (" " * $length) + (char 2502)) * $height) + "`n" + (char 2570) + ((char 2500) * $length) + (char 256F)}
+function draw ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char "256D") + ((char "2500") * $length) + (char "256E") + (("`n" + (char "2502") + (" " * $length) + (char "2502")) * $height) + "`n" + (char "2570") + ((char "2500") * $length) + (char "256F")}
 function clean () {$e = [char]27; pos 0 0; "$e[J"; draw 0 55 1; pos 2 1; (" " * 25) + (color "uffemcev.github.io/utilities" 90)}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
 function close () {(Get-Process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
@@ -106,7 +106,7 @@ while ($stage -eq "menu") {
 	[array]$options = for ($i = 0; $i -lt $optionList.count; $i++) {
 		$option = (Get-Culture).TextInfo.ToTitleCase($optionList[$i])
 		if (($i -eq $xpos) -and ($ypos -eq -1)) {color $option 7}
-  		elseif ($i -eq $xpos) {color -text $option -number 4}
+  		elseif ($i -eq $xpos) {color $option 4}
 		else {$option}
 	}
 
@@ -118,7 +118,7 @@ while ($stage -eq "menu") {
 		else {color $element.Description 90}
 	}
 	
-	[string]$page = " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10)) + " "
+	[string]$page = (char "0x0001F4C4") + " " + (($zpos/10)+1) + "/" + ([math]::Ceiling($elements.count/10))
 	
 	#ВЫВОД
 	clean
@@ -127,7 +127,7 @@ while ($stage -eq "menu") {
 	if ($descriptions) {
 		draw 3 55 ($descriptions[$zpos..($zpos+9)].count)
 		$descriptions[$zpos..($zpos+9)] | foreach {pos 2 ($descriptions[$zpos..($zpos+9)].indexof($_) + 4); $_}
-		"`n" + [char]::ConvertFromUtf32(0x0001F4C4) + $page
+		"`n" + $page
 	}
 	
 	#УПРАВЛЕНИЕ
@@ -225,17 +225,18 @@ while ($stage -eq "install") {
 			}
 		}}
 		$install = ($install | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -stream).Trim() | where {$_}
+		[string]$jobs = (char "0x0001F4C4") + " " + (get-job | where state -eq Completed).count + "/" + $apps.count
 
 		#ВЫВОД
 		clean
 		pos 2 1
 		if ($i -eq $apps.count) {"Installation complete"} else {"Installation process"}
 		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
-		pos 2 4
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
 		$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
 		pos 2 ($install[$zpos..($zpos+9)].count + 5)
 		$progress
+		"`n" + $jobs
 	}
 	Start-Sleep 5
 	$stage = "exit"
