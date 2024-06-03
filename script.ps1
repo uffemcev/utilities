@@ -214,7 +214,7 @@ while ($stage -eq "install") {
 		$processed = [Math]::Round(($i) / $apps.count * 49,0)
 		$remaining = 49 - $Processed
 		$percentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
-		$percent = $percentProcessed -replace ("^(\d{1})$"), ("  $_%") -replace ("^(\d{2})$"), (" $_%") -replace ("^(\d{3})$"), ("$_%")
+		$percent = $percentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
 		$progress = (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
 		[array]$install = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
 			switch ((Get-Job -name $_).State) {
