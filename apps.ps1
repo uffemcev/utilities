@@ -271,7 +271,7 @@
 			foreach ($option in $options) {
 				((Get-Content ".\ConvertConfig.ini") -replace ("^" + $option + "=0"), ($option + "=1")) | Set-Content ".\ConvertConfig.ini"
 			}
-			Start-Job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {iex ".\uup_download_windows.cmd"}			
+			Start-Job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {& ".\uup_download_windows.cmd"}			
 			while (!(dir -errorAction 0 "CustomAppsList.txt")) {start-sleep 1}
 			(Get-Content ".\CustomAppsList.txt") -replace ("^\w"), ("# $&") | Set-Content ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
