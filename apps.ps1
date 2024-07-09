@@ -263,16 +263,22 @@
 		Code = {
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
-			$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=22631.1").response.updateArray | Sort -Descending -Property $_.foundBuild | Select -First 1).updateId
+			while (!($id)) {
+				try {
+					$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=22631.1").response.updateArray | Sort -Descending -Property $_.foundBuild | Select -First 1).updateId
+				} catch {
+					start-sleep 10
+				}
+			}
 			iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile ".\UUP.zip"
-   			while (!(dir -errorAction 0 ".\UUP.zip")) {start-sleep 1}
+			while (!(dir -errorAction 0 ".\UUP.zip")) {start-sleep 1}
 			Expand-Archive -ErrorAction 0 -Force ".\UUP.zip" ".\"
 			(Get-Content ".\ConvertConfig.ini") -replace (" "), ("") | Set-Content ".\ConvertConfig.ini"
 			foreach ($option in $options) {
 				((Get-Content ".\ConvertConfig.ini") -replace ("^" + $option + "=0"), ($option + "=1")) | Set-Content ".\ConvertConfig.ini"
 			}
 			Start-Job -Name ("UUP") -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock {& ".\uup_download_windows.cmd"}			
-			while (!(dir -errorAction 0 "CustomAppsList.txt")) {start-sleep 1}
+			while (!(dir -errorAction 0 ".\CustomAppsList.txt")) {start-sleep 1}
 			(Get-Content ".\CustomAppsList.txt") -replace ("^\w"), ("# $&") | Set-Content ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
 				$file = (Get-Content ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
