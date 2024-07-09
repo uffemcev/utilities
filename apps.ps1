@@ -263,7 +263,7 @@
 		Code = {
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
-			while (!($id)) {
+			while (!(dir -errorAction 0 ".\UUP.zip")) {
 				try {
 					$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=22631.1").response.updateArray | Sort -Descending -Property $_.foundBuild | Select -First 1).updateId
      					iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile ".\UUP.zip"
@@ -271,7 +271,6 @@
 					start-sleep 10
 				}
 			}
-			while (!(dir -errorAction 0 ".\UUP.zip")) {start-sleep 1}
 			Expand-Archive -ErrorAction 0 -Force ".\UUP.zip" ".\"
 			(Get-Content ".\ConvertConfig.ini") -replace (" "), ("") | Set-Content ".\ConvertConfig.ini"
 			foreach ($option in $options) {
