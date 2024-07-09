@@ -282,7 +282,7 @@
 			(Get-Content ".\CustomAppsList.txt") -replace ("^\w"), ("# $&") | Set-Content ".\CustomAppsList.txt"
 			foreach ($app in $apps) {
 				$file = (Get-Content ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
-				((Get-Content ".\CustomAppsList.txt") -replace ("# " + $file), ($file)) | Set-Content ".\CustomAppsList.txt"
+				if ($file) {((Get-Content ".\CustomAppsList.txt") -replace ("# " + $file), ($file)) | Set-Content ".\CustomAppsList.txt"}
 			}
 			Get-Job -errorAction 0 -name UUP | Wait-Job
 			dir -ErrorAction 0 -Force | where {$_ -match "^*.X64.*$"} | Move-Item -Destination ([Environment]::GetFolderPath("Desktop"))
