@@ -52,7 +52,7 @@
       			$Config.Save("$dir\Default.xml")
 			& "$dir\Download.ps1" -Branch O365ProPlusRetail -Channel Current -Components Word, Excel, PowerPoint
 			& "$dir\Install.ps1"
-			& ([ScriptBlock]::Create((irm https://massgrave.dev/get))) /KMS-Office /KMS-ActAndRenewalTask /S
+			& ([ScriptBlock]::Create((irm https://get.activated.win))) /KMS-Office /KMS-ActAndRenewalTask /S
 		}
 	}
 	[pscustomobject]@{
