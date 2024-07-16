@@ -78,6 +78,7 @@
 			$urls = @(
 				"https://antizapret.prostovpn.org:8443/domains-export.txt",
 				"https://p.thenewone.lol:8443/domains-export.txt",
+    				"https://raw.githubusercontent.com/bol-van/rulist/main/reestr_hostname.txt",
 				"https://reestr.rublacklist.net/api/v3/domains"
 			)
 			foreach ($url in $urls) {
@@ -104,6 +105,7 @@
 			$urls = @(
 				"https://antizapret.prostovpn.org:8443/domains-export.txt",
 				"https://p.thenewone.lol:8443/domains-export.txt",
+    				"https://raw.githubusercontent.com/bol-van/rulist/main/reestr_hostname.txt",
 				"https://reestr.rublacklist.net/api/v3/domains"
 			)
 			foreach ($url in $urls) {
