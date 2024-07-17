@@ -226,7 +226,7 @@
 	}
 	[pscustomobject]@{
 		Description = "NVCleanstall"
-		Name = "nvidia"
+		Name = "nvcleanstall"
 		Tag = "system"
 		Code = {
 			$id = "TechPowerUp.NVCleanstall"
@@ -298,6 +298,19 @@
 			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
 			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+		}
+	}
+ 	[pscustomobject]@{
+		Description = "NV Updater"
+		Name = "nvupdater"
+		Tag = "system"
+		Code = {
+			$uri = "https://www.sys-worx.net/filebase/file/11-nv-updater-nvidia-driver-updater/#versions"
+   			$data = iwr -Useb -Uri "https://www.sys-worx.net/filebase/file/11-nv-updater-nvidia-driver-updater/#versions"
+      			$download = ($data.Links | select-string -pattern ".zip" | select -first 1) -match '[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)'
+	 		iwr -Useb -Uri $matches[0] -OutFile ".\NV Updater.zip"
+    			Expand-Archive -ErrorAction 0 -Force ".\NV Updater.zip"
+       			".\NV Updater\nv_updater.exe"
 		}
 	}
 )
