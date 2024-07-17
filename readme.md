@@ -113,10 +113,16 @@
 			</tr>
 			<tr>
 				<td>System</td>
-				<td>nvidia</td>
+				<td>nvcleanstall</td>
 				<td>NVCleanstall</td>
 				<td>techpowerup.com/nvcleanstall</td>
 			</tr>
+			<tr>
+				<td></td>
+				<td>nvupdater</td>
+				<td>NV Updater</td>
+				<td>sys-worx.net/nv-updater-eng</td>
+			</tr>			
 			<tr>
 				<td></td>
 				<td>zip</td>
