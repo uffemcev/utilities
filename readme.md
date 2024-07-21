@@ -35,9 +35,15 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td>dpi</td>
+				<td>gbdpi</td>
 				<td>GoodbyeDPI</td>
 				<td>github.com/ValdikSS/GoodbyeDPI</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>bdpi</td>
+				<td>ByeDPI</td>
+				<td>github.com/hufrea/byedpi</td>
 			</tr>
 			<tr>
 				<td></td>
