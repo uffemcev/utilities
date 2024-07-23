@@ -8,7 +8,6 @@ function pos ($x, $y) {[Console]::SetCursorPosition($x, $y)}
 function draw ($line, $length, $height) {$e = [char]27; pos 0 $line; "$e[J" + (char "256D") + ((char "2500") * $length) + (char "256E") + (("`n" + (char "2502") + (" " * $length) + (char "2502")) * $height) + "`n" + (char "2570") + ((char "2500") * $length) + (char "256F")}
 function clean () {$e = [char]27; pos 0 0; "$e[J"; draw 0 55 1; pos 2 1; (" " * 25) + (color "uffemcev.github.io/utilities" 90)}
 function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0m"}
-function close () {(Get-Process | where MainWindowTitle -eq $host.ui.RawUI.WindowTitle).id | where {taskkill /PID $_}}
 
 #ЗНАЧЕНИЯ
 clean
@@ -30,7 +29,7 @@ $host.ui.RawUI.WindowTitle = (char 1F916) + " utilities"
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
 	try {Start-Process wt "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'\; $($MyInvocation.line -replace (";"),("\;"))}" -Verb RunAs}
 	catch {Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs}
-	close
+	Exit
 }
 
 #ПРОВЕРКА ПОЛИТИК
@@ -44,7 +43,7 @@ if ((Get-ExecutionPolicy) -ne "bypass") {
 if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
 	if ((Get-Process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)).ProcessName -match "Terminal") {
 		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
-		close
+		Exit
 	} else {
 		powershell "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose" | Out-Null
 		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -250,4 +249,4 @@ clean
 pos 2 1
 "Bye, $Env:UserName"
 Start-Sleep 5
-close
+Exit
