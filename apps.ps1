@@ -87,32 +87,6 @@
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
 		}
 	}
- 	[pscustomobject]@{
-		Description = "Zapret"
-		Name = "zapret"
-		Tag = "tweaks"
-		Code = {
-			iwr -Useb -Uri "https://github.com/bol-van/zapret-win-bundle/archive/refs/heads/master.zip" -OutFile ".\zapret.zip"
-			while (!(dir -errorAction 0 "zapret.zip")) {start-sleep 1}
-			Expand-Archive -ErrorAction 0 -Force ".\zapret.zip" $Env:Programfiles
-			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "zapret*"}).FullName + "\zapret-winws"
-			$urls = @(
-				"https://raw.githubusercontent.com/bol-van/rulist/main/reestr_hostname.txt",
-   				"https://antizapret.prostovpn.org:8443/domains-export.txt",
-				"https://p.thenewone.lol:8443/domains-export.txt"
-			)
-			foreach ($url in $urls) {
-				try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
-				catch {start-sleep 1}
-			}
-			$strings = (Get-Content "$dir\service_create.cmd") | Select-String -Pattern "ARGS="
-			foreach ($string in $strings) {
-				(Get-Content "$dir\service_create.cmd") -replace ($string), ([string]$string + ' --hostlist=\"%~dp0russia-blacklist.txt\"') | Set-Content "$dir\service_create.cmd"
-				(Get-Content "$dir\service_create.cmd") -replace ("  "), (" ") | Set-Content "$dir\service_create.cmd"
-			}
-			& "$dir\service_create.cmd"
-		}
-	}
 	[pscustomobject]@{
 		Description = "Google Chrome"
 		Name = "chrome"
