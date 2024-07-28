@@ -78,17 +78,11 @@
 			$urls = @(
 				"https://raw.githubusercontent.com/bol-van/rulist/main/reestr_hostname.txt",
    				"https://antizapret.prostovpn.org:8443/domains-export.txt",
-				"https://p.thenewone.lol:8443/domains-export.txt",
-				"https://reestr.rublacklist.net/api/v3/domains"
+				"https://p.thenewone.lol:8443/domains-export.txt"
 			)
 			foreach ($url in $urls) {
-				if ($url -match "txt") {
-					try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
-					catch {start-sleep 1}
-				} else {
-					try {(iwr $url -Useb) -split '", "' -replace ('[\[\]"]'), ('') | Set-Content "$dir\russia-blacklist.txt"; break}
-					catch {start-sleep 1}
-				}
+				try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
+				catch {start-sleep 1}
 			}
 			"`n" |& "$dir\service_install_russia_blacklist.cmd"
 		}
@@ -104,18 +98,12 @@
 			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "zapret*"}).FullName + "\zapret-winws"
 			$urls = @(
 				"https://raw.githubusercontent.com/bol-van/rulist/main/reestr_hostname.txt",
-    				"https://antizapret.prostovpn.org:8443/domains-export.txt",
-				"https://p.thenewone.lol:8443/domains-export.txt",
-				"https://reestr.rublacklist.net/api/v3/domains"
+   				"https://antizapret.prostovpn.org:8443/domains-export.txt",
+				"https://p.thenewone.lol:8443/domains-export.txt"
 			)
 			foreach ($url in $urls) {
-				if ($url -match "txt") {
-					try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
-					catch {start-sleep 1}
-				} else {
-					try {(iwr $url -Useb) -split '", "' -replace ('[\[\]"]'), ('') | Set-Content "$dir\russia-blacklist.txt"; break}
-					catch {start-sleep 1}
-				}
+				try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
+				catch {start-sleep 1}
 			}
 			$strings = (Get-Content "$dir\service_create.cmd") | Select-String -Pattern "ARGS="
 			foreach ($string in $strings) {
