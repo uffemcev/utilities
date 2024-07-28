@@ -47,12 +47,6 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td>zapret</td>
-				<td>Zapret</td>
-				<td>github.com/bol-van/zapret-win-bundle</td>
-			</tr>
-			<tr>
-				<td></td>
     				<td>sophia</td>
 				<td>SophiApp Tweaker portable</td>
 				<td>github.com/Sophia-Community/SophiApp</td>
