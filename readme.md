@@ -1,6 +1,6 @@
 ## Описание
 
-![image](https://github.com/user-attachments/assets/4f05fcc7-59e5-4e3f-800c-fc27d63bfe9d)
+![image](https://github.com/user-attachments/assets/0c8c9d6b-9225-439d-b3b6-314bacea2e86)
 
 Скрипт для установки компонентов и программ.
 
