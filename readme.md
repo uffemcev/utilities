@@ -162,4 +162,4 @@
 ```
 
 ## Поддержка
-* UQD8pIEa7_6RwQMihBs-nq7jA4lQoKpEGRbXjK4xMIJtzheo / uffemcev.ton
+* uffemcev.ton
