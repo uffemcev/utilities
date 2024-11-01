@@ -38,18 +38,6 @@
 			</tr>
 			<tr>
 				<td></td>
-				<td>gbdpi</td>
-				<td>GoodbyeDPI</td>
-				<td>github.com/ValdikSS/GoodbyeDPI</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>bdpi</td>
-				<td>ByeDPI</td>
-				<td>github.com/hufrea/byedpi</td>
-			</tr>
-			<tr>
-				<td></td>
     				<td>sophia</td>
 				<td>SophiApp Tweaker portable</td>
 				<td>github.com/Sophia-Community/SophiApp</td>
