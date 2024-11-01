@@ -65,29 +65,6 @@
 		}
 	}
 	[pscustomobject]@{
-		Description = "GoodbyeDPI"
-		Name = "gbdpi"
-		Tag = "tweaks"
-		Code = {
-			$uri = "https://api.github.com/repos/ValdikSS/GoodbyeDPI/releases/latest"
-			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-			$data = $get.assets | Where-Object name -match "goodbyedpi.*.zip$" | select -first 1
-			iwr $data.browser_download_url -Useb -OutFile ".\goodbyedpi.zip"
-			Expand-Archive -ErrorAction 0 -Force ".\goodbyedpi.zip" $Env:Programfiles
-			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "goodbyedpi*"}).FullName
-			$urls = @(
-				"https://raw.githubusercontent.com/bol-van/rulist/main/reestr_hostname.txt",
-   				"https://antizapret.prostovpn.org:8443/domains-export.txt",
-				"https://p.thenewone.lol:8443/domains-export.txt"
-			)
-			foreach ($url in $urls) {
-				try {iwr $url -useb | Set-Content "$dir\russia-blacklist.txt"; break}
-				catch {start-sleep 1}
-			}
-			"`n" |& "$dir\service_install_russia_blacklist.cmd"
-		}
-	}
-	[pscustomobject]@{
 		Description = "Google Chrome"
 		Name = "chrome"
 		Tag = "web"
@@ -274,23 +251,6 @@
     			Expand-Archive -ErrorAction 0 -Force ".\NV Updater.zip" "$Env:Programfiles\NV Updater"
        			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "NV Updater*"}).FullName
 	 		& "$dir\nv_updater.exe"
-		}
-	}
-  	[pscustomobject]@{
-		Description = "ByeDPI"
-		Name = "bdpi"
-		Tag = "tweaks"
-		Code = {
-			$regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
-			$uri = "https://api.github.com/repos/hufrea/byedpi/releases/latest"
-			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-			$data = $get.assets | Where-Object name -match "x86_64-w64*.zip$" | select -first 1
-			iwr $data.browser_download_url -Useb -OutFile ".\byedpi.zip"
-			Expand-Archive -ErrorAction 0 -Force ".\byedpi.zip" "$Env:Programfiles\byedpi"
-			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "byedpi$"}).FullName
-			Set-ItemProperty -path $regPath ProxyEnable -value 1
-			Set-ItemProperty -path $regPath ProxyServer -value "socks=localhost:1080"
-			"`n" |& "$dir\service_install.bat"
 		}
 	}
 )
