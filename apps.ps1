@@ -198,7 +198,7 @@
 		}
 	}
 	[pscustomobject]@{
-		Description = "Win 11 23H2 iso folder"
+		Description = "Win 11 24H2 iso folder"
 		Name = "win"
 		Tag = "other"
 		Code = {
