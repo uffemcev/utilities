@@ -206,7 +206,7 @@
 			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipISO", "SkipWinRE", "CustomList", "AutoExit"
 			while (!(dir -errorAction 0 ".\UUP.zip")) {
 				try {
-					$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=22631.1").response.updateArray | Where updateTitle -match "^Windows 11.*$" | Sort -Descending -Property $_.foundBuild | Select -First 1).updateId
+					$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=26100.1&pack=ru-ru").response.updateArray | Where updateTitle -match "^Windows 11.*$" | Sort -Descending -Property foundBuild | Select -First 1).updateId
      					iwr -Useb -Uri "https://uupdump.net/get.php?id=$id&pack=ru-ru&edition=core" -Method "POST" -Body "autodl=2" -OutFile ".\UUP.zip"
 				} catch {
 					start-sleep 10
