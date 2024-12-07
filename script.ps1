@@ -16,7 +16,6 @@ pos 2 1
 [console]::CursorVisible = $false
 $host.ui.RawUI.WindowTitle = (char 1F916) + " utilities"
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
-[string]$regpath = "Software\Microsoft\Windows\CurrentVersion\Policies\Associations"
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
 [string]$stage = "menu"
 [string]$mode = "disable"
@@ -49,15 +48,6 @@ if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]
 		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
   		Repair-WingetPackageManager -Force -Latest -AllUsers | Out-Null
 	}
-}
-
-#ПРОВЕРКА REGEDIT
-if (!(Get-ItemProperty -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\$regpath)) {
-	$reg = $null
-	reg add "HKCU\$regpath" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f | Out-Null
-} else {
-	$reg = (Get-ItemProperty -ErrorAction 0 -Path Registry::HKEY_CURRENT_USER\$regpath).LowRiskFileTypes
-	reg add "HKCU\$regpath" /v "LowRiskFileTypes" /t REG_SZ /d ".exe;.msi;.zip;" /f | Out-Null
 }
 
 #ПРОВЕРКА ПРИЛОЖЕНИЙ
@@ -244,7 +234,6 @@ while ($stage -eq "install") {
 
 #ЗАВЕРШЕНИЕ РАБОТЫ
 cd \
-if ($reg) {reg add "HKCU\$regpath" /v "LowRiskFileTypes" /t REG_SZ /d $reg /f | Out-Null} else {reg delete "HKCU\$regpath" /v "LowRiskFileTypes" /f | Out-Null}
 Remove-Item -Recurse -Force -ErrorAction 0 $path
 clean
 pos 2 1
