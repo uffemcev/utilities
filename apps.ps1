@@ -70,9 +70,7 @@
 		Tag = "web"
 		Code = {
 			$id = "Google.Chrome"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}	
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -81,9 +79,7 @@
 		Tag = "audio"
 		Code = {
 			$id = "Vendicated.Vencord"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -92,9 +88,7 @@
 		Tag = "games"
 		Code = {
 			$id = "Valve.Steam"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -103,9 +97,7 @@
 		Tag = "storage"
 		Code = {
 			$id = "qBittorrent.qBittorrent"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -114,9 +106,7 @@
 		Tag = "system"
 		Code = {
 			$id = "7zip.7zip"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -125,9 +115,7 @@
 		Tag = "storage"
 		Code = {
 			$id = "Google.GoogleDrive"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -136,9 +124,7 @@
 		Tag = "web"
 		Code = {
 			$id = "AdGuard.AdGuard"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -147,9 +133,7 @@
 		Tag = "games"
 		Code = {
 			$id = "WhirlwindFX.SignalRgb"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -158,9 +142,7 @@
 		Tag = "video"
 		Code = {
 			$id = "CodecGuide.K-LiteCodecPack.Full"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -169,9 +151,7 @@
 		Tag = "system"
 		Code = {
 			$id = "TechPowerUp.NVCleanstall"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
 	[pscustomobject]@{
@@ -234,9 +214,7 @@
 		Tag = "tweaks"
 		Code = {
 			$id = "rcmaehl.MSEdgeRedirect"
-			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
-			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent
 		}
 	}
  	[pscustomobject]@{
