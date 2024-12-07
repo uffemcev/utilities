@@ -40,13 +40,14 @@ if ((Get-ExecutionPolicy) -ne "bypass") {
 }
 
 #ПРОВЕРКА WINGET
-if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.21.2771.0") {
+if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.24.25200.0") {
 	if ((Get-Process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)).ProcessName -match "Terminal") {
 		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
 		Exit
 	} else {
 		powershell "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose" | Out-Null
 		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+  		Repair-WingetPackageManager -Force -Latest -AllUsers
 	}
 }
 
