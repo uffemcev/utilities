@@ -26,12 +26,6 @@
 			</tr>
 			<tr>
 				<td>Tweaks</td>
-				<td>cdns</td>
-				<td>Cloudflare DOH</td>
-				<td>one.one.one.one/dns</td>
-			</tr>
-			<tr>
-				<td></td>
 				<td>adns</td>
 				<td>Adguard DOH</td>
 				<td>adguard-dns.io/ru/public-dns.html</td>
