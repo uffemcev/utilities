@@ -233,4 +233,15 @@
 	 		& "$dir\nv_updater.exe"
 		}
 	}
+ 	[pscustomobject]@{
+		Description = "TEST"
+		Name = "TEST"
+		Tag = "TEST"
+		Code = {
+			$id = "Wagnardsoft.DisplayDriverUninstaller"
+   			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
+			iex $run
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+		}
+	}
 )
