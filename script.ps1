@@ -72,7 +72,7 @@ if ($apps) {
 
 #НАЧАЛО РАБОТЫ
 winget settings --enable InstallerHashOverride | Out-Null
-#$env:SEE_MASK_NOZONECHECKS = 1
+$env:SEE_MASK_NOZONECHECKS = 1
 Remove-Item -Recurse -Force -ErrorAction 0 $path
 cd (New-Item -Path $path -ItemType "directory")
 clean
