@@ -92,6 +92,8 @@ if (Get-Item $path -ErrorAction 0) {
 	cd (New-Item -Path $path -ItemType "directory")
 }
 
+clean
+
 #МЕНЮ
 while ($stage -eq "menu") {
 	
