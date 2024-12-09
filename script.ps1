@@ -85,7 +85,7 @@ if ($env:SEE_MASK_NOZONECHECKS -ne 1) {
 }
 
 #ПРОВЕРКА ДИРЕКТОРИИ
-if (Dir $path -ErrorAction 0) {
+if (Get-Item $path -ErrorAction 0) {
 	Remove-Item -Recurse -Force -ErrorAction 0 $path
 	cd (New-Item -Path $path -ItemType "directory")
 } else {
