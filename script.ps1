@@ -32,21 +32,24 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }
 
 #ПРОВЕРКА ПОЛИТИК
-try {Get-ExecutionPolicy | Out-Null}
-catch {Import-Module -Name "Microsoft.PowerShell.Security" -RequiredVersion 3.0.0.0}
-if ((Get-ExecutionPolicy) -ne "bypass") {
+try {
+	if ((Get-ExecutionPolicy) -ne "bypass") {throw}
+} catch {
+	Import-Module -Name "Microsoft.PowerShell.Security" -RequiredVersion 3.0.0.0
 	Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 }
 
 #ПРОВЕРКА WINGET
-if ((Get-AppxPackage Microsoft.DesktopAppInstaller).Version -lt [System.Version]"1.24.25200.0") {
+try {
+	if ([System.Version]((Get-WinGetVersion) -replace '[a-zA-Z]','') -lt [System.Version]"1.9.25200") {throw}
+} catch {
 	if ((Get-Process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)).ProcessName -match "Terminal") {
 		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
 		Exit
 	} else {
 		powershell "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose" | Out-Null
 		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-  		Repair-WingetPackageManager -Force -Latest -AllUsers | Out-Null
+		Repair-WingetPackageManager -Force -Latest -AllUsers | Out-Null
 	}
 }
 
@@ -75,7 +78,7 @@ if ($apps) {
 }
 
 #ПРОВЕРКА WINGET НАСТРОЕК
-if ((Get-WingetSetting).adminSettings.InstallerHashOverride -ne 'True') {
+if ((Get-WingetSetting).adminSettings.InstallerHashOverride -ne "True") {
 	Enable-WinGetSetting InstallerHashOverride
 }
 
