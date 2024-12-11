@@ -56,7 +56,9 @@ if ($data) {
 		if (($_.Tag -eq "") -or ($_.Tag -eq $null)) {$_ | add-member -force "Tag" "Other"}
 		clean
 	}
-} else {throw}
+} else {
+	throw
+}
 
 #ПРОВЕРКА ПАРАМЕТРОВ
 if ($apps) {
@@ -68,14 +70,27 @@ if ($apps) {
 	if ($apps -contains "all") {$apps = $data.Name}
 	$apps = [array]($apps | Sort-Object -unique)
 	$stage = "install"
-} else {[System.Collections.ArrayList]$apps = @()}
+} else {
+	[System.Collections.ArrayList]$apps = @()
+}
 
-#НАЧАЛО РАБОТЫ
-winget settings --enable InstallerHashOverride | Out-Null
-$env:SEE_MASK_NOZONECHECKS = 1
-Remove-Item -Recurse -Force -ErrorAction 0 $path
-cd (New-Item -Path $path -ItemType "directory")
-clean
+#ПРОВЕРКА WINGET НАСТРОЕК
+if ((Get-WingetSetting).adminSettings.InstallerHashOverride -ne 'True') {
+	Enable-WinGetSetting InstallerHashOverride
+}
+
+#ПРОВЕРКА ZONECHECK
+if ($env:SEE_MASK_NOZONECHECKS -ne 1) {
+	$env:SEE_MASK_NOZONECHECKS = 1
+}
+
+#ПРОВЕРКА ДИРЕКТОРИИ
+if (Get-Item $path -ErrorAction 0) {
+	Remove-Item -Recurse -Force -ErrorAction 0 $path
+	cd (New-Item -Path $path -ItemType "directory")
+} else {
+	cd (New-Item -Path $path -ItemType "directory")
+}
 
 #МЕНЮ
 while ($stage -eq "menu") {
