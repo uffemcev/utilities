@@ -215,9 +215,8 @@ if ($apps.count -eq 0) {$stage = "exit"}
 while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
 		#ЗАПУСК
-		Get-job | Wait-Job | Out-Null
-		try {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock $(($data | Where Name -eq $apps[$i]).Code) | Out-Null}
-		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {Start-Sleep 1; throw} | Out-Null}
+		try {Start-Process -Wait powershell ($data | Where Name -eq $apps[$i]).Code}
+		catch {Start-Sleep 1; throw}
 		
 		#ПОДСЧЕТ
 		$processed = [Math]::Round(($i) / $apps.count * 49,0)
@@ -225,16 +224,6 @@ while ($stage -eq "install") {
 		$percentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
 		$percent = $percentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
 		$progress = (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
-		[array]$install = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
-			switch ((Get-Job -name $_).State) {
-				"Running" {"Running"}
-				"Completed" {"Completed"}
-				"Failed" {"Failed"}
-				DEFAULT {"Waiting"}
-			}
-		}}
-		$install = ($install | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -stream).Trim() | where {$_}
-		[string]$jobs = (char "0x0001F4C4") + " " + (get-job | where state -eq Completed).count + "/" + $apps.count
 
 		#ВЫВОД
 		clean
@@ -242,10 +231,7 @@ while ($stage -eq "install") {
 		if ($i -eq $apps.count) {"Installation complete"} else {"Installation process"}
 		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
-		$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
-		pos 2 ($install[$zpos..($zpos+9)].count + 5)
 		$progress
-		"`n" + $jobs
 	}
 	Start-Sleep 5
 	$stage = "exit"
