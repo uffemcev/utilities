@@ -214,20 +214,6 @@ if ($apps.count -eq 0) {$stage = "exit"}
 #УСТАНОВКА
 while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
-		#ПОДСЧЕТ
-		$processed = [Math]::Round(($i) / $apps.count * 49,0)
-		$remaining = 49 - $Processed
-		$percentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
-		$percent = $percentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
-		$progress = (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
-
-		#ВЫВОД
-		clean
-		pos 2 1
-		if ($i -eq $apps.count) {"Installation complete"} else {"Installation process"}
-		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
-		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
-		$progress
   		try {& ($data | Where Name -eq $apps[$i]).Code}
 		catch {Start-Sleep 1; throw}
 	}
