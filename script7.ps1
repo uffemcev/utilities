@@ -215,7 +215,7 @@ if ($apps.count -eq 0) {$stage = "exit"}
 while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
   		try {
-			pos 5 1
+			pos 2 15
    			& ($data | Where Name -eq $apps[$i]).Code
 		} catch {
 			Start-Sleep 1;
