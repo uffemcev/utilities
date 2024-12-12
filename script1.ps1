@@ -215,7 +215,7 @@ if ($apps.count -eq 0) {$stage = "exit"}
 while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
 		#ЗАПУСК
-		try {Start-Process -Wait powershell ($data | Where Name -eq $apps[$i]).Code}
+		try {Start-Process -Wait -NoNewWindow powershell "($data | Where Name -eq $apps[$i]).Code"}
 		catch {Start-Sleep 1; throw}
 		
 		#ПОДСЧЕТ
