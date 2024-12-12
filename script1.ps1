@@ -216,6 +216,7 @@ while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
   		try {
 			pos 2 15
+   			$ProgressPreference = 'SilentlyContinue'
    			& ($data | Where Name -eq $apps[$i]).Code
 		} catch {
 			Start-Sleep 1;
