@@ -215,7 +215,7 @@ if ($apps.count -eq 0) {$stage = "exit"}
 while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
 		#ЗАПУСК
-		try {iex ($data | Where Name -eq $apps[$i]).Code}
+		try {($data | Where Name -eq $apps[$i]).Code; pause}
 		catch {Start-Sleep 1; throw}
 		
 		#ПОДСЧЕТ
