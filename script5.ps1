@@ -214,10 +214,6 @@ if ($apps.count -eq 0) {$stage = "exit"}
 #УСТАНОВКА
 while ($stage -eq "install") {
 	for ($i = 0; $i -le $apps.count; $i++) {
-		#ЗАПУСК
-		try {& ($data | Where Name -eq $apps[$i]).Code}
-		catch {Start-Sleep 1; throw}
-		
 		#ПОДСЧЕТ
 		$processed = [Math]::Round(($i) / $apps.count * 49,0)
 		$remaining = 49 - $Processed
@@ -232,6 +228,8 @@ while ($stage -eq "install") {
 		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
 		$progress
+  		try {& ($data | Where Name -eq $apps[$i]).Code}
+		catch {Start-Sleep 1; throw}
 	}
 	Start-Sleep 5
 	$stage = "exit"
