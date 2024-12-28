@@ -13,8 +13,6 @@ function color ($text, $number) {$e = [char]27; "$e[$($number)m" + $text + "$e[0
 clean
 pos 2 1
 "Please wait, $Env:UserName"
-[console]::CursorVisible = $false
-$ProgressPreference = "SilentlyContinue"
 $host.ui.RawUI.WindowTitle = (char 1F916) + " utilities"
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
@@ -24,6 +22,16 @@ $host.ui.RawUI.WindowTitle = (char 1F916) + " utilities"
 [int]$xpos = 0
 [int]$zpos = 0
 [int]$kpos = 0
+
+#ПРОВЕРКА CURSOR
+if ([console]::CursorVisible -eq $True) {
+	[console]::CursorVisible = $False
+}
+
+#ПРОВЕРКА PROGRESSBAR
+if ($ProgressPreference -ne "SilentlyContinue") {
+	$ProgressPreference = "SilentlyContinue"
+}
 
 #ПРОВЕРКА ПРАВ
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
