@@ -14,6 +14,7 @@ clean
 pos 2 1
 "Please wait, $Env:UserName"
 [console]::CursorVisible = $false
+$ProgressPreference = "SilentlyContinue"
 $host.ui.RawUI.WindowTitle = (char 1F916) + " utilities"
 [array]$data = &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/apps.ps1)))
 [string]$path = [System.IO.Path]::GetTempPath() + "utilities"
@@ -89,6 +90,7 @@ if ($env:SEE_MASK_NOZONECHECKS -ne 1) {
 
 #ПРОВЕРКА ДИРЕКТОРИИ
 if (Get-Item $path -ErrorAction 0) {
+	cd \
 	Remove-Item -Recurse -Force -ErrorAction 0 $path
 	cd (New-Item -Path $path -ItemType "directory")
 } else {
@@ -213,29 +215,35 @@ if ($apps.count -eq 0) {$stage = "exit"}
 
 #УСТАНОВКА
 while ($stage -eq "install") {
+	[console]::CursorVisible = $true
 	for ($i = 0; $i -le $apps.count; $i++) {
-		#ЗАПУСК
-		Get-job | Wait-Job | Out-Null
-		try {Start-Job -Name (($data | Where Name -eq $apps[$i]).Description) -Init ([ScriptBlock]::Create("cd '$pwd'")) -ScriptBlock $(($data | Where Name -eq $apps[$i]).Code) | Out-Null}
-		catch {Start-Job -Name ($apps[$i]) -ScriptBlock {Start-Sleep 1; throw} | Out-Null}
 		
 		#ПОДСЧЕТ
-		$processed = [Math]::Round(($i) / $apps.count * 49,0)
-		$remaining = 49 - $Processed
-		$percentProcessed = [Math]::Round(($i) / $apps.count * 100,0)
-		$percent = $percentProcessed -replace ('^(\d{1})$'), ('  $_%') -replace ('^(\d{2})$'), (' $_%') -replace ('^(\d{3})$'), ('$_%')
-		$progress = (color -text (" " * $Processed) -number 7) + (color -text ("$Percent") -number 7) + (color -text (" " * $Remaining) -number 100)
-		[array]$install = $apps | foreach {if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}} | Select @{Name="Name"; Expression={$_}}, @{Name="State"; Expression={
-			switch ((Get-Job -name $_).State) {
-				"Running" {"Running"}
-				"Completed" {"Completed"}
-				"Failed" {"Failed"}
-				DEFAULT {"Waiting"}
+		[array]$install = $apps | Select @{
+			Name = "Description"
+			Expression = {
+				if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}
 			}
-		}}
-		$install = ($install | ft @{Expression={$_.Name}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -stream).Trim() | where {$_}
-		[string]$jobs = (char "0x0001F4C4") + " " + (get-job | where state -eq Completed).count + "/" + $apps.count
-
+		}, @{
+			Name = "State"
+			Expression = {
+				$app = $_
+				$appindex = $apps.indexof(($data | where Name -eq $_).Name)
+				switch ($appindex) {
+					{$apps.indexof($app) -gt $i} {"Waiting"; Continue}
+					{$apps[$i] -eq $app} {"Running"; Continue}
+					{$_ -eq "-1"} {"Failed"; Continue}
+					{$_ -lt $i} {"Completed"; Continue}
+				}
+			}
+		}
+		[string]$count = "" + $i + "/" + $apps.count
+		[string]$percent = " " + [Math]::Round(($i) / $apps.count * 100,0) + "%"
+		[int]$filledLength = [Math]::Round(($i) / $apps.count * (53 - $count.length - $percent.length))
+		[int]$emptyLength = (53 - $count.length - $percent.length) - $filledLength
+		[string]$bar = (color ("$count") 7) + (color (" " * $filledLength) 7) + (color ("$percent") 7) + (color (" " * $emptyLength) 100)
+		$install = ($install | ft @{Expression={$_.Description}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -stream).Trim() | where {$_}
+		
 		#ВЫВОД
 		clean
 		pos 2 1
@@ -244,9 +252,18 @@ while ($stage -eq "install") {
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
 		$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
 		pos 2 ($install[$zpos..($zpos+9)].count + 5)
-		$progress
-		"`n" + $jobs
+		$bar + "`n" + "`n"
+		#ЗАПУСК
+		if ($i -ne $apps.count) {
+			try {
+				& ($data | Where Name -eq $apps[$i]).Code
+			} catch {
+				[string]$apps[$i] + " does not exist!"
+				Start-Sleep 5
+			}
+		}
 	}
+	[console]::CursorVisible = $false
 	Start-Sleep 5
 	$stage = "exit"
 }
