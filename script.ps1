@@ -72,7 +72,7 @@ if ($apps) {
 		clean
 	}
 	if ($apps -contains "all") {$apps = $data.Name}
-	$apps = (([string]$apps).split(" ") | Group-Object -NoElement).Name | Get-Unique
+	$apps = [array]((([string]$apps).split(' ') | Group-Object -NoElement).Name | Get-Unique)
 	$stage = "install"
 } else {
 	[System.Collections.ArrayList]$apps = @()
