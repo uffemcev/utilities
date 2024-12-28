@@ -264,7 +264,6 @@ while ($stage -eq "install") {
 		
   		#ЗАПУСК
 		if ($i -ne $apps.count) {
-			[console]::CursorVisible = $false
 			try {
 				& ($data | Where Name -eq $apps[$i]).Code
 			} catch {
@@ -272,6 +271,7 @@ while ($stage -eq "install") {
 				Start-Sleep 5
 			}
 		}
+  		[console]::CursorVisible = $false
 	}
 	Start-Sleep 5
 	$stage = "exit"
