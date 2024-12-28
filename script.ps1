@@ -222,7 +222,7 @@ while ($stage -eq "install") {
 		[array]$install = $apps | Select @{
 			Name = "Description"
 			Expression = {
-				if ($_ -in $data.name) {[string]($data | where Name -eq $_).Description} else {[string]$_}
+				if ($_ -in $data.name) {($data | where Name -eq $_).Description} else {$_}
 			}
 		}, @{
 			Name = "State"
