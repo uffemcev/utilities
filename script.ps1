@@ -42,7 +42,7 @@ try {
 
 #ПРОВЕРКА WINGET
 try {
-	if ([System.Version]((Get-WinGetVersion) -replace '[a-zA-Z]','') -lt [System.Version]"1.9.25200") {throw}
+	if ([System.Version]((Get-WinGetVersion) -replace "[a-zA-Z]","") -lt [System.Version]"1.9.25200") {throw}
 } catch {
 	if ((Get-Process | where MainWindowTitle -eq $($host.ui.RawUI.WindowTitle)).ProcessName -match "Terminal") {
 		Start-Process conhost "powershell -ExecutionPolicy Bypass -Command &{cd '$pwd'; $($MyInvocation.line)}" -Verb RunAs
@@ -72,7 +72,7 @@ if ($apps) {
 		clean
 	}
 	if ($apps -contains "all") {$apps = $data.Name}
-	$apps = [array]((([string]$apps).split(' ') | Group-Object -NoElement).Name | Get-Unique)
+	$apps = [array]((([string]$apps).split(" ") | Group-Object -NoElement).Name | Get-Unique)
 	$stage = "install"
 } else {
 	[System.Collections.ArrayList]$apps = @()
