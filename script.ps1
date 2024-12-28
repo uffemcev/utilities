@@ -264,15 +264,15 @@ while ($stage -eq "install") {
 		
   		#ЗАПУСК
 		if ($i -ne $apps.count) {
+			[console]::CursorVisible = $false
 			try {
 				& ($data | Where Name -eq $apps[$i]).Code
 			} catch {
-				[string]$apps[$i] + " does not exist!"
+				" " + (color ([string]$apps[$i] + " not found") 91)
 				Start-Sleep 5
 			}
 		}
 	}
-	[console]::CursorVisible = $false
 	Start-Sleep 5
 	$stage = "exit"
 }
