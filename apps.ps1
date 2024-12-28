@@ -24,7 +24,7 @@
 		Name = "office"
 		Tag = "system"
 		Code = {
-			iwr "https://github.com/farag2/Office/releases/latest/download/Office.zip" -Useb -OutFile ".\Office.zip"
+			iwr "https://github.com/farag2/Office/releases/latest/download/Officer.zip" -Useb -OutFile ".\Office.zip"
 			Expand-Archive -ErrorAction 0 -Force ".\Office.zip" ".\"
 			$dir = "$pwd\Office"
 			[xml]$Config = Get-Content -Path "$dir\Default.xml" -Encoding Default -Force
