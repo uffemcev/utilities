@@ -253,7 +253,8 @@ while ($stage -eq "install") {
 		$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
 		pos 2 ($install[$zpos..($zpos+9)].count + 5)
 		$bar + "`n" + "`n"
-		#ЗАПУСК
+		
+  		#ЗАПУСК
 		if ($i -ne $apps.count) {
 			try {
 				& ($data | Where Name -eq $apps[$i]).Code
