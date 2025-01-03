@@ -87,7 +87,7 @@ if ($apps) {
 }
 
 #ПРОВЕРКА WINGET НАСТРОЕК
-if ((Get-WingetSetting).adminSettings.InstallerHashOverride -ne "True") {
+if ((Get-WingetSetting).adminSettings.InstallerHashOverride -ne $True) {
 	Enable-WinGetSetting InstallerHashOverride
 }
 
