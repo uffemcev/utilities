@@ -255,7 +255,11 @@ while ($stage -eq "install") {
 		#ВЫВОД
 		clean
 		pos 2 1
-		if ($i -eq $apps.count) {"Installation complete"} else {"Installation process"}
+		if ($i -eq $apps.count) {
+			"Installation complete"
+		} else {
+			if (($data | Where Name -eq $apps[$i]).name) {($data | Where Name -eq $apps[$i]).description} else {(color ([string]$apps[$i] + " not found") 91)}
+		}
 		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
 		$install[$zpos..($zpos+9)] | where {$_} | foreach {pos 2 ($install[$zpos..($zpos+9)].indexof($_) + 4); $_}
@@ -267,7 +271,6 @@ while ($stage -eq "install") {
 			try {
 				& ($data | Where Name -eq $apps[$i]).Code
 			} catch {
-				" " + (color ([string]$apps[$i] + " not found") 91)
 				Start-Sleep 5
 			}
 		}
