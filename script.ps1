@@ -240,7 +240,7 @@ while ($stage -eq "install") {
 				switch ($appindex) {
 					{$apps.indexof($app) -gt $i} {"Waiting"; Continue}
 					{$apps[$i] -eq $app} {"Running"; Continue}
-					{$_ -eq "-1"} {"Failed"; Continue}
+					{$_ -eq "-1"} {"Not found"; Continue}
 					{$_ -lt $i} {"Completed"; Continue}
 				}
 			}
@@ -250,7 +250,7 @@ while ($stage -eq "install") {
 		[int]$filledLength = [Math]::Round(($i) / $apps.count * (53 - $count.length - $percent.length))
 		[int]$emptyLength = (53 - $count.length - $percent.length) - $filledLength
 		[string]$bar = (color ("$count") 7) + (color (" " * $filledLength) 7) + (color ("$percent") 7) + (color (" " * $emptyLength) 100)
-		$install = ($install | ft @{Expression={$_.Description}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -stream).Trim() | where {$_}
+		$install = ($install | ft @{Expression={$_.Description}; Width=37; Alignment="Left"}, @{Expression={$_.State}; Width=15; Alignment="Right"} -HideTableHeaders | Out-String -Stream).Trim() | Where {$_}
 		
 		#ВЫВОД
 		clean
@@ -258,7 +258,7 @@ while ($stage -eq "install") {
 		if ($i -eq $apps.count) {
 			"Installation complete"
 		} else {
-			if (($data | Where Name -eq $apps[$i]).name) {($data | Where Name -eq $apps[$i]).description} else {(color ([string]$apps[$i] + " not found") 91)}
+			"Installation process"
 		}
 		draw 3 55 ($install[$zpos..($zpos+9)].count + 2)
 		if (($i -gt 9) -and ($i -lt $apps.count)) {$zpos++}
