@@ -123,7 +123,7 @@
 			<tr>
 				<td>Other</td>
 				<td>win</td>
-				<td>Win 11 24H2 iso folder</td>
+				<td>Win 11 24H2 iso</td>
 				<td>uupdump.net</td>
 			</tr>
 			<tr>
