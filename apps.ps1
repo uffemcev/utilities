@@ -183,7 +183,7 @@
 		Tag = "other"
 		Code = {
 			$apps = "WindowsStore", "Purchase", "VCLibs", "Photos", "Notepad", "Terminal", "Installer"
-			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "SkipWinRE", "CustomList", "AutoExit"
+			$options = "AutoStart", "AddUpdates", "Cleanup", "ResetBase", "wim2esd" "SkipWinRE", "CustomList", "AutoExit"
 			while (!(dir -errorAction 0 ".\UUP.zip")) {
 				try {
 					$id = ((irm "https://api.uupdump.net/fetchupd.php?arch=amd64&ring=retail&build=26100.1&pack=ru-ru").response.updateArray | Where updateTitle -match "^Windows 11.*$" | Sort -Descending -Property foundBuild | Select -First 1).updateId
