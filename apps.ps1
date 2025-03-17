@@ -194,6 +194,7 @@
 				}
 			}
 			Expand-Archive -ErrorAction 0 -Force ".\UUP.zip" ".\"
+			while (!(dir -errorAction 0 ".\ConvertConfig.ini")) {start-sleep 1}
 			(Get-Content ".\ConvertConfig.ini") -replace (" "), ("") | Set-Content ".\ConvertConfig.ini"
 			foreach ($option in $options) {
 				((Get-Content ".\ConvertConfig.ini") -replace ("^" + $option + "=0"), ($option + "=1")) | Set-Content ".\ConvertConfig.ini"
@@ -205,6 +206,18 @@
 				$file = (Get-Content ".\CustomAppsList.txt") -split "# " | Select-String -Pattern $app
 				if ($file) {((Get-Content ".\CustomAppsList.txt") -replace ("# " + $file), ($file)) | Set-Content ".\CustomAppsList.txt"}
 			}
+			while (!(dir -errorAction 0 ".\ISOFOLDER\sources\boot.wim")) {start-sleep 1}
+			New-Item -Path ".\mountdir" -ItemType "directory"
+			while (!((dism /Get-MountedImageInfo) -match "mountdir")) {
+				DISM /Mount-Wim /Quiet /wimfile:.\ISOFOLDER\sources\boot.wim /index:2 /mountdir:.\mountdir
+				if ($LASTEXITCODE -ne 0) {
+					start-sleep 10
+				}
+			}
+			reg.exe load HKLM\TEMP .\mountdir\Windows\System32\config\SYSTEM
+			reg.exe add HKLM\TEMP\Setup /v "CmdLine" /t REG_SZ /d "X:\\sources\\setup.exe" /f
+			reg.exe unload HKLM\TEMP
+			DISM /Unmount-Wim /mountdir:.\mountdir /commit
 			Get-Job -errorAction 0 -name UUP | Wait-Job
 			dir -ErrorAction 0 -Force | where {$_ -match "^*.X64.*$"} | Move-Item -Destination ([Environment]::GetFolderPath("Desktop"))
 		}
