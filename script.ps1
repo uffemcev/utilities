@@ -30,7 +30,7 @@ if ([console]::CursorVisible -eq $True) {
 
 #ПРОВЕРКА PROGRESSBAR
 if ($ProgressPreference -ne "SilentlyContinue") {
-	$ProgressPreference = "SilentlyContinue"
+	$global:ProgressPreference = "SilentlyContinue"
 }
 
 #ПРОВЕРКА ПРАВ
