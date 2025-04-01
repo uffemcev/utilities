@@ -233,18 +233,4 @@
 			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
- 	[pscustomobject]@{
-		Description = "NV Updater"
-		Name = "nvupdater"
-		Tag = "system"
-		Code = {
-			$uri = "https://www.sys-worx.net/filebase/file/11-nv-updater-nvidia-driver-updater/#versions"
-   			$data = iwr -Useb -Uri "https://www.sys-worx.net/filebase/file/11-nv-updater-nvidia-driver-updater/#versions"
-      			$download = ($data.Links | select-string -pattern ".zip" | select -first 1) -match '[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)'
-	 		iwr -Useb -Uri $matches[0] -OutFile ".\NV Updater.zip"
-    			Expand-Archive -ErrorAction 0 -Force ".\NV Updater.zip" "$Env:Programfiles\NV Updater"
-       			$dir = (dir -Path $Env:Programfiles -ErrorAction 0 -Force | where {$_ -match "NV Updater*"}).FullName
-	 		& "$dir\nv_updater.exe"
-		}
-	}
 )
