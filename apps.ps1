@@ -23,7 +23,7 @@
 			$id = "ONLYOFFICE.DesktopEditors"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}	
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}	
 		}
 	}
 	[pscustomobject]@{
@@ -43,7 +43,7 @@
 			$id = "Google.Chrome"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -54,7 +54,7 @@
 			$id = "Discord.Discord"
 			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -65,7 +65,7 @@
 			$id = "Valve.Steam"
 			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -76,7 +76,7 @@
 			$id = "qBittorrent.qBittorrent"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -87,7 +87,7 @@
 			$id = "7zip.7zip"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -98,7 +98,7 @@
 			$id = "Google.GoogleDrive"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -109,7 +109,7 @@
 			$id = "AdGuard.AdGuard"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -120,7 +120,7 @@
 			$id = "WhirlwindFX.SignalRgb"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -131,7 +131,7 @@
 			$id = "CodecGuide.K-LiteCodecPack.Full"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -142,7 +142,7 @@
 			$id = "TechPowerUp.NVCleanstall"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 	[pscustomobject]@{
@@ -221,7 +221,7 @@
 			$id = "rcmaehl.MSEdgeRedirect"
    			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
 			iex $run
-			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
+			if (!(Get-WinGetPackage $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}
 		}
 	}
 )
