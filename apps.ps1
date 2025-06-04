@@ -4,7 +4,10 @@
 		Name = "msoffice"
 		Tag = "system"
 		Code = {
-			iwr "https://github.com/farag2/Office/releases/latest/download/Officer.zip" -Useb -OutFile ".\Office.zip"
+			$uri = "https://api.github.com/repos/farag2/Install-Office/releases/latest"
+			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
+			$data = $get.assets | select -first 1      			
+      			iwr $data.browser_download_url -Useb -OutFile ".\Office.zip"
 			Expand-Archive -ErrorAction 0 -Force ".\Office.zip" ".\"
 			$dir = "$pwd\Office"
 			[xml]$Config = Get-Content -Path "$dir\Default.xml" -Encoding Default -Force
@@ -149,10 +152,10 @@
 		Description = "Rufus portable"
 		Name = "rufus"
 		Tag = "other"
-		Code = {
-			$uri = "https://api.github.com/repos/pbatard/rufus/releases/latest"
+		Code = {		
+   			$uri = "https://api.github.com/repos/pbatard/rufus/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-			$data = $get.assets | Where-Object name -match "rufus.*.exe$" | select -first 1
+			$data = $get.assets | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile ([Environment]::GetFolderPath("Desktop") + ".\rufus.exe")
 		}
 	}
@@ -163,7 +166,7 @@
 		Code = {
 			$uri = "https://api.github.com/repos/Sophia-Community/SophiApp/releases/latest"
 			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-			$data = $get.assets | Where-Object name -match "SophiApp.zip" | select -first 1
+			$data = $get.assets | select -first 1
    			iwr $data.browser_download_url -Useb -OutFile ".\SophiApp.zip"
 			Expand-Archive -ErrorAction 0 -Force ".\SophiApp.zip" ([Environment]::GetFolderPath("Desktop"))
 		}
