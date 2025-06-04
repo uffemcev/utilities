@@ -28,7 +28,7 @@
 				<td><a href="https://github.com/Sophia-Community/SophiApp">SophiApp Tweaker portable</a></td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>tweaks</td>
     				<td>redirect</td>
 				<td><a href="https://github.com/rcmaehl/MSEdgeRedirect">MSEdgeRedirect</a></td>
 			</tr>
@@ -43,7 +43,7 @@
 				<td><a href="https://www.google.com/chrome/">Google Chrome</a></td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>web</td>
 				<td>adguard</td>
 				<td><a href="https://adguard.info/ru/welcome.html">AdGuard</a></td>
 			</tr>
@@ -53,12 +53,12 @@
 				<td><a href="https://store.steampowered.com/">Steam</a></td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>games</td>
 				<td>discord</td>
 				<td><a href="https://discord.com/">Discord</a></td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>games</td>
 				<td>signal</td>
 				<td><a href="https://signalrgb.com/">SignalRGB</a></td>				
 			</tr>
@@ -68,7 +68,7 @@
 				<td><a href="https://www.qbittorrent.org/">qBittorrent</a></td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>storage</td>
 				<td>gdrive</td>
 				<td><a href="https://drive.google.com/">Google Drive</a></td>
 			</tr>
@@ -83,14 +83,19 @@
 				<td><a href="https://www.techpowerup.com/download/techpowerup-nvcleanstall/">NVCleanstall</a></td>
 			</tr>		
 			<tr>
-				<td></td>
+				<td>system</td>
 				<td>zip</td>
 				<td><a href="https://7-zip.org/">7-zip</a></td>
 			</tr>
 			<tr>
-				<td></td>
-				<td>office</td>
-				<td><a href="https://github.com/farag2/Install-Office">Office, Word, Excel licensed</a></td>
+				<td>system</td>
+				<td>msoffice</td>
+				<td><a href="https://github.com/farag2/Install-Office">MS Office, Word, Excel licensed</a></td>
+			</tr>
+			<tr>
+				<td>system</td>
+				<td>ooffice</td>
+				<td><a href="https://www.onlyoffice.com/">OnlyOffice</a></td>
 			</tr>
 			<tr>
 				<td>other</td>
@@ -98,7 +103,7 @@
 				<td><a href="https://uupdump.net/">Win 11 24H2 iso</a></td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>other</td>
 				<td>rufus</td>
 				<td><a href="https://github.com/pbatard/rufus">Rufus portable</a></td>
 			</tr>
