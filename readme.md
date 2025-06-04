@@ -26,12 +26,6 @@
 			</tr>
 			<tr>
 				<td>Tweaks</td>
-				<td>adns</td>
-				<td>Adguard DOH</td>
-				<td>adguard-dns.io/ru/public-dns.html</td>
-			</tr>
-			<tr>
-				<td></td>
     				<td>sophia</td>
 				<td>SophiApp Tweaker portable</td>
 				<td>github.com/Sophia-Community/SophiApp</td>
@@ -101,13 +95,7 @@
 				<td>nvcleanstall</td>
 				<td>NVCleanstall</td>
 				<td>techpowerup.com/nvcleanstall</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td>nvupdater</td>
-				<td>NV Updater</td>
-				<td>sys-worx.net/nv-updater-eng</td>
-			</tr>			
+			</tr>		
 			<tr>
 				<td></td>
 				<td>zip</td>
