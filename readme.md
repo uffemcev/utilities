@@ -11,114 +11,96 @@
 	<table>
 		<thead>
 			<tr>
-				<th align="center" width="100px">Тег</th>
-				<th align="center" width="100px">Имя</th>
-				<th align="center" width="450px">Описание</th>
-				<th align="center" width="450px">Источник</th>
+				<th align="center">Тег</th>
+				<th align="center">Имя</th>
+				<th align="center">Компонент</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>All</td>
+				<td>all</td>
 				<td>all</td>
 				<td>Установить всё</td>
-				<td></td>
 			</tr>
 			<tr>
-				<td>Tweaks</td>
+				<td>tweaks</td>
     				<td>sophia</td>
-				<td>SophiApp Tweaker portable</td>
-				<td>github.com/Sophia-Community/SophiApp</td>
+				<td><a href="https://github.com/Sophia-Community/SophiApp">SophiApp Tweaker portable</a></td>
 			</tr>
 			<tr>
 				<td></td>
     				<td>redirect</td>
-				<td>MSEdgeRedirect</td>
-   				<td>github.com/rcmaehl/MSEdgeRedirect</td>
+				<td><a href="https://github.com/rcmaehl/MSEdgeRedirect">MSEdgeRedirect</a></td>
 			</tr>
 			<tr>
-				<td>Audio</td>
+				<td>audio</td>
 				<td>spotx</td>
-				<td>SpotX - modified Spotify app</td>
-				<td>github.com/amd64fox/SpotX</td>
+				<td><a href="https://github.com/SpotX-Official/SpotX">SpotX - modified Spotify app</a></td>
 			</tr>
 			<tr>
-				<td></td>
-				<td>vencord</td>
-				<td>Vencord - modified Discord app</td>				
-				<td>github.com/Vendicated/Vencord</td>
-			</tr>
-			<tr>
-				<td>Web</td>
+				<td>web</td>
 				<td>chrome</td>
-				<td>Google Chrome</td>
-				<td>google.com/chrome</td>
+				<td><a href="https://www.google.com/chrome/">Google Chrome</a></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>adguard</td>
-				<td>AdGuard</td>
-				<td>adguard.info</td>
+				<td><a href="https://adguard.info/ru/welcome.html">AdGuard</a></td>
 			</tr>
 			<tr>
-				<td>Games</td>
+				<td>games</td>
 				<td>steam</td>
-				<td>Steam</td>				
-				<td>store.steampowered.com</td>
+				<td><a href="https://store.steampowered.com/">Steam</a></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>discord</td>
+				<td><a href="https://discord.com/">Discord</a></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>signal</td>
-				<td>SignalRGB</td>				
-				<td>signalrgb.com</td>
+				<td><a href="https://signalrgb.com/">SignalRGB</a></td>				
 			</tr>
 			<tr>
-				<td>Storage</td>
+				<td>storage</td>
 				<td>qbit</td>
-				<td>qBittorrent</td>
-				<td>qbittorrent.org</td>
+				<td><a href="https://www.qbittorrent.org/">qBittorrent</a></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>gdrive</td>
-				<td>Google Drive</td>
-				<td>drive.google.com</td>
+				<td><a href="https://drive.google.com/">Google Drive</a></td>
 			</tr>
 			<tr>
-				<td>Video</td>
+				<td>video</td>
 				<td>codec</td>
-				<td>K-Lite Codec Pack Full</td>
-				<td>codecguide.com/download_kl.htm</td>
+				<td><a href="https://codecguide.com/download_kl.htm">K-Lite Codec Pack Full</a></td>
 			</tr>
 			<tr>
-				<td>System</td>
+				<td>system</td>
 				<td>nvcleanstall</td>
-				<td>NVCleanstall</td>
-				<td>techpowerup.com/nvcleanstall</td>
+				<td><a href="https://www.techpowerup.com/download/techpowerup-nvcleanstall/">NVCleanstall</a></td>
 			</tr>		
 			<tr>
 				<td></td>
 				<td>zip</td>
-				<td>7-zip</td>
-				<td>7-zip.org</td>
+				<td><a href="https://7-zip.org/">7-zip</a></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>office</td>
-				<td>Office, Word, Excel licensed</td>
-				<td>github.com/farag2/Office</td>
+				<td><a href="https://github.com/farag2/Install-Office">Office, Word, Excel licensed</a></td>
 			</tr>
 			<tr>
-				<td>Other</td>
+				<td>other</td>
 				<td>win</td>
-				<td>Win 11 24H2 iso</td>
-				<td>uupdump.net</td>
+				<td><a href="https://uupdump.net/">Win 11 24H2 iso</a></td>
 			</tr>
 			<tr>
 				<td></td>
 				<td>rufus</td>
-				<td>Rufus portable</td>				
-				<td>github.com/pbatard/rufus</td>
+				<td><a href="https://github.com/pbatard/rufus">Rufus portable</a></td>
 			</tr>
 		</tbody>
 	</table>
