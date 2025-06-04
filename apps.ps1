@@ -1,24 +1,4 @@
-@(
-  	[pscustomobject]@{
-		Description = "Adguard DOH"
-		Name = "adns"
-		Tag = "tweaks"
-		Code = {
-			$ips = "94.140.14.14", "94.140.15.15", "2a10:50c0::ad1:ff", "2a10:50c0::ad2:ff"
-			$doh = "https://dns.adguard-dns.com/dns-query/"
-			foreach ($ip in $ips) {
-    				Add-DnsClientDohServerAddress -errorAction 0 -ServerAddress $ip -DohTemplate $doh
-    				Get-NetAdapter -Physical | ForEach-Object {
-        				Set-DnsClientServerAddress $_.InterfaceAlias -ServerAddresses $ips
-        				if ($ip -match "\.") {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh\$ip"}
-        				if ($ip -match ":") {$path = "HKLM:System\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\" + $_.InterfaceGuid + "\DohInterfaceSettings\Doh6\$ip"}
-        				New-Item -Path $path -Force | New-ItemProperty -Name "DohFlags" -Value 1 -PropertyType QWORD
-    				}
-			}
-			New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" -Name "EnableAutoDoh" -Value 2 -PropertyType DWord -Force
-			Clear-DnsClientCache
-		}
-	}	
+@(	
 	[pscustomobject]@{
 		Description = "Office, Word, Excel licensed"
 		Name = "office"
