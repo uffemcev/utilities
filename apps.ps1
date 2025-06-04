@@ -1,7 +1,7 @@
 @(	
 	[pscustomobject]@{
-		Description = "Office, Word, Excel licensed"
-		Name = "office"
+		Description = "MS Office, Word, Excel licensed"
+		Name = "msoffice"
 		Tag = "system"
 		Code = {
 			iwr "https://github.com/farag2/Office/releases/latest/download/Officer.zip" -Useb -OutFile ".\Office.zip"
@@ -13,6 +13,17 @@
 			& "$dir\Download.ps1" -Branch O365ProPlusRetail -Channel Current -Components Word, Excel, PowerPoint
 			& "$dir\Install.ps1"
 			& ([ScriptBlock]::Create((irm https://get.activated.win))) /KMS-Office /KMS-ActAndRenewalTask /S
+		}
+	}
+ 	[pscustomobject]@{
+		Description = "OnlyOffice"
+		Name = "ooffice"
+		Tag = "system"
+		Code = {
+			$id = "ONLYOFFICE.DesktopEditors"
+   			$run = "winget install --id=$id --accept-package-agreements --accept-source-agreements --ignore-security-hash --exact --silent"
+			iex $run
+			if (!((winget list) -match $id)) {runas /trustlevel:0x20000 /machine:amd64 "$run"}	
 		}
 	}
 	[pscustomobject]@{
