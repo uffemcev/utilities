@@ -59,7 +59,7 @@ try {
 		powershell "&([ScriptBlock]::Create((irm https://raw.githubusercontent.com/asheroto/winget-install/master/winget-install.ps1))) -Force -ForceClose" | Out-Null
 		$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 		Repair-WingetPackageManager -Force -Latest -AllUsers | Out-Null
-  		winget upgrade winget --scope machine --force
+  		winget upgrade winget --scope machine --force | Out-Null
 	}
 }
 
