@@ -9,7 +9,7 @@
 			$data = $get.assets | select -first 1      			
       			iwr $data.browser_download_url -Useb -OutFile ".\Office.zip"
 			Expand-Archive -ErrorAction 0 -Force ".\Office.zip" ".\"
-			$dir = "$pwd\Office"
+			$dir = (dir "$pwd\default.xml" -Recurse).DirectoryName
 			[xml]$Config = Get-Content -Path "$dir\Default.xml" -Encoding Default -Force
    			$Config.Configuration.Display.Level = "None"
       			$Config.Save("$dir\Default.xml")
