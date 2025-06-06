@@ -14,6 +14,7 @@
    			$Config.Configuration.Display.Level = "None"
       			$Config.Save("$dir\Default.xml")
 			& "$dir\Download.ps1" -Branch O365ProPlusRetail -Channel Current -Components Word, Excel, PowerPoint
+   			dir -ErrorAction 0 -Force | where {$_ -match "^Office$"} | Move-Item -Destination $dir
 			& "$dir\Install.ps1"
 			& ([ScriptBlock]::Create((irm https://get.activated.win))) /KMS-Office /KMS-ActAndRenewalTask /S
 		}
