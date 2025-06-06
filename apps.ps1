@@ -1,24 +1,4 @@
 @(	
-	[pscustomobject]@{
-		Description = "MS Office, Word, Excel licensed"
-		Name = "msoffice"
-		Tag = "system"
-		Code = {
-			$uri = "https://api.github.com/repos/farag2/Install-Office/releases/latest"
-			$get = Invoke-RestMethod -uri $uri -Method Get -ErrorAction stop
-			$data = $get.assets | select -first 1      			
-      			iwr $data.browser_download_url -Useb -OutFile ".\Office.zip"
-			Expand-Archive -ErrorAction 0 -Force ".\Office.zip" ".\"
-			$dir = (dir "$pwd\default.xml" -Recurse).DirectoryName
-			[xml]$Config = Get-Content -Path "$dir\Default.xml" -Encoding Default -Force
-   			$Config.Configuration.Display.Level = "None"
-      			$Config.Save("$dir\Default.xml")
-			& "$dir\Download.ps1" -Branch O365ProPlusRetail -Channel Current -Components Word, Excel, PowerPoint
-   			dir -ErrorAction 0 -Force | where {$_ -match "^Office$"} | Move-Item -Destination $dir
-			& "$dir\Install.ps1"
-			& ([ScriptBlock]::Create((irm https://get.activated.win))) /KMS-Office /KMS-ActAndRenewalTask /S
-		}
-	}
  	[pscustomobject]@{
 		Description = "OnlyOffice"
 		Name = "ooffice"
