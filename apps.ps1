@@ -173,7 +173,7 @@
 		}
 	}
 	[pscustomobject]@{
-		Description = "Win 11 24H2 iso"
+		Description = "Win 11 25H2 iso"
 		Name = "win"
 		Tag = "other"
 		Code = {
@@ -229,4 +229,5 @@
 		}
 	}
 )
+
 
