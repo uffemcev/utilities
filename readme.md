@@ -120,6 +120,3 @@
 ```powershell
 &([ScriptBlock]::Create((irm uffemcev.github.io/utilities/script.ps1))) system other office chrome
 ```
-
-## Поддержка
-* uffemcev.ton
